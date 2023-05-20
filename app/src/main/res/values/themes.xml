@@ -15,6 +15,7 @@
     <!--   Tool Bar   -->
     <style name="ToolbarStyle" parent="Widget.Material3.Toolbar">
         <item name="titleTextColor">@color/white</item>
+<!--        <item name="titleCentered">true</item>-->
         <item name="android:background">@color/purple_500</item>
     </style>
 

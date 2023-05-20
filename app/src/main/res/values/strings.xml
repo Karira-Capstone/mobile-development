@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Karira</string>
+
+    <string name="auth_title">Selamat datang di Karira</string>
+    <string name="auth_subtitle">Kami hadir untuk membantu anda mencari proyek dan layanan terbaik</string>
+    <string name="auth_button">Masuk dengan Google</string>
 </resources>
