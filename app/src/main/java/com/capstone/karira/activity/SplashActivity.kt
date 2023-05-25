@@ -9,6 +9,7 @@ import android.os.Looper
 import android.view.WindowInsets
 import android.view.WindowManager
 import com.capstone.karira.R
+import com.capstone.karira.activity.auth.AuthActivity
 
 class SplashActivity : AppCompatActivity() {
 
