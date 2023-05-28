@@ -80,7 +80,7 @@ class SelectSkillsFragment : Fragment() {
                 .collectAsState(initial = UiState.Loading).value.let { uiState ->
                 when (uiState) {
                     is UiState.Loading -> {
-                        authActivity.authViewModel.getUser()
+                        authActivity.getUser()
                     }
 
                     is UiState.Success -> {
@@ -97,7 +97,7 @@ class SelectSkillsFragment : Fragment() {
 
         binding.skillAdd.setOnClickListener {
             val inputText = binding.skillTextview.text.toString()
-            authActivity.authViewModel.addUserSkills(inputText)
+            authActivity.addUserSkill(inputText)
         }
 
         binding.authButton.setOnClickListener {
@@ -127,7 +127,7 @@ private fun SelectedButtons(skills: List<String>, activity: AuthActivity) {
                     horizontalArrangement = Arrangement.Start,
                     content = {
                         for (skill in skills) {
-                            if (skill != "") SmallButton(text = skill, onClick = { activity.authViewModel.removeUserSkill(skill) })
+                            if (skill != "") SmallButton(text = skill, onClick = { activity.removeUserSkill(skill) })
                         }
                     }
                 )

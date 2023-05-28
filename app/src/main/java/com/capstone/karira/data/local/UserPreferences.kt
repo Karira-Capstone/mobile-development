@@ -44,7 +44,13 @@ class UserPreferences private constructor(private val dataStore: DataStore<Prefe
         }
     }
 
-    suspend fun addUserSkills(skill: String) {
+    suspend fun addUserRole(role: String) {
+        dataStore.edit { preferences ->
+            preferences[ROLE_KEY] = role
+        }
+    }
+
+    suspend fun addUserSkill(skill: String) {
         dataStore.edit { preferences ->
             preferences[SKILLS_KEY] = "${preferences[SKILLS_KEY]}${skill};"
         }
