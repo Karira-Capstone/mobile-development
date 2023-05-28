@@ -57,7 +57,9 @@ class SelectRoleFragment : Fragment() {
         builder.setPositiveButton("Simpan") { _, _ ->
             if (type == "Client") {
 //                view?.findNavController()?.navigate(R.id.action_selectRoleFragment_to_selectSkillsFragment)
-                authActivity.authViewModel.saveUser(User(token = user.token, email = user.email, role = "Client", skills = ""))
+                authActivity.addUserRole("Client")
+            } else {
+                authActivity.addUserRole("Client")
             }
         }
 
@@ -71,7 +73,7 @@ class SelectRoleFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        authActivity.authViewModel.getUserLiveData().observe(viewLifecycleOwner) { userLiveData ->
+        authActivity.getUserLiveData().observe(viewLifecycleOwner) { userLiveData ->
             user = userLiveData
             if (user.role == "Client") {
                 view?.findNavController()?.navigate(R.id.action_selectRoleFragment_to_selectSkillsFragment)

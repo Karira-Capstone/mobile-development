@@ -39,9 +39,15 @@ class AuthViewModel(private val repository: AuthRepository): ViewModel() {
         }
     }
 
-    fun addUserSkills(skill: String) {
+    fun addUserRole(role: String) {
         viewModelScope.launch {
-            repository.addUserSkills(skill)
+            repository.addUserRole(role)
+        }
+    }
+
+    fun addUserSkill(skill: String) {
+        viewModelScope.launch {
+            repository.addUserSkill(skill)
         }
     }
 

@@ -17,9 +17,9 @@ class AuthRepository private constructor(private val pref: UserPreferences, priv
 
     suspend fun deleteUser() = pref.deleteUser()
 
-//    suspend fun addUserRole(role: String) = pref.addUserSkills(role)
+    suspend fun addUserRole(role: String) = pref.addUserRole(role)
 
-    suspend fun addUserSkills(skill: String) = pref.addUserSkills(skill)
+    suspend fun addUserSkill(skill: String) = pref.addUserSkill(skill)
 
     suspend fun removeUserSkill(skill: String) = pref.removeUserSkill(skill)
 

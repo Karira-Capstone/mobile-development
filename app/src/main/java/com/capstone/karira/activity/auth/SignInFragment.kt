@@ -139,16 +139,10 @@ class SignInFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        authActivity.authViewModel.getUserLiveData().observe(viewLifecycleOwner) { user ->
+        authActivity.getUserLiveData().observe(viewLifecycleOwner) { user ->
             val currentUser = auth.currentUser
             updateUI(currentUser, user)
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-//        observeViewModel()
     }
 
     companion object {
