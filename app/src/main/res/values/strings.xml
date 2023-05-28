@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">Karira</string>
+
+    <!--  Authentication  -->
+    <string name="auth_title">Selamat datang di Karira</string>
+    <string name="auth_subtitle">Kami hadir untuk membantu anda mencari proyek dan layanan terbaik</string>
+    <string name="auth_button">Masuk dengan Google</string>
+
+    <string name="selectrole_subtitle">Pilih role anda</string>
+    <string name="selectrole_notes">Anda hanya bisa memilih role sekali</string>
+    <string name="selectrole_client_title">Client</string>
+    <string name="selectrole_client_description">Mencari proyek &amp; layanan, membuat layanan, per individu</string>
+    <string name="selectrole_owner_title">Owner</string>
+    <string name="selectrole_owner_description">Membuat proyek, untuk kelompok</string>
+
+    <string name="skill_title">Tambahkan skill untuk mencocokkan proyek &amp; layanan</string>
+    <string name="skill_input_hint">Nama skill</string>
+
+    <string name="submit_button">Simpan</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

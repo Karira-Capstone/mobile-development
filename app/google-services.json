@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "800464972299",
+    "project_id": "karira-project",
+    "storage_bucket": "karira-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:800464972299:android:9b38a048982dc98aa2f50e",
+        "android_client_info": {
+          "package_name": "com.capstone.karira"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "800464972299-trkj2o42ihfohukaj9tlenffu9l7fpuh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.capstone.karira",
+            "certificate_hash": "2cb341f183481c8c2e55af887fba523a86db8d28"
+          }
+        },
+        {
+          "client_id": "800464972299-qff10rmf401pq06d0lmqmthrj26gs784.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgxunNVOiUVZBLVi_fuvUBbjWWGKgsVAI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "800464972299-530m7pncu2bdpirmnvk9crfcr0kp9dag.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
