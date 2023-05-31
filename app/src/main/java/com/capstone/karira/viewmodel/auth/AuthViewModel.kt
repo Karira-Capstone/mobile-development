@@ -1,19 +1,14 @@
 package com.capstone.karira.viewmodel.auth
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.capstone.karira.data.AuthRepository
-import com.capstone.karira.data.local.UserPreferences
+import com.capstone.karira.data.repository.AuthRepository
 import com.capstone.karira.model.User
 import com.dicoding.jetreward.ui.common.UiState
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class AuthViewModel(private val repository: AuthRepository): ViewModel() {
@@ -52,9 +47,14 @@ class AuthViewModel(private val repository: AuthRepository): ViewModel() {
     }
 
     fun removeUserSkill(skill: String) {
-        Log.d("TEEEEEEEEEEEEEEEEEEEe", skill)
         viewModelScope.launch {
             repository.removeUserSkill(skill)
+        }
+    }
+
+    fun activateUser() {
+        viewModelScope.launch {
+            repository.activateUser()
         }
     }
 

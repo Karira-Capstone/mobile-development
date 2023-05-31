@@ -1,9 +1,5 @@
-package com.capstone.karira.data
+package com.capstone.karira.data.repository
 
-import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import com.capstone.karira.data.local.UserPreferences
 import com.capstone.karira.model.User
 import com.capstone.karira.utils.AppExecutors
@@ -22,6 +18,8 @@ class AuthRepository private constructor(private val pref: UserPreferences, priv
     suspend fun addUserSkill(skill: String) = pref.addUserSkill(skill)
 
     suspend fun removeUserSkill(skill: String) = pref.removeUserSkill(skill)
+
+    suspend fun activateUser() = pref.activateUser()
 
     companion object {
         @Volatile

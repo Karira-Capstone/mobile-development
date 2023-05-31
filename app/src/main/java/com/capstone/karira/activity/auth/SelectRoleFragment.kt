@@ -37,12 +37,12 @@ class SelectRoleFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.clientCard.setOnClickListener {
-            createDialog("Client")
+        binding.freelancerCard.setOnClickListener {
+            createDialog("Freelancer")
         }
 
-        binding.ownerCard.setOnClickListener {
-            createDialog("Owner")
+        binding.clientCard.setOnClickListener {
+            createDialog("Client")
         }
 
         observeViewModel()
@@ -55,9 +55,8 @@ class SelectRoleFragment : Fragment() {
         builder.setMessage(getString(R.string.selectrole_notes))
 
         builder.setPositiveButton("Simpan") { _, _ ->
-            if (type == "Client") {
-//                view?.findNavController()?.navigate(R.id.action_selectRoleFragment_to_selectSkillsFragment)
-                authActivity.addUserRole("Client")
+            if (type == "Freelancer") {
+                authActivity.addUserRole("Freelancer")
             } else {
                 authActivity.addUserRole("Client")
             }
@@ -75,7 +74,7 @@ class SelectRoleFragment : Fragment() {
     private fun observeViewModel() {
         authActivity.getUserLiveData().observe(viewLifecycleOwner) { userLiveData ->
             user = userLiveData
-            if (user.role == "Client") {
+            if (user.role == "Freelancer") {
                 view?.findNavController()?.navigate(R.id.action_selectRoleFragment_to_selectSkillsFragment)
             }
         }

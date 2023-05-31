@@ -1,4 +1,4 @@
-package com.capstone.karira.component
+package com.capstone.karira.component.compose
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.defaultMinSize

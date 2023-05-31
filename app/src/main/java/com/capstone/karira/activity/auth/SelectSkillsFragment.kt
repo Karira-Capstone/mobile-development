@@ -1,21 +1,18 @@
 package com.capstone.karira.activity.auth
 
-import android.content.res.ColorStateList
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -24,8 +21,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
-import com.capstone.karira.component.SmallButton
-import com.capstone.karira.data.AuthRepository
+import com.capstone.karira.activity.layanan.LayananMainActivity
+import com.capstone.karira.component.compose.SmallButton
 import com.capstone.karira.databinding.FragmentSelectSkillsBinding
 import com.capstone.karira.ui.theme.KariraTheme
 import com.dicoding.jetreward.ui.common.UiState
@@ -54,14 +51,19 @@ class SelectSkillsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         handleBinding()
-        handleAddSkillEnable()
+        handleButtonEnable()
+        observeLiveData()
 
     }
 
-    private fun handleAddSkillEnable() {
+    private fun handleButtonEnable(skills: List<String>? = null) {
         val inputText = binding.skillTextview.text
 
-        binding.authButton.isEnabled = inputText != null && inputText.toString().isNotEmpty()
+        binding.skillAdd.isEnabled = inputText.toString().isNotEmpty()
+
+        if (skills != null) {
+            binding.authButton.isEnabled = skills.isNotEmpty()
+        }
     }
 
     private fun handleBinding() {
@@ -70,29 +72,34 @@ class SelectSkillsFragment : Fragment() {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                handleAddSkillEnable()
+                handleButtonEnable()
             }
+
             override fun afterTextChanged(s: Editable) {}
         })
 
         binding.selectedSkills.setContent {
             authActivity.getUiState()
                 .collectAsState(initial = UiState.Loading).value.let { uiState ->
-                when (uiState) {
-                    is UiState.Loading -> {
-                        authActivity.getUser()
-                    }
+                    when (uiState) {
+                        is UiState.Loading -> {
+                            authActivity.getUser()
+                        }
 
-                    is UiState.Success -> {
-                        val data = uiState.data
-                        Log.d("KONZZZZZ", data.skills)
-                        val skills: List<String> = data.skills.split(";")
-                        SelectedButtons(skills, authActivity)
-                    }
+                        is UiState.Success -> {
+                            val data = uiState.data
+                            if (data.isActivated) changePage()
+                            else {
+                                val skills: List<String> = data.skills.split(";")
+                                SelectedButtons(skills, authActivity)
 
-                    is UiState.Error -> {}
+                                handleButtonEnable(skills)
+                            }
+                        }
+
+                        is UiState.Error -> {}
+                    }
                 }
-            }
         }
 
         binding.skillAdd.setOnClickListener {
@@ -102,13 +109,25 @@ class SelectSkillsFragment : Fragment() {
 
         binding.authButton.setOnClickListener {
             // Backend.......
-
+            authActivity.activateUser()
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    private fun observeLiveData() {
+        authActivity.getUserLiveData().observe(viewLifecycleOwner) { user ->
+            if (user.isActivated) changePage()
+        }
+    }
+
+    fun changePage() {
+        val i = Intent(requireActivity(), LayananMainActivity::class.java)
+        startActivity(i)
+        requireActivity().finish()
     }
 }
 
@@ -127,7 +146,9 @@ private fun SelectedButtons(skills: List<String>, activity: AuthActivity) {
                     horizontalArrangement = Arrangement.Start,
                     content = {
                         for (skill in skills) {
-                            if (skill != "") SmallButton(text = skill, onClick = { activity.removeUserSkill(skill) })
+                            if (skill != "") SmallButton(
+                                text = skill,
+                                onClick = { activity.removeUserSkill(skill) })
                         }
                     }
                 )

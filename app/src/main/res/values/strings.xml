@@ -8,15 +8,43 @@
 
     <string name="selectrole_subtitle">Pilih role anda</string>
     <string name="selectrole_notes">Anda hanya bisa memilih role sekali</string>
+    <string name="selectrole_freelancer_title">Freelancer</string>
+    <string name="selectrole_freelancer_description">Mencari proyek &amp; layanan, membuat layanan, per individu</string>
     <string name="selectrole_client_title">Client</string>
-    <string name="selectrole_client_description">Mencari proyek &amp; layanan, membuat layanan, per individu</string>
-    <string name="selectrole_owner_title">Owner</string>
-    <string name="selectrole_owner_description">Membuat proyek, untuk kelompok</string>
+    <string name="selectrole_client_description">Membuat proyek, untuk kelompok</string>
 
     <string name="skill_title">Tambahkan skill untuk mencocokkan proyek &amp; layanan</string>
     <string name="skill_input_hint">Nama skill</string>
 
     <string name="submit_button">Simpan</string>
+
+    <!--  LAYANAN  -->
+    <string name="layanan_title">%1$sLayanan%2$s</string>
+    <string name="layanan_titlesub">Produk dari freelancer yang dibuat untuk kalian</string>
+    <string name="layanan_recommend_title">Mungkin kamu suka layanan ini</string>
+    <string name="layanan_titlesub_ku">Gatau teksnya apa tapi intinya sekarang masih lorem ipsum dolor sit amet</string>
+    <string name="layanan_titlesub_search">Mungkin kamu bisa menemukan layanan yang paling cocok untukmu disini</string>
+    <string name="layanan_titlesub_buat">Ciptakan layanan milikmu untuk pelanggan disini</string>
+    <string name="layanan_input_hint">Cari layanan</string>
+
+    <string name="layanan_cari_button">Cari layanan</string>
+    <string name="layanan_ku_button">Layananku</string>
+
+    <string name="layanan_detail_isnegotiable">Dapat dinegosiasi</string>
+    <string name="layanan_detail_isnotnegotiable">Tidak dinegosiasi</string>
+    <string name="layanan_detail_user">Pengguna</string>
+    <string name="layanan_detail_duration">Durasi maksimal</string>
+    <string name="layanan_detail_primary_button">Pesan</string>
+    <string name="layanan_detail_outlined_button">Tanya dulu</string>
+
+    <string name="layanan_buat_button">Buat layanan</string>
+    <string name="layanan_buat_title_formtitle">Judul</string>
+    <string name="layanan_buat_price_formtitle">Harga</string>
+    <string name="layanan_buat_duration_formtitle">Durasi (hari)</string>
+    <string name="layanan_buat_category_formtitle">Kategori</string>
+    <string name="layanan_buat_description_formtitle">Deskripsi</string>
+    <string name="layanan_buat_images_uploadboxtitle">Tambahkan gambar</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

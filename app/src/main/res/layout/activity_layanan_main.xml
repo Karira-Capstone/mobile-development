@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".activity.layanan.LayananMainActivity">
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragment_container_top"
+            android:name="com.capstone.karira.component.xml.fragment.TitleFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout="@layout/fragment_title"/>
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragment_container_center"
+            android:name="com.capstone.karira.component.xml.fragment.HeadingCardsFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toBottomOf="@id/fragment_container_top"
+            tools:layout="@layout/fragment_heading_cards"/>
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragment_container_bottom"
+            android:name="com.capstone.karira.component.xml.fragment.ListFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toBottomOf="@id/fragment_container_center"
+            tools:layout="@layout/fragment_list"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

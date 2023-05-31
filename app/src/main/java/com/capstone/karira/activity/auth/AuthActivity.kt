@@ -40,6 +40,8 @@ class AuthActivity : AppCompatActivity() {
 
     fun removeUserSkill(skill: String) = authViewModel.removeUserSkill(skill)
 
+    fun activateUser() = authViewModel.activateUser()
+
     companion object {
         private const val TAG = "AuthActivity"
     }

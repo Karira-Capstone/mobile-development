@@ -3,8 +3,9 @@ package com.capstone.karira.model
 data class User (
     val token: String,
     val email: String,
-    val role: String,
-    val skills: String
+    val role: String = "",
+    val skills: String = "",
+    val isActivated: Boolean = false
 )
 
 enum class Role {

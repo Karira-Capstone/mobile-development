@@ -64,6 +64,7 @@
                         android:inputType="text"
                         android:padding="12dp"
                         android:singleLine="true"
+                        android:textColor="@color/black"
                         android:textSize="16dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/skill_add"

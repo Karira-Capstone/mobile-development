@@ -1,6 +1,7 @@
 package com.capstone.karira.activity.auth
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -11,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import com.capstone.karira.R
+import com.capstone.karira.activity.layanan.LayananMainActivity
 import com.capstone.karira.databinding.FragmentSelectRoleBinding
 import com.capstone.karira.databinding.FragmentSignInBinding
 import com.capstone.karira.model.Role
@@ -107,7 +109,7 @@ class SignInFragment : Fragment() {
                                 // Send token to your backend via HTTPS
                                 // ...
 
-                                val user = User(idToken.toString(), "", "", "List")
+                                val user = User(idToken.toString(), mUser.email.toString())
                                 authActivity.saveUser(user)
                             } else {
                                 // Handle error -> task.getException();
@@ -127,7 +129,12 @@ class SignInFragment : Fragment() {
     }
 
     private fun updateUI(currentUser: FirebaseUser?, user: User?) {
-        if (currentUser != null && user != null &&  user.role != "") {
+        if (currentUser != null && user != null && user.isActivated) {
+            val i = Intent(requireActivity(), LayananMainActivity::class.java)
+            startActivity(i)
+            requireActivity().finish()
+        }
+        else if (currentUser != null && user != null &&  user.role != "") {
             savedView.findNavController().navigate(R.id.action_signInFragment_to_selectSkillsFragment)
         } else if (currentUser != null) {
             savedView.findNavController().navigate(R.id.action_signInFragment_to_selectRoleFragment)

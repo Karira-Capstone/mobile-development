@@ -21,7 +21,8 @@ class UserPreferences private constructor(private val dataStore: DataStore<Prefe
                 preferences[TOKEN_KEY] ?:"",
                 preferences[EMAIL_KEY] ?:"",
                 preferences[ROLE_KEY] ?: "CLIENT",
-                preferences[SKILLS_KEY] ?: ""
+                preferences[SKILLS_KEY] ?: "",
+                preferences[ISACTIVATED] ?: false
             )
         }
     }
@@ -32,6 +33,7 @@ class UserPreferences private constructor(private val dataStore: DataStore<Prefe
             preferences[EMAIL_KEY] = user.email
             preferences[ROLE_KEY] = user.role
             preferences[SKILLS_KEY] = user.skills
+            preferences[ISACTIVATED] = user.isActivated
         }
     }
 
@@ -41,6 +43,7 @@ class UserPreferences private constructor(private val dataStore: DataStore<Prefe
             preferences.remove(EMAIL_KEY)
             preferences.remove(ROLE_KEY)
             preferences.remove(SKILLS_KEY)
+            preferences.remove(ISACTIVATED)
         }
     }
 
@@ -69,6 +72,12 @@ class UserPreferences private constructor(private val dataStore: DataStore<Prefe
         }
     }
 
+    suspend fun activateUser() {
+        dataStore.edit { preferences ->
+            preferences[ISACTIVATED] = true
+        }
+    }
+
     companion object {
         @Volatile
         private var INSTANCE: UserPreferences? = null
@@ -77,6 +86,7 @@ class UserPreferences private constructor(private val dataStore: DataStore<Prefe
         private val EMAIL_KEY = stringPreferencesKey("email")
         private val ROLE_KEY = stringPreferencesKey("role")
         private val SKILLS_KEY = stringPreferencesKey("skills")
+        private val ISACTIVATED = booleanPreferencesKey("isActivated")
 
         fun getInstance(dataStore: DataStore<Preferences>): UserPreferences {
             return INSTANCE ?: synchronized(this) {

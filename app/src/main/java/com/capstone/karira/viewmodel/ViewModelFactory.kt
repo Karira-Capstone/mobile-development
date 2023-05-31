@@ -5,6 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.capstone.karira.di.Injection
 import com.capstone.karira.viewmodel.auth.AuthViewModel
+import com.capstone.karira.viewmodel.layanan.LayananBuatViewModel
+import com.capstone.karira.viewmodel.layanan.LayananDetailViewModel
+import com.capstone.karira.viewmodel.layanan.LayananKuViewModel
+import com.capstone.karira.viewmodel.layanan.LayananMainViewModel
+import com.capstone.karira.viewmodel.layanan.LayananSearchViewModel
 
 class ViewModelFactory(private val context: Context) : ViewModelProvider.NewInstanceFactory() {
 
@@ -12,6 +17,16 @@ class ViewModelFactory(private val context: Context) : ViewModelProvider.NewInst
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(AuthViewModel::class.java)) {
             return AuthViewModel(Injection.provideAuthRepostory(context)) as T
+        } else if (modelClass.isAssignableFrom(LayananMainViewModel::class.java)){
+            return LayananMainViewModel() as T
+        } else if (modelClass.isAssignableFrom(LayananSearchViewModel::class.java)){
+            return LayananSearchViewModel() as T
+        } else if (modelClass.isAssignableFrom(LayananKuViewModel::class.java)){
+            return LayananKuViewModel() as T
+        } else if (modelClass.isAssignableFrom(LayananBuatViewModel::class.java)){
+            return LayananBuatViewModel() as T
+        } else if (modelClass.isAssignableFrom(LayananDetailViewModel::class.java)){
+            return LayananDetailViewModel() as T
         }
         throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
     }
