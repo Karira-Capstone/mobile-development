@@ -1,40 +1,202 @@
 package com.capstone.karira.activity.layanan
 
+import android.app.ListActivity
+import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
+import androidx.activity.viewModels
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.capstone.karira.R
-import com.capstone.karira.component.xml.fragment.HeadingCardsFragment
-import com.capstone.karira.component.xml.fragment.ListFragment
-import com.capstone.karira.component.xml.fragment.TitleFragment
+import com.capstone.karira.component.compose.HighlightCard
+import com.capstone.karira.component.compose.ItemCard
+import com.capstone.karira.component.compose.LayananCarousel
+import com.capstone.karira.component.compose.TitleSection
 import com.capstone.karira.databinding.ActivityLayananMainBinding
-import com.google.android.material.button.MaterialButton
+import com.capstone.karira.di.Injection
+import com.capstone.karira.model.User
+import com.capstone.karira.viewmodel.ViewModelFactory
+import com.capstone.karira.viewmodel.layanan.LayananMainViewModel
+import com.dicoding.jetreward.ui.common.UiState
 
 class LayananMainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLayananMainBinding
+
+    val layananMainViewModel: LayananMainViewModel by viewModels { ViewModelFactory.getInstance(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLayananMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        handleFragmentContent()
+        handleBinding()
     }
 
-    private fun handleFragmentContent() {
-        val titleFragment = supportFragmentManager.findFragmentById(R.id.fragment_container_top) as TitleFragment
-        val headingCardsFragment = supportFragmentManager.findFragmentById(R.id.fragment_container_center) as HeadingCardsFragment
-        val listFragment = supportFragmentManager.findFragmentById(R.id.fragment_container_bottom) as ListFragment
+    fun handleBinding() {
 
-        val titleBundle = Bundle()
-        val headingCardsBundle = Bundle()
+        binding.mainSection.setContent {
+            LayananMainApp(layananMainViewModel)
+        }
 
-        titleBundle.putString(TitleFragment.TYPE, "LAYANAN MAIN")
-        headingCardsBundle.putString(HeadingCardsFragment.TYPE, "LAYANAN MAIN")
-
-        titleFragment.arguments = titleBundle
-        headingCardsFragment.arguments = headingCardsBundle
     }
 
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun LayananMainApp(layananMainViewModel: LayananMainViewModel) {
+
+    val context = LocalContext.current
+    val user = layananMainViewModel.user.collectAsState(initial = User("", "ssss"))
+
+    layananMainViewModel.uiState
+        .collectAsState(initial = UiState.Loading).value.let { uiState ->
+            when (uiState) {
+                is UiState.Loading -> {
+                    layananMainViewModel.getUser()
+                }
+                is UiState.Success -> {
+                    val data = uiState.data
+                    val listState = rememberLazyListState()
+                    LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
+                        item {
+                            Column(modifier = Modifier) {
+                                Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 64.dp, bottom = 24.dp)) {
+                                    TitleSection(
+                                        title = stringResource(id = R.string.layanan_title, "", ""),
+                                        subtitle = stringResource(
+                                            id = R.string.layanan_titlesub
+                                        )
+                                    )
+                                    Row(
+                                        modifier = Modifier,
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                    ) {
+                                        OutlinedButton(
+                                            onClick = {
+                                                val intent = Intent(context, LayananSearchActivity::class.java)
+                                                context.startActivity(intent)
+                                            },
+                                            shape = RoundedCornerShape(16),
+                                            border = BorderStroke(1.dp, colorResource(R.color.purple_500)),
+                                            colors = ButtonDefaults.buttonColors(
+                                                contentColor = colorResource(R.color.purple_500),
+                                                containerColor = Color.White
+                                            ),
+                                            modifier = Modifier
+                                                .padding(end = 4.dp)
+                                                .fillMaxWidth()
+                                                .weight(1f)
+                                        ) {
+                                            Text(stringResource(id = R.string.layanan_cari_button))
+                                        }
+                                        Button(
+                                            onClick = {
+                                                val intent = Intent(context, LayananKuActivity::class.java)
+                                                context.startActivity(intent)
+                                            },
+                                            shape = RoundedCornerShape(16),
+                                            colors = ButtonDefaults.buttonColors(
+                                                contentColor = Color.White,
+                                                containerColor = colorResource(R.color.purple_500)
+                                            ),
+                                            modifier = Modifier
+                                                .padding(start = 4.dp)
+                                                .fillMaxWidth()
+                                                .weight(1f)
+                                        ) {
+                                            Text(stringResource(id = R.string.layanan_ku_button))
+                                        }
+                                    }
+                                }
+                                Divider(
+                                    color = colorResource(R.color.gray_200),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(1.dp)
+                                )
+                            }
+                        }
+                        item {
+                            Column {
+                                Column(modifier = Modifier.padding(vertical = 16.dp)) {
+                                    Text(text = stringResource(id = R.string.layanan_recommend_title), fontSize = 20.sp, fontWeight = FontWeight.Medium, modifier = Modifier.padding(horizontal = 24.dp))
+                                    HorizontalPager(pageCount = 3, modifier = Modifier) { page ->
+                                        Log.d("TTTTTTTTT", data.toString())
+                                        user.value.let {
+                                            if (data.isNotEmpty()) {
+                                                LayananCarousel(data, it)
+                                            }
+                                        }
+                                    }
+                                }
+                                Divider(
+                                    color = colorResource(R.color.gray_200),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(1.dp)
+                                )
+                            }
+                        }
+                        items(data, key = { it.id }) { service ->
+                            user.value.let {
+                                ItemCard(
+                                    image = service.images,
+                                    title = service.title,
+                                    subtitle = it.email,
+                                    price = service.price,
+                                    onClick = {
+                                        val intent = Intent(context, LayananDetailActivity::class.java)
+                                        context.startActivity(intent)
+                                    })
+                            }
+                        }
+                    }
+                }
+
+                is UiState.Error -> {}
+            }
+        }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun Preview(){
+    val context = LocalContext.current
+    LayananMainApp(layananMainViewModel = LayananMainViewModel(Injection.provideAuthRepostory(context)))
 }

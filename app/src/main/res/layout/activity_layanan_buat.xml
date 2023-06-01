@@ -6,26 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/form_section"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".activity.layanan.LayananBuatActivity">
-
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fragment_container_top"
-            android:name="com.capstone.karira.component.xml.fragment.TitleFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:layout="@layout/fragment_title"/>
-
-        <androidx.compose.ui.platform.ComposeView
-            android:id="@+id/form_section"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/fragment_container_top"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </ScrollView>

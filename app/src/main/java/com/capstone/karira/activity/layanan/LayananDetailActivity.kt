@@ -163,7 +163,7 @@ private fun LayananDetailApp(service: Service, modifier: Modifier = Modifier) {
         ImageCarousel(images)
         Text(
             text = service.description,
-            modifier = modifier.padding(top = 12.dp, bottom = 8.dp)
+            modifier = modifier.padding(top = 12.dp, bottom = 24.dp)
         )
         Row(
             modifier = Modifier,

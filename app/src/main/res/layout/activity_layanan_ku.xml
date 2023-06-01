@@ -1,31 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<androidx.compose.ui.platform.ComposeView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_section"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:context=".activity.layanan.LayananKuActivity">
-
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fragment_container_top"
-            android:name="com.capstone.karira.component.xml.fragment.TitleFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:layout="@layout/fragment_title" />
-
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fragment_container_bottom"
-            android:name="com.capstone.karira.component.xml.fragment.ListFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintTop_toBottomOf="@id/fragment_container_top"
-            tools:layout="@layout/fragment_list"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</ScrollView>
+    android:layout_height="match_parent" />

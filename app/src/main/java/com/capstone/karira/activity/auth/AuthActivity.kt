@@ -4,14 +4,10 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.viewModelScope
-import com.capstone.karira.R
 import com.capstone.karira.databinding.ActivityAuthBinding
 import com.capstone.karira.model.User
 import com.capstone.karira.viewmodel.ViewModelFactory
 import com.capstone.karira.viewmodel.auth.AuthViewModel
-import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.launch
 
 
 class AuthActivity : AppCompatActivity() {

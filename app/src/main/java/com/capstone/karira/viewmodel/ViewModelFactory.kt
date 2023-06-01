@@ -15,19 +15,24 @@ class ViewModelFactory(private val context: Context) : ViewModelProvider.NewInst
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        // Auth
         if (modelClass.isAssignableFrom(AuthViewModel::class.java)) {
             return AuthViewModel(Injection.provideAuthRepostory(context)) as T
-        } else if (modelClass.isAssignableFrom(LayananMainViewModel::class.java)){
-            return LayananMainViewModel() as T
+        }
+
+        // Layanan
+        else if (modelClass.isAssignableFrom(LayananMainViewModel::class.java)){
+            return LayananMainViewModel(Injection.provideAuthRepostory(context)) as T
         } else if (modelClass.isAssignableFrom(LayananSearchViewModel::class.java)){
-            return LayananSearchViewModel() as T
+            return LayananSearchViewModel(Injection.provideAuthRepostory(context)) as T
         } else if (modelClass.isAssignableFrom(LayananKuViewModel::class.java)){
-            return LayananKuViewModel() as T
+            return LayananKuViewModel(Injection.provideAuthRepostory(context)) as T
         } else if (modelClass.isAssignableFrom(LayananBuatViewModel::class.java)){
             return LayananBuatViewModel() as T
         } else if (modelClass.isAssignableFrom(LayananDetailViewModel::class.java)){
             return LayananDetailViewModel() as T
         }
+
         throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
     }
 
