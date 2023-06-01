@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.util.Date
 
 class LayananBuatViewModel(private val repository: AuthRepository): ViewModel() {
 
@@ -22,8 +23,10 @@ class LayananBuatViewModel(private val repository: AuthRepository): ViewModel() 
     val user: Flow<User> get() = repository.getUser()
 
     fun getServiceById(id: String) {
+        val dummy = Service(-1, "", 0, "", "", "", "", false, 0, Date())
         viewModelScope.launch {
-            _uiState.value = UiState.Success(DummyDatas.serviceDatas[0])
+            if (id != "null") _uiState.value = UiState.Success(DummyDatas.serviceDatas[0])
+            else _uiState.value = UiState.Success(dummy)
         }
     }
 

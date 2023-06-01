@@ -19,8 +19,8 @@ import androidx.compose.ui.tooling.preview.Preview
 @Composable
 fun CustomDropdownMenu(
     title: String,
-    text: TextFieldValue,
-    setText: (TextFieldValue) -> Unit,
+    text: String,
+    setText: (String) -> Unit,
 ) {
     val options = listOf("Option 1", "Option 2", "Option 3", "Option 4", "Option 5")
     var expanded by remember { mutableStateOf(false) }
@@ -47,7 +47,7 @@ fun CustomDropdownMenu(
                     text = { Text(selectionOption) },
                     onClick = {
                         selectedOptionText = selectionOption
-                        setText(TextFieldValue(selectionOption))
+                        setText(selectionOption)
                         expanded = false
                     },
                     contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
@@ -61,7 +61,7 @@ fun CustomDropdownMenu(
 @Preview(showBackground = true)
 @Composable
 private fun Preview() {
-    var text by remember { mutableStateOf(TextFieldValue("")) }
+    var text by remember { mutableStateOf("") }
 
     CustomDropdownMenu("Nama", text = text, setText = { newText -> text = newText })
 }

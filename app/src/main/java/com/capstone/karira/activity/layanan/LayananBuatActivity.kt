@@ -107,38 +107,40 @@ class LayananBuatActivity : AppCompatActivity() {
 }
 
 @Composable
-private fun LayananBuatApp(id: String? = null, layananBuatViewModel: LayananBuatViewModel, modifier: Modifier = Modifier) {
-    var titleTextField by remember { mutableStateOf(TextFieldValue("")) }
-    var durationTextField by remember { mutableStateOf(TextFieldValue("")) }
-    var categoryTextField by remember { mutableStateOf(TextFieldValue("")) }
-    var descriptionTextField by remember { mutableStateOf(TextFieldValue("")) }
-    var imagesUri = remember { mutableStateListOf<ImageUrl>() }
+private fun LayananBuatApp(
+    id: String,
+    layananBuatViewModel: LayananBuatViewModel,
+    modifier: Modifier = Modifier
+) {
 
     val context = LocalContext.current as Activity
     val user = layananBuatViewModel.user.collectAsState(initial = User("", "ssss"))
 
-    val launcher = rememberLauncherForActivityResult(
-        contract =
-        ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        if (uri != null) {
-            imagesUri.add(element = ImageUrl(uri))
-        }
-    }
-
-    if (id != null) {
+    if (id != "null") {
         layananBuatViewModel.uiState
             .collectAsState(initial = UiState.Loading).value.let { uiState ->
                 when (uiState) {
                     is UiState.Loading -> {
                         layananBuatViewModel.getServiceById(id)
                     }
+
                     is UiState.Success -> {
                         val service = uiState.data
 
-                        titleTextField = TextFieldValue(service.title)
-                        durationTextField = TextFieldValue(service.max_duration.toString())
-                        descriptionTextField = TextFieldValue(service.description)
+                        var titleField by remember { mutableStateOf(service.title) }
+                        var durationField by remember { mutableStateOf(service.max_duration.toString()) }
+                        var categoryField by remember { mutableStateOf("") }
+                        var descriptionField by remember { mutableStateOf(service.description) }
+                        var imagesUri = remember { mutableStateListOf<ImageUrl>() }
+
+                        val launcher = rememberLauncherForActivityResult(
+                            contract =
+                            ActivityResultContracts.GetContent()
+                        ) { uri: Uri? ->
+                            if (uri != null) {
+                                imagesUri.add(element = ImageUrl(uri))
+                            }
+                        }
 
                         Column(
                             modifier = modifier
@@ -146,27 +148,33 @@ private fun LayananBuatApp(id: String? = null, layananBuatViewModel: LayananBuat
                                 .fillMaxWidth()
                         ) {
                             TitleSection(
-                                title = stringResource(id = R.string.layanan_title, "Buat ", ""),
+                                title = if (id == "null") stringResource(
+                                    id = R.string.layanan_title,
+                                    "Buat ",
+                                    ""
+                                ) else stringResource(id = R.string.layanan_title, "Edit ", ""),
                                 subtitle = stringResource(
                                     id = R.string.layanan_titlesub_buat
                                 )
                             )
                             CustomTextField(
                                 stringResource(id = R.string.layanan_buat_title_formtitle),
-                                text = titleTextField,
-                                setText = { newText -> titleTextField = newText })
+                                text = titleField,
+                                setText = { newText -> titleField = newText })
                             CustomTextField(
                                 stringResource(id = R.string.layanan_buat_duration_formtitle),
-                                text = durationTextField,
-                                setText = { newText -> durationTextField = newText },
+                                text = durationField,
+                                setText = { newText -> durationField = newText },
                                 type = "Number"
                             )
-                //        CustomDropdownMenu(
-                //            stringResource(id = R.string.layanan_buat_category_formtitle),
-                //            text = categoryTextField,
-                //            setText = { newText -> categoryTextField = newText })
+                            //        CustomDropdownMenu(
+                            //            stringResource(id = R.string.layanan_buat_category_formtitle),
+                            //            text = categoryField,
+                            //            setText = { newText -> categoryField = newText })
                             CustomTextField(stringResource(id = R.string.layanan_buat_description_formtitle),
-                                text = descriptionTextField, setText = { newText -> descriptionTextField = newText })
+                                text = descriptionField, setText = { newText ->
+                                    descriptionField = newText
+                                })
                             DashedButton(
                                 text = stringResource(id = R.string.layanan_buat_images_uploadboxtitle),
                                 onClick = { launcher.launch("image/*") }
@@ -187,7 +195,11 @@ private fun LayananBuatApp(id: String? = null, layananBuatViewModel: LayananBuat
                                     .padding(top = 24.dp)
                                     .fillMaxWidth()
                             ) {
-                                Text(stringResource(id = R.string.layanan_buat_button))
+                                Text(
+                                    if (id == "null") stringResource(id = R.string.layanan_buat_button) else stringResource(
+                                        id = R.string.layanan_buat_button_alter
+                                    )
+                                )
                             }
                         }
                     }
@@ -196,6 +208,8 @@ private fun LayananBuatApp(id: String? = null, layananBuatViewModel: LayananBuat
                 }
             }
     }
+
+
 
 }
 

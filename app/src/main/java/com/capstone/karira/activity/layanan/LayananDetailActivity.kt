@@ -2,7 +2,6 @@ package com.capstone.karira.activity.layanan
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.BorderStroke
@@ -17,8 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -228,7 +225,7 @@ private fun LayananDetailApp(id: String, layananDetailViewModel: LayananDetailVi
                             } else {
                                 Button(
                                     onClick = {
-                                        val intent = Intent(context, LayananSearchActivity::class.java)
+                                        val intent = Intent(context, LayananBuatActivity::class.java)
                                         intent.putExtra(LayananBuatActivity.EXTRA_ID, id)
                                         context.startActivity(intent)
                                     },

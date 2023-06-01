@@ -119,7 +119,7 @@ fun LayananMainApp(layananMainViewModel: LayananMainViewModel) {
                                     ) {
                                         OutlinedButton(
                                             onClick = {
-                                                val intent = Intent(context, LayananSearchActivity::class.java)
+                                                val intent = Intent(context, LayananKuActivity::class.java)
                                                 context.startActivity(intent)
                                             },
                                             shape = RoundedCornerShape(16),
@@ -173,6 +173,7 @@ fun LayananMainApp(layananMainViewModel: LayananMainViewModel) {
                                     price = service.price,
                                     onClick = {
                                         val intent = Intent(context, LayananDetailActivity::class.java)
+                                        intent.putExtra(LayananDetailActivity.EXTRA_ID, service.id.toString())
                                         context.startActivity(intent)
                                     })
                             }

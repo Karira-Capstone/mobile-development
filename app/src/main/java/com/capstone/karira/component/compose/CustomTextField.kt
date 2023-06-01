@@ -1,5 +1,6 @@
 package com.capstone.karira.component.compose
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,8 +31,8 @@ import com.capstone.karira.R
 @Composable
 fun CustomTextField(
     title: String,
-    text: TextFieldValue,
-    setText: (TextFieldValue) -> Unit,
+    text: String,
+    setText: (String) -> Unit,
     type: String = "Text",
     icon: Any? = null
 ) {
@@ -62,7 +63,7 @@ fun CustomTextField(
 @Preview(showBackground = true)
 @Composable
 private fun Preview() {
-    var text by remember { mutableStateOf(TextFieldValue("")) }
+    var text by remember { mutableStateOf("") }
 
     CustomTextField("Nama", text = text, setText = { newText -> text = newText })
 }

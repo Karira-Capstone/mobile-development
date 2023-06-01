@@ -39,6 +39,7 @@
     <string name="layanan_detail_outlined_button">Tanya dulu</string>
 
     <string name="layanan_buat_button">Buat layanan</string>
+    <string name="layanan_buat_button_alter">Edit layanan</string>
     <string name="layanan_buat_title_formtitle">Judul</string>
     <string name="layanan_buat_price_formtitle">Harga</string>
     <string name="layanan_buat_duration_formtitle">Durasi (hari)</string>

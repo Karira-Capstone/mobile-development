@@ -179,6 +179,7 @@ fun LayananSearchApp(layananSearchViewModel: LayananSearchViewModel) {
                                     price = service.price,
                                     onClick = {
                                         val intent = Intent(context, LayananDetailActivity::class.java)
+                                        intent.putExtra(LayananDetailActivity.EXTRA_ID, service.id.toString())
                                         context.startActivity(intent)
                                     })
                             }

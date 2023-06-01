@@ -46,6 +46,7 @@ fun LayananCarousel(data: List<Service>, user: User) {
                     price = service.price,
                     onClick = {
                         val intent = Intent(context, LayananDetailActivity::class.java)
+                        intent.putExtra(LayananDetailActivity.EXTRA_ID, service.id.toString())
                         context.startActivity(intent)
                     })
             }

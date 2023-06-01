@@ -49,9 +49,7 @@ import com.dicoding.jetreward.ui.common.UiState
 class LayananKuActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLayananKuBinding
-
     val layananKuViewModel: LayananKuViewModel by viewModels { ViewModelFactory.getInstance(this) }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -142,7 +140,7 @@ fun LayananKuApp(layananKuViewModel: LayananKuViewModel) {
                                     price = service.price,
                                     onClick = {
                                         val intent = Intent(context, LayananDetailActivity::class.java)
-                                        intent.putExtra(LayananDetailActivity.EXTRA_ID, service.id)
+                                        intent.putExtra(LayananDetailActivity.EXTRA_ID, service.id.toString())
                                         context.startActivity(intent)
                                     })
                             }
