@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -36,13 +37,14 @@ fun HighlightCard(image: String, title: String, subtitle: String, price: String,
         .padding(horizontal = 24.dp, vertical = 16.dp)
         .clickable { onClick() }
         .fillMaxWidth()
+//        .fillMaxHeight()
+//        .height(128.dp)
         .clip(RoundedCornerShape(12.dp))) {
         Row(modifier = Modifier
             .fillMaxWidth()
+//            .fillMaxHeight()
             .background(colorResource(id = R.color.purple_500))
             .padding(16.dp)) {
-
-            // Nanti ganti dengan url
             AsyncImage(
                 model = image,
                 contentDescription = null,
@@ -55,6 +57,7 @@ fun HighlightCard(image: String, title: String, subtitle: String, price: String,
             Column(modifier = Modifier
                 .padding(start = 16.dp)
                 .height(72.dp)
+//                .fillMaxHeight()
                 .fillMaxWidth(),
                 verticalArrangement = Arrangement.SpaceBetween) {
                 Column(modifier = Modifier) {

@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import com.capstone.karira.R
 import com.capstone.karira.component.compose.CenterHeadingWithDesc
 import com.capstone.karira.component.compose.ImageCarousel
+import com.capstone.karira.component.compose.ImageCarouselUri
 import com.capstone.karira.databinding.ActivityLayananBuatBinding
 import com.capstone.karira.databinding.ActivityLayananDetailBinding
 import com.capstone.karira.model.Service
@@ -91,9 +92,9 @@ class LayananDetailActivity : ComponentActivity() {
 @Composable
 private fun LayananDetailApp(service: Service, modifier: Modifier = Modifier) {
     val images = listOf(
-        R.drawable.ic_karira_logo_purple,
-        R.drawable.ic_karira_logo_purple,
-        R.drawable.ic_karira_logo_purple
+        "https://wallpaperaccess.com/full/7889539.png",
+        "https://wallpaperaccess.com/full/7889584.jpg",
+        "https://wallpaperaccess.com/full/7889635.jpg"
     )
 
     Column(

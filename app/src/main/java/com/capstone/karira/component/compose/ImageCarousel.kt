@@ -36,7 +36,7 @@ import com.capstone.karira.model.ImageUrl
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ImageCarousel(images: List<Int>) {
+fun ImageCarousel(images: List<String>) {
     val pageCount = images.size
     val pagerState = rememberPagerState()
 
@@ -49,17 +49,15 @@ fun ImageCarousel(images: List<Int>) {
                 shape = RoundedCornerShape(12.dp),
             )
     ) {
-        HorizontalPager(pageCount = pageCount, state = pagerState, modifier = Modifier) {
-            for (image in images) {
-                Image(
-                    painter = painterResource(id = image),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(16f / 9f)
-                )
-            }
+        HorizontalPager(pageCount = pageCount, state = pagerState, modifier = Modifier) { page ->
+            AsyncImage(
+                model = images[page],
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(16f / 9f)
+            )
         }
         Row(
             Modifier
@@ -146,11 +144,11 @@ fun ImageCarouselUri(images: List<ImageUrl>, handleImage: (Int) -> Unit) {
 @Preview(showBackground = true)
 @Composable
 private fun Preview() {
-    ImageCarousel(
-        listOf(
-            R.drawable.ic_karira_logo_purple,
-            R.drawable.ic_karira_logo_purple,
-            R.drawable.ic_karira_logo_purple
-        )
+    val images = listOf(
+        "https://wallpaperaccess.com/full/7889539.png",
+        "https://wallpaperaccess.com/full/7889584.jpg",
+        "https://wallpaperaccess.com/full/7889635.jpg"
     )
+
+    ImageCarousel(images)
 }

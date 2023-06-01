@@ -143,7 +143,10 @@ fun LayananSearchApp(layananSearchViewModel: LayananSearchViewModel) {
                                                 .height(40.dp)
                                                 .weight(1f)
                                         )
-                                        FilledIconButton(onClick = { layananSearchViewModel.search() }, shape = RoundedCornerShape(4.dp), modifier = Modifier
+                                        FilledIconButton(onClick = {
+                                            layananSearchViewModel.search()
+                                            layananSearchViewModel.changeQuery("")
+                                        }, shape = RoundedCornerShape(4.dp), modifier = Modifier
                                             .height(40.dp)
                                             .aspectRatio(1f / 1f)) {
                                             Icon(painter = painterResource(id = R.drawable.ic_search_white), contentDescription = null)
