@@ -56,12 +56,12 @@ fun ItemCard(image: String, title: String, subtitle: String, price: String, onCl
                 .fillMaxWidth(),
                 verticalArrangement = Arrangement.SpaceBetween) {
                 Column(modifier = Modifier) {
-                    Text(text = title, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
-                    Text(text = subtitle, fontSize = 12.sp, color = colorResource(id = R.color.blackAlpha_300))
+                    Text(text = title, fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+                    Text(text = subtitle, fontSize = 14.sp, color = colorResource(id = R.color.blackAlpha_300))
                 }
                 Row(modifier = Modifier) {
                     Image(painterResource(id = R.drawable.ic_money_black), contentDescription = null, modifier = Modifier.size(16.dp))
-                    Text(text = "Rp$price", fontSize = 12.sp, modifier = Modifier.padding(start = 8.dp))
+                    Text(text = "Rp$price", fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
                 }
             }
         }

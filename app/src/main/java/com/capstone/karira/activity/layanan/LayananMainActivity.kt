@@ -96,7 +96,7 @@ fun LayananMainApp(layananMainViewModel: LayananMainViewModel) {
                     LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
                         item {
                             Column(modifier = Modifier) {
-                                Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 64.dp, bottom = 24.dp)) {
+                                Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 48.dp, bottom = 24.dp)) {
                                     TitleSection(
                                         title = stringResource(id = R.string.layanan_title, "", ""),
                                         subtitle = stringResource(
@@ -155,9 +155,8 @@ fun LayananMainApp(layananMainViewModel: LayananMainViewModel) {
                         item {
                             Column {
                                 Column(modifier = Modifier.padding(vertical = 16.dp)) {
-                                    Text(text = stringResource(id = R.string.layanan_recommend_title), fontSize = 20.sp, fontWeight = FontWeight.Medium, modifier = Modifier.padding(horizontal = 24.dp))
+                                    Text(text = stringResource(id = R.string.layanan_recommend_title), fontSize = 20.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(horizontal = 24.dp))
                                     HorizontalPager(pageCount = 3, modifier = Modifier) { page ->
-                                        Log.d("TTTTTTTTT", data.toString())
                                         user.value.let {
                                             if (data.isNotEmpty()) {
                                                 LayananCarousel(data, it)

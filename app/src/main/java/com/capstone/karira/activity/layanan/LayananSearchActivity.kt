@@ -95,7 +95,7 @@ fun LayananSearchApp(layananSearchViewModel: LayananSearchViewModel) {
                     LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
                         item {
                             Column(modifier = Modifier) {
-                                Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 64.dp, bottom = 24.dp)) {
+                                Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 48.dp, bottom = 24.dp)) {
                                     TitleSection(
                                         title = stringResource(id = R.string.layanan_title, "Cari ", ""),
                                         subtitle = stringResource(

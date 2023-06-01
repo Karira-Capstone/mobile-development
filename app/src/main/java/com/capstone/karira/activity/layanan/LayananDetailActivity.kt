@@ -99,7 +99,7 @@ private fun LayananDetailApp(service: Service, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .verticalScroll(rememberScrollState())
-            .padding(start = 24.dp, end = 24.dp, bottom = 48.dp, top = 64.dp)
+            .padding(start = 24.dp, end = 24.dp, bottom = 48.dp, top = 48.dp)
             .fillMaxWidth()
     ) {
         Row(modifier = Modifier) {
