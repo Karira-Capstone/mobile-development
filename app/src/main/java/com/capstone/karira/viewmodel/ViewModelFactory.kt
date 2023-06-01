@@ -28,9 +28,9 @@ class ViewModelFactory(private val context: Context) : ViewModelProvider.NewInst
         } else if (modelClass.isAssignableFrom(LayananKuViewModel::class.java)){
             return LayananKuViewModel(Injection.provideAuthRepostory(context)) as T
         } else if (modelClass.isAssignableFrom(LayananBuatViewModel::class.java)){
-            return LayananBuatViewModel() as T
+            return LayananBuatViewModel(Injection.provideAuthRepostory(context)) as T
         } else if (modelClass.isAssignableFrom(LayananDetailViewModel::class.java)){
-            return LayananDetailViewModel() as T
+            return LayananDetailViewModel(Injection.provideAuthRepostory(context)) as T
         }
 
         throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)

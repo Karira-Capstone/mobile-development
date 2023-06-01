@@ -35,6 +35,7 @@
     <string name="layanan_detail_user">Pengguna</string>
     <string name="layanan_detail_duration">Durasi maksimal</string>
     <string name="layanan_detail_primary_button">Pesan</string>
+    <string name="layanan_detail_primary_button_alter">Edit layanan</string>
     <string name="layanan_detail_outlined_button">Tanya dulu</string>
 
     <string name="layanan_buat_button">Buat layanan</string>

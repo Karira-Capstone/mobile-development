@@ -22,9 +22,11 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Divider
+import androidx.compose.material.Surface
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -46,6 +48,7 @@ import com.capstone.karira.component.compose.TitleSection
 import com.capstone.karira.databinding.ActivityLayananSearchBinding
 import com.capstone.karira.di.Injection
 import com.capstone.karira.model.User
+import com.capstone.karira.ui.theme.KariraTheme
 import com.capstone.karira.viewmodel.ViewModelFactory
 import com.capstone.karira.viewmodel.layanan.LayananKuViewModel
 import com.capstone.karira.viewmodel.layanan.LayananSearchViewModel
@@ -67,14 +70,20 @@ class LayananSearchActivity : AppCompatActivity() {
     fun handleBinding() {
 
         binding.mainSection.setContent {
-            LayananSearchApp(layananSearchViewModel)
+            KariraTheme() {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    LayananSearchApp(layananSearchViewModel)
+                }
+            }
         }
 
     }
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LayananSearchApp(layananSearchViewModel: LayananSearchViewModel) {
 
@@ -95,7 +104,7 @@ fun LayananSearchApp(layananSearchViewModel: LayananSearchViewModel) {
                     LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
                         item {
                             Column(modifier = Modifier) {
-                                Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 48.dp, bottom = 24.dp)) {
+                                Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 48.dp, bottom = 24.dp)) {
                                     TitleSection(
                                         title = stringResource(id = R.string.layanan_title, "Cari ", ""),
                                         subtitle = stringResource(

@@ -19,8 +19,10 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
+import androidx.compose.material.Surface
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,6 +41,7 @@ import com.capstone.karira.component.compose.TitleSection
 import com.capstone.karira.databinding.ActivityLayananKuBinding
 import com.capstone.karira.di.Injection
 import com.capstone.karira.model.User
+import com.capstone.karira.ui.theme.KariraTheme
 import com.capstone.karira.viewmodel.ViewModelFactory
 import com.capstone.karira.viewmodel.layanan.LayananKuViewModel
 import com.dicoding.jetreward.ui.common.UiState
@@ -61,7 +64,14 @@ class LayananKuActivity : AppCompatActivity() {
     fun handleBinding() {
 
         binding.mainSection.setContent {
-            LayananKuApp(layananKuViewModel)
+            KariraTheme() {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    LayananKuApp(layananKuViewModel)
+                }
+            }
         }
 
     }
@@ -86,7 +96,7 @@ fun LayananKuApp(layananKuViewModel: LayananKuViewModel) {
                     LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
                         item {
                             Column(modifier = Modifier) {
-                                Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 48.dp, bottom = 24.dp)) {
+                                Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 48.dp, bottom = 24.dp)) {
                                     TitleSection(
                                         title = stringResource(id = R.string.layanan_title, "", "ku"),
                                         subtitle = stringResource(
@@ -132,6 +142,7 @@ fun LayananKuApp(layananKuViewModel: LayananKuViewModel) {
                                     price = service.price,
                                     onClick = {
                                         val intent = Intent(context, LayananDetailActivity::class.java)
+                                        intent.putExtra(LayananDetailActivity.EXTRA_ID, service.id)
                                         context.startActivity(intent)
                                     })
                             }

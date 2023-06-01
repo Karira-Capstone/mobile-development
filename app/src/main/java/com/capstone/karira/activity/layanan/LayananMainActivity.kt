@@ -24,8 +24,10 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
+import androidx.compose.material.Surface
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -49,6 +51,7 @@ import com.capstone.karira.component.compose.TitleSection
 import com.capstone.karira.databinding.ActivityLayananMainBinding
 import com.capstone.karira.di.Injection
 import com.capstone.karira.model.User
+import com.capstone.karira.ui.theme.KariraTheme
 import com.capstone.karira.viewmodel.ViewModelFactory
 import com.capstone.karira.viewmodel.layanan.LayananMainViewModel
 import com.dicoding.jetreward.ui.common.UiState
@@ -70,7 +73,14 @@ class LayananMainActivity : AppCompatActivity() {
     fun handleBinding() {
 
         binding.mainSection.setContent {
-            LayananMainApp(layananMainViewModel)
+            KariraTheme() {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    LayananMainApp(layananMainViewModel)
+                }
+            }
         }
 
     }
@@ -96,7 +106,7 @@ fun LayananMainApp(layananMainViewModel: LayananMainViewModel) {
                     LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
                         item {
                             Column(modifier = Modifier) {
-                                Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 48.dp, bottom = 24.dp)) {
+                                Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 48.dp, bottom = 24.dp)) {
                                     TitleSection(
                                         title = stringResource(id = R.string.layanan_title, "", ""),
                                         subtitle = stringResource(
@@ -119,28 +129,10 @@ fun LayananMainApp(layananMainViewModel: LayananMainViewModel) {
                                                 containerColor = Color.White
                                             ),
                                             modifier = Modifier
-                                                .padding(end = 4.dp)
+                                                .padding()
                                                 .fillMaxWidth()
-                                                .weight(1f)
                                         ) {
                                             Text(stringResource(id = R.string.layanan_cari_button))
-                                        }
-                                        Button(
-                                            onClick = {
-                                                val intent = Intent(context, LayananKuActivity::class.java)
-                                                context.startActivity(intent)
-                                            },
-                                            shape = RoundedCornerShape(16),
-                                            colors = ButtonDefaults.buttonColors(
-                                                contentColor = Color.White,
-                                                containerColor = colorResource(R.color.purple_500)
-                                            ),
-                                            modifier = Modifier
-                                                .padding(start = 4.dp)
-                                                .fillMaxWidth()
-                                                .weight(1f)
-                                        ) {
-                                            Text(stringResource(id = R.string.layanan_ku_button))
                                         }
                                     }
                                 }
