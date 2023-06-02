@@ -1,8 +1,5 @@
 package com.capstone.karira.component.compose
 
-import android.content.Intent
-import android.os.Bundle
-import android.view.View
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,10 +19,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.navigation.findNavController
-import com.capstone.karira.R
-import com.capstone.karira.activity.layanan.LayananDetailActivity
-import com.capstone.karira.activity.layanan.LayananDetailFragment
 import com.capstone.karira.model.Service
 import com.capstone.karira.model.User
 

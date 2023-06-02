@@ -35,21 +35,6 @@
             android:name=".activity.MockupActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.layanan.LayananBuatFragment"
-            android:exported="false" />
-        <activity
-            android:name=".activity.layanan.LayananDetailActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activity.layanan.LayananKuActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activity.layanan.LayananSearchActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activity.layanan.LayananMainActivity"
-            android:exported="false" />
-        <activity
             android:name=".activity.auth.AuthActivity"
             android:exported="false"
             android:theme="@style/Theme.Material3.DayNight.NoActionBar" />

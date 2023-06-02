@@ -9,16 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import com.capstone.karira.R
 import com.capstone.karira.activity.MockupActivity
-import com.capstone.karira.activity.layanan.LayananMainActivity
-import com.capstone.karira.databinding.FragmentSelectRoleBinding
 import com.capstone.karira.databinding.FragmentSignInBinding
-import com.capstone.karira.model.Role
 import com.capstone.karira.model.User
-import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions

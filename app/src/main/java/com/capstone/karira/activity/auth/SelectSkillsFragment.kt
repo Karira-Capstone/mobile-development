@@ -22,7 +22,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import com.capstone.karira.activity.MockupActivity
-import com.capstone.karira.activity.layanan.LayananMainActivity
 import com.capstone.karira.component.compose.SmallButton
 import com.capstone.karira.databinding.FragmentSelectSkillsBinding
 import com.capstone.karira.ui.theme.KariraTheme
