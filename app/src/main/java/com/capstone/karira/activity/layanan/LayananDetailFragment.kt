@@ -2,8 +2,10 @@ package com.capstone.karira.activity.layanan
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -21,10 +23,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,37 +42,54 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import com.capstone.karira.R
 import com.capstone.karira.component.compose.CenterHeadingWithDesc
 import com.capstone.karira.component.compose.ImageCarousel
-import com.capstone.karira.databinding.ActivityLayananDetailBinding
+import com.capstone.karira.databinding.FragmentLayananBuatBinding
+import com.capstone.karira.databinding.FragmentLayananDetailBinding
 import com.capstone.karira.di.Injection
 import com.capstone.karira.model.User
 import com.capstone.karira.ui.theme.KariraTheme
 import com.capstone.karira.viewmodel.ViewModelFactory
+import com.capstone.karira.viewmodel.layanan.LayananBuatViewModel
 import com.capstone.karira.viewmodel.layanan.LayananDetailViewModel
 import com.dicoding.jetreward.ui.common.UiState
 
-class LayananDetailActivity : AppCompatActivity() {
+class LayananDetailFragment : Fragment() {
 
     private lateinit var id: String
-    private lateinit var binding: ActivityLayananDetailBinding
-    val layananDetailViewModel: LayananDetailViewModel by viewModels { ViewModelFactory.getInstance(this) }
+    private var _binding: FragmentLayananDetailBinding? = null
+    private val binding get() = _binding!!
+    val layananDetailViewModel: LayananDetailViewModel by viewModels { ViewModelFactory.getInstance(requireContext()) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityLayananDetailBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        id = intent.getStringExtra(EXTRA_ID).toString();
-
-        handleBinding()
+        arguments?.let {
+            id = it.getString(LayananBuatFragment.EXTRA_ID).toString()
+        }
     }
 
-    fun handleBinding() {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        _binding = FragmentLayananDetailBinding.inflate(inflater, container, false)
+        val view = binding.root
 
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        handleBinding(view)
+
+    }
+
+    fun handleBinding(view: View) {
 
         binding.pageSection.setContent {
             KariraTheme {
@@ -79,7 +98,7 @@ class LayananDetailActivity : AppCompatActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LayananDetailApp(id, layananDetailViewModel)
+                    LayananDetailApp(id, layananDetailViewModel, view)
                 }
             }
         }
@@ -91,8 +110,9 @@ class LayananDetailActivity : AppCompatActivity() {
 
 }
 
+
 @Composable
-private fun LayananDetailApp(id: String, layananDetailViewModel: LayananDetailViewModel, modifier: Modifier = Modifier) {
+private fun LayananDetailApp(id: String, layananDetailViewModel: LayananDetailViewModel, view: View,  modifier: Modifier = Modifier) {
     val images = listOf(
         "https://wallpaperaccess.com/full/7889539.png",
         "https://wallpaperaccess.com/full/7889584.jpg",
@@ -220,9 +240,9 @@ private fun LayananDetailApp(id: String, layananDetailViewModel: LayananDetailVi
                             } else {
                                 Button(
                                     onClick = {
-                                        val intent = Intent(context, LayananBuatFragment::class.java)
-                                        intent.putExtra(LayananBuatFragment.EXTRA_ID, id)
-                                        context.startActivity(intent)
+                                        val bundle = Bundle()
+                                        bundle.putString(LayananBuatFragment.EXTRA_ID, service.id.toString())
+                                        view.findNavController().navigate(R.id.action_layananDetailFragment_to_layananBuatFragment, bundle)
                                     },
                                     shape = RoundedCornerShape(16),
                                     colors = ButtonDefaults.buttonColors(
@@ -253,6 +273,6 @@ private fun LayananDetailApp(id: String, layananDetailViewModel: LayananDetailVi
 private fun GreetingPreview() {
     val context = LocalContext.current
     KariraTheme {
-        LayananDetailApp("1", LayananDetailViewModel(Injection.provideAuthRepostory(context)))
+        LayananDetailApp("1", LayananDetailViewModel(Injection.provideAuthRepostory(context)), View(context))
     }
 }

@@ -2,8 +2,11 @@ package com.capstone.karira.activity.layanan
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
@@ -35,13 +38,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import com.capstone.karira.R
 import com.capstone.karira.component.compose.ItemCard
 import com.capstone.karira.component.compose.LayananCarousel
 import com.capstone.karira.component.compose.TitleSection
-import com.capstone.karira.databinding.ActivityLayananMainBinding
+import com.capstone.karira.databinding.FragmentLayananKuBinding
+import com.capstone.karira.databinding.FragmentLayananMainBinding
 import com.capstone.karira.di.Injection
 import com.capstone.karira.model.User
 import com.capstone.karira.ui.theme.KariraTheme
@@ -49,20 +53,31 @@ import com.capstone.karira.viewmodel.ViewModelFactory
 import com.capstone.karira.viewmodel.layanan.LayananMainViewModel
 import com.dicoding.jetreward.ui.common.UiState
 
-class LayananMainActivity : AppCompatActivity() {
+class LayananMainFragment : Fragment() {
 
-    private lateinit var binding: ActivityLayananMainBinding
-    val layananMainViewModel: LayananMainViewModel by viewModels { ViewModelFactory.getInstance(this) }
+    private var _binding: FragmentLayananMainBinding? = null
+    private val binding get() = _binding!!
+    val layananMainViewModel: LayananMainViewModel by viewModels { ViewModelFactory.getInstance(requireContext()) }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityLayananMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        _binding = FragmentLayananMainBinding.inflate(inflater, container, false)
+        val view = binding.root
 
-        handleBinding()
+        return view
     }
 
-    fun handleBinding() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        handleBinding(view)
+
+    }
+
+    fun handleBinding(view: View) {
 
         binding.mainSection.setContent {
             KariraTheme() {
@@ -70,7 +85,7 @@ class LayananMainActivity : AppCompatActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LayananMainApp(layananMainViewModel)
+                    LayananMainApp(layananMainViewModel, view)
                 }
             }
         }
@@ -81,7 +96,7 @@ class LayananMainActivity : AppCompatActivity() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun LayananMainApp(layananMainViewModel: LayananMainViewModel) {
+private fun LayananMainApp(layananMainViewModel: LayananMainViewModel, view: View) {
 
     val context = LocalContext.current
     val user = layananMainViewModel.user.collectAsState(initial = User("", "ssss"))
@@ -111,8 +126,7 @@ private fun LayananMainApp(layananMainViewModel: LayananMainViewModel) {
                                     ) {
                                         OutlinedButton(
                                             onClick = {
-                                                val intent = Intent(context, LayananSearchActivity::class.java)
-                                                context.startActivity(intent)
+                                                view.findNavController().navigate(R.id.action_layananMainFragment_to_layananSearchFragment)
                                             },
                                             shape = RoundedCornerShape(16),
                                             border = BorderStroke(1.dp, colorResource(R.color.purple_500)),
@@ -140,11 +154,13 @@ private fun LayananMainApp(layananMainViewModel: LayananMainViewModel) {
                             Column {
                                 Column(modifier = Modifier.padding(vertical = 16.dp)) {
                                     Text(text = stringResource(id = R.string.layanan_recommend_title), fontSize = 20.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(horizontal = 24.dp))
-                                    HorizontalPager(pageCount = 3, modifier = Modifier) { page ->
-                                        user.value.let {
-                                            if (data.isNotEmpty()) {
-//                                                LayananCarousel(data, it)
-                                            }
+                                    user.value.let {
+                                        if (data.isNotEmpty()) {
+                                            LayananCarousel(data.subList(0, 3), it, onClick = { id ->
+                                                val bundle = Bundle()
+                                                bundle.putString(LayananDetailFragment.EXTRA_ID, id)
+                                                view.findNavController().navigate(R.id.action_layananMainFragment_to_layananDetailFragment, bundle)
+                                            })
                                         }
                                     }
                                 }
@@ -164,9 +180,9 @@ private fun LayananMainApp(layananMainViewModel: LayananMainViewModel) {
                                     subtitle = it.email,
                                     price = service.price,
                                     onClick = {
-                                        val intent = Intent(context, LayananDetailActivity::class.java)
-                                        intent.putExtra(LayananDetailActivity.EXTRA_ID, service.id.toString())
-                                        context.startActivity(intent)
+                                        val bundle = Bundle()
+                                        bundle.putString(LayananDetailFragment.EXTRA_ID, service.id.toString())
+                                        view.findNavController().navigate(R.id.action_layananMainFragment_to_layananDetailFragment, bundle)
                                     })
                             }
                         }
@@ -182,5 +198,5 @@ private fun LayananMainApp(layananMainViewModel: LayananMainViewModel) {
 @Composable
 private fun Preview(){
     val context = LocalContext.current
-    LayananMainApp(layananMainViewModel = LayananMainViewModel(Injection.provideAuthRepostory(context)))
+    LayananMainApp(layananMainViewModel = LayananMainViewModel(Injection.provideAuthRepostory(context)), View(context))
 }

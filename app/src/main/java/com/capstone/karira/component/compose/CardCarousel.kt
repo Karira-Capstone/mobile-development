@@ -1,14 +1,13 @@
 package com.capstone.karira.component.compose
 
 import android.content.Intent
+import android.os.Bundle
+import android.view.View
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -23,13 +22,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.navigation.findNavController
+import com.capstone.karira.R
 import com.capstone.karira.activity.layanan.LayananDetailActivity
+import com.capstone.karira.activity.layanan.LayananDetailFragment
 import com.capstone.karira.model.Service
 import com.capstone.karira.model.User
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun LayananCarousel(data: List<Service>, user: User) {
+fun LayananCarousel(data: List<Service>, user: User, onClick: (String) -> Unit) {
     val pageCount = 3
     val pagerState = rememberPagerState()
     val context = LocalContext.current
@@ -38,16 +40,14 @@ fun LayananCarousel(data: List<Service>, user: User) {
         modifier = Modifier
     ) {
         HorizontalPager(pageCount = pageCount, state = pagerState, modifier = Modifier) {
-            for (service in data.subList(0, 3)) {
+            for (service in data) {
                 HighlightCard(
                     image = service.images,
                     title = service.title,
                     subtitle = user.email,
                     price = service.price,
                     onClick = {
-                        val intent = Intent(context, LayananDetailActivity::class.java)
-                        intent.putExtra(LayananDetailActivity.EXTRA_ID, service.id.toString())
-                        context.startActivity(intent)
+                        onClick(service.id.toString())
                     })
             }
         }

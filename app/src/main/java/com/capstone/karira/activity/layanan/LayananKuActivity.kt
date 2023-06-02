@@ -1,11 +1,9 @@
 package com.capstone.karira.activity.layanan
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,14 +14,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Surface
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -34,7 +30,8 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.capstone.karira.R
 import com.capstone.karira.component.compose.ItemCard
 import com.capstone.karira.component.compose.TitleSection
@@ -77,7 +74,7 @@ class LayananKuActivity : AppCompatActivity() {
 }
 
 @Composable
-fun LayananKuApp(layananKuViewModel: LayananKuViewModel) {
+private fun LayananKuApp(layananKuViewModel: LayananKuViewModel) {
 
     val context = LocalContext.current
     val user = layananKuViewModel.user.collectAsState(initial = User("", "ssss"))
@@ -107,7 +104,7 @@ fun LayananKuApp(layananKuViewModel: LayananKuViewModel) {
                                     ) {
                                         Button(
                                             onClick = {
-                                                val intent = Intent(context, LayananBuatActivity::class.java)
+                                                val intent = Intent(context, LayananBuatFragment::class.java)
                                                 context.startActivity(intent)
                                             },
                                             shape = RoundedCornerShape(16),

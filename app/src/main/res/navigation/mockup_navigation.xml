@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mockup_navigation"
+    app:startDestination="@id/layananMainFragment">
+
+    <fragment
+        android:id="@+id/layananMainFragment"
+        android:name="com.capstone.karira.activity.layanan.LayananMainFragment"
+        android:label="LayananMainFragment" >
+        <action
+            android:id="@+id/action_layananMainFragment_to_layananSearchFragment"
+            app:destination="@id/layananSearchFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_layananMainFragment_to_layananDetailFragment"
+            app:destination="@id/layananDetailFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/layananKuFragment"
+        android:name="com.capstone.karira.activity.layanan.LayananKuFragment"
+        android:label="LayananKuFragment" >
+        <action
+            android:id="@+id/action_layananKuFragment_to_layananDetailFragment"
+            app:destination="@id/layananDetailFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_layananKuFragment_to_layananBuatFragment"
+            app:destination="@id/layananBuatFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/layananDetailFragment"
+        android:name="com.capstone.karira.activity.layanan.LayananDetailFragment"
+        android:label="LayananDetailFragment" >
+        <action
+            android:id="@+id/action_layananDetailFragment_to_layananBuatFragment"
+            app:destination="@id/layananBuatFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/layananSearchFragment"
+        android:name="com.capstone.karira.activity.layanan.LayananSearchFragment"
+        android:label="LayananSearchFragment" >
+        <action
+            android:id="@+id/action_layananSearchFragment_to_layananDetailFragment"
+            app:destination="@id/layananDetailFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/layananBuatFragment"
+        android:name="com.capstone.karira.activity.layanan.LayananBuatFragment"
+        android:label="LayananBuatFragment" />
+
+</navigation>

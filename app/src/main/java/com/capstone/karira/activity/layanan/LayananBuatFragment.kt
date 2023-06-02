@@ -3,10 +3,12 @@ package com.capstone.karira.activity.layanan
 import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,14 +33,17 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import com.capstone.karira.R
+import com.capstone.karira.activity.MockupActivity
+import com.capstone.karira.activity.auth.AuthActivity
 import com.capstone.karira.component.compose.CustomTextField
 import com.capstone.karira.component.compose.DashedButton
 import com.capstone.karira.component.compose.ImageCarouselUri
 import com.capstone.karira.component.compose.TitleSection
-import com.capstone.karira.databinding.ActivityLayananBuatBinding
+import com.capstone.karira.databinding.FragmentLayananBuatBinding
+import com.capstone.karira.databinding.FragmentSelectRoleBinding
 import com.capstone.karira.di.Injection
 import com.capstone.karira.model.ImageUrl
 import com.capstone.karira.model.User
@@ -47,23 +52,39 @@ import com.capstone.karira.viewmodel.ViewModelFactory
 import com.capstone.karira.viewmodel.layanan.LayananBuatViewModel
 import com.dicoding.jetreward.ui.common.UiState
 
-class LayananBuatFragmentx : AppCompatActivity() {
+class LayananBuatFragment : Fragment() {
 
     private lateinit var id: String
-    private lateinit var binding: ActivityLayananBuatBinding
-    val layananBuatViewModel: LayananBuatViewModel by viewModels { ViewModelFactory.getInstance(this) }
+    private var _binding: FragmentLayananBuatBinding? = null
+    private val binding get() = _binding!!
+    val layananBuatViewModel: LayananBuatViewModel by viewModels { ViewModelFactory.getInstance(requireContext()) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityLayananBuatBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        id = intent.getStringExtra(EXTRA_ID).toString();
-
-        handleBinding()
+        arguments?.let {
+            id = it.getString(EXTRA_ID).toString()
+        }
     }
 
-    private fun handleBinding() {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        _binding = FragmentLayananBuatBinding.inflate(inflater, container, false)
+        val view = binding.root
+
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        handleBinding(view)
+
+    }
+
+    private fun handleBinding(view: View) {
         binding.formSection.setContent {
             KariraTheme {
                 // A surface container using the 'background' color from the theme
@@ -71,7 +92,7 @@ class LayananBuatFragmentx : AppCompatActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LayananBuatApp(id, layananBuatViewModel)
+                    LayananBuatApp(id, layananBuatViewModel, view)
                 }
             }
         }
@@ -80,13 +101,14 @@ class LayananBuatFragmentx : AppCompatActivity() {
     companion object {
         const val EXTRA_ID = "kinlian"
     }
-
 }
+
 
 @Composable
 private fun LayananBuatApp(
     id: String,
     layananBuatViewModel: LayananBuatViewModel,
+    view: View,
     modifier: Modifier = Modifier
 ) {
 
@@ -148,7 +170,8 @@ private fun LayananBuatApp(
                             //            stringResource(id = R.string.layanan_buat_category_formtitle),
                             //            text = categoryField,
                             //            setText = { newText -> categoryField = newText })
-                            CustomTextField(stringResource(id = R.string.layanan_buat_description_formtitle),
+                            CustomTextField(
+                                stringResource(id = R.string.layanan_buat_description_formtitle),
                                 text = descriptionField, setText = { newText ->
                                     descriptionField = newText
                                 })
@@ -162,7 +185,9 @@ private fun LayananBuatApp(
                                     handleImage = { index -> imagesUri.removeAt(index) })
                             }
                             Button(
-                                onClick = { context.finish() },
+                                onClick = {
+                                    view.findNavController().popBackStack()
+                                },
                                 shape = RoundedCornerShape(6.dp),
                                 colors = ButtonDefaults.buttonColors(
                                     contentColor = Color.White,
@@ -195,7 +220,7 @@ private fun LayananBuatApp(
 private fun GreetingPreview() {
     val context = LocalContext.current
     KariraTheme {
-        LayananBuatApp("1", LayananBuatViewModel(Injection.provideAuthRepostory(context)))
+        LayananBuatApp("1", LayananBuatViewModel(Injection.provideAuthRepostory(context)), View(context))
     }
 }
 

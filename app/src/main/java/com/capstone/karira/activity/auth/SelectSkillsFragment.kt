@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
+import com.capstone.karira.activity.MockupActivity
 import com.capstone.karira.activity.layanan.LayananMainActivity
 import com.capstone.karira.component.compose.SmallButton
 import com.capstone.karira.databinding.FragmentSelectSkillsBinding
@@ -125,7 +126,7 @@ class SelectSkillsFragment : Fragment() {
     }
 
     fun changePage() {
-        val i = Intent(requireActivity(), LayananMainActivity::class.java)
+        val i = Intent(requireActivity(), MockupActivity::class.java)
         startActivity(i)
         requireActivity().finish()
     }

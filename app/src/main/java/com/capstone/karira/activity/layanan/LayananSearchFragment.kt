@@ -2,8 +2,11 @@ package com.capstone.karira.activity.layanan
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -39,12 +42,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import com.capstone.karira.R
 import com.capstone.karira.component.compose.ItemCard
 import com.capstone.karira.component.compose.TitleSection
-import com.capstone.karira.databinding.ActivityLayananSearchBinding
+import com.capstone.karira.databinding.FragmentLayananMainBinding
+import com.capstone.karira.databinding.FragmentLayananSearchBinding
 import com.capstone.karira.di.Injection
 import com.capstone.karira.model.User
 import com.capstone.karira.ui.theme.KariraTheme
@@ -53,20 +57,31 @@ import com.capstone.karira.viewmodel.layanan.LayananKuViewModel
 import com.capstone.karira.viewmodel.layanan.LayananSearchViewModel
 import com.dicoding.jetreward.ui.common.UiState
 
-class LayananSearchActivity : AppCompatActivity() {
+class LayananSearchFragment : Fragment() {
 
-    private lateinit var binding: ActivityLayananSearchBinding
-    val layananSearchViewModel: LayananSearchViewModel by viewModels { ViewModelFactory(this) }
+    private var _binding: FragmentLayananSearchBinding? = null
+    private val binding get() = _binding!!
+    val layananSearchViewModel: LayananSearchViewModel by viewModels { ViewModelFactory(requireContext()) }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityLayananSearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        _binding = FragmentLayananSearchBinding.inflate(inflater, container, false)
+        val view = binding.root
 
-        handleBinding()
+        return view
     }
 
-    fun handleBinding() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        handleBinding(view)
+
+    }
+
+    fun handleBinding(view: View) {
 
         binding.mainSection.setContent {
             KariraTheme() {
@@ -74,17 +89,17 @@ class LayananSearchActivity : AppCompatActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LayananSearchApp(layananSearchViewModel)
+                    LayananSearchApp(layananSearchViewModel, view)
                 }
             }
         }
 
     }
-
 }
 
+
 @Composable
-private fun LayananSearchApp(layananSearchViewModel: LayananSearchViewModel) {
+private fun LayananSearchApp(layananSearchViewModel: LayananSearchViewModel, view: View) {
 
     val context = LocalContext.current
     val query by layananSearchViewModel.query
@@ -177,9 +192,9 @@ private fun LayananSearchApp(layananSearchViewModel: LayananSearchViewModel) {
                                     subtitle = it.email,
                                     price = service.price,
                                     onClick = {
-                                        val intent = Intent(context, LayananDetailActivity::class.java)
-                                        intent.putExtra(LayananDetailActivity.EXTRA_ID, service.id.toString())
-                                        context.startActivity(intent)
+                                        val bundle = Bundle()
+                                        bundle.putString(LayananDetailFragment.EXTRA_ID, service.id.toString())
+                                        view.findNavController().navigate(R.id.action_layananSearchFragment_to_layananDetailFragment, bundle)
                                     })
                             }
                         }
@@ -195,5 +210,5 @@ private fun LayananSearchApp(layananSearchViewModel: LayananSearchViewModel) {
 @Composable
 private fun Preview(){
     val context = LocalContext.current
-    LayananSearchApp(layananSearchViewModel = LayananSearchViewModel(Injection.provideAuthRepostory(context)))
+    LayananSearchApp(layananSearchViewModel = LayananSearchViewModel(Injection.provideAuthRepostory(context)), View(context))
 }

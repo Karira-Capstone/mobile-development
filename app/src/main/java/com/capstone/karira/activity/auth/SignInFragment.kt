@@ -12,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import com.capstone.karira.R
+import com.capstone.karira.activity.MockupActivity
 import com.capstone.karira.activity.layanan.LayananMainActivity
 import com.capstone.karira.databinding.FragmentSelectRoleBinding
 import com.capstone.karira.databinding.FragmentSignInBinding
@@ -130,7 +131,7 @@ class SignInFragment : Fragment() {
 
     private fun updateUI(currentUser: FirebaseUser?, user: User?) {
         if (currentUser != null && user != null && user.isActivated) {
-            val i = Intent(requireActivity(), LayananMainActivity::class.java)
+            val i = Intent(requireActivity(), MockupActivity::class.java)
             startActivity(i)
             requireActivity().finish()
         }
