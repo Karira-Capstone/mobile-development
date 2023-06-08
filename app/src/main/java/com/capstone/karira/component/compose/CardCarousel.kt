@@ -17,17 +17,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.capstone.karira.model.Service
-import com.capstone.karira.model.User
+import com.capstone.karira.model.UserDataStore
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun LayananCarousel(data: List<Service>, user: User, onClick: (String) -> Unit) {
+fun LayananCarousel(data: List<Service>, userDataStore: UserDataStore, onClick: (String) -> Unit) {
     val pageCount = 3
     val pagerState = rememberPagerState()
-    val context = LocalContext.current
 
     Box(
         modifier = Modifier
@@ -35,10 +33,10 @@ fun LayananCarousel(data: List<Service>, user: User, onClick: (String) -> Unit) 
         HorizontalPager(pageCount = pageCount, state = pagerState, modifier = Modifier) {
             for (service in data) {
                 HighlightCard(
-                    image = service.images,
-                    title = service.title,
-                    subtitle = user.email,
-                    price = service.price,
+                    image = service.images?.foto1.toString(),
+                    title = service.title.toString(),
+                    subtitle = service.worker?.user?.fullName.toString(),
+                    price = service.price.toString(),
                     onClick = {
                         onClick(service.id.toString())
                     })

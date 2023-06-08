@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -52,7 +53,7 @@ fun ItemCard(image: String, title: String, subtitle: String, price: String, onCl
             )
             Column(modifier = Modifier
                 .padding(start = 16.dp)
-                .height(84.dp)
+                .defaultMinSize(minHeight = 84.dp)
                 .fillMaxWidth(),
                 verticalArrangement = Arrangement.SpaceBetween) {
                 Column(modifier = Modifier) {

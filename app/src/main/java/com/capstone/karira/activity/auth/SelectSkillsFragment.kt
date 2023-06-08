@@ -3,10 +3,15 @@ package com.capstone.karira.activity.auth
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.text.TextUtils.split
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.ListAdapter
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -21,15 +26,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
+import com.capstone.karira.R
 import com.capstone.karira.activity.MockupActivity
 import com.capstone.karira.component.compose.SmallButton
+import com.capstone.karira.data.local.StaticDatas
 import com.capstone.karira.databinding.FragmentSelectSkillsBinding
+import com.capstone.karira.model.Freelancer
+import com.capstone.karira.model.Skills
+import com.capstone.karira.model.User
+import com.capstone.karira.model.UserDataStore
 import com.capstone.karira.ui.theme.KariraTheme
 import com.dicoding.jetreward.ui.common.UiState
+import kotlinx.coroutines.launch
 
 
 class SelectSkillsFragment : Fragment() {
 
+    private lateinit var userDataStore: UserDataStore
     private var _binding: FragmentSelectSkillsBinding? = null
     private val binding get() = _binding!!
     private lateinit var authActivity: AuthActivity
@@ -78,6 +93,10 @@ class SelectSkillsFragment : Fragment() {
             override fun afterTextChanged(s: Editable) {}
         })
 
+        val skills = StaticDatas.skills.toTypedArray()
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, skills)
+        binding.skillTextview.setAdapter(adapter)
+
         binding.selectedSkills.setContent {
             authActivity.getUiState()
                 .collectAsState(initial = UiState.Loading).value.let { uiState ->
@@ -87,29 +106,34 @@ class SelectSkillsFragment : Fragment() {
                         }
 
                         is UiState.Success -> {
-                            val data = uiState.data
-                            if (data.isActivated) changePage()
-                            else {
-                                val skills: List<String> = data.skills.split(";")
-                                SelectedButtons(skills, authActivity)
+                            val data = uiState.data as UserDataStore
+                            val skills: List<String> = data.skills.split(";").filter { it != "" }.map { StaticDatas.skills[it.toInt()-1] }
+                            SelectedButtons(skills, authActivity)
 
-                                handleButtonEnable(skills)
-                            }
+                            handleButtonEnable(skills)
                         }
 
                         is UiState.Error -> {}
+                        is UiState.Initiate -> {}
                     }
                 }
         }
 
         binding.skillAdd.setOnClickListener {
             val inputText = binding.skillTextview.text.toString()
-            authActivity.addUserSkill(inputText)
+            val id = (StaticDatas.skills.indexOf(inputText)+1).toString()
+            if (id == "0") Toast.makeText(requireContext(), "$inputText tidak valid", Toast.LENGTH_SHORT)
+            else authActivity.addUserSkill(id)
         }
 
         binding.authButton.setOnClickListener {
-            // Backend.......
-            authActivity.activateUser()
+            lifecycleScope.launch {
+                val skills = userDataStore.skills.split(";").filter { it != "" }
+                val skillsObjects = skills.map { Skills(it.toInt()) }
+                authActivity.updateFreelancer(userDataStore.token, Freelancer(skills = ArrayList(skillsObjects)))
+                authActivity.authenticate(userDataStore.firebaseToken)
+                changePage()
+            }
         }
     }
 
@@ -120,7 +144,7 @@ class SelectSkillsFragment : Fragment() {
 
     private fun observeLiveData() {
         authActivity.getUserLiveData().observe(viewLifecycleOwner) { user ->
-            if (user.isActivated) changePage()
+            userDataStore = user
         }
     }
 
@@ -138,7 +162,7 @@ private fun SelectedButtons(skills: List<String>, activity: AuthActivity) {
         Surface(
             color = Color.Transparent
         ) {
-            if (skills.get(0) != "") {
+            if (skills.isNotEmpty()) {
                 FlowRow(
                     modifier = Modifier
                         .padding(top = 24.dp),

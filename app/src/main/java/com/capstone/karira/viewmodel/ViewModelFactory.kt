@@ -10,6 +10,7 @@ import com.capstone.karira.viewmodel.layanan.LayananDetailViewModel
 import com.capstone.karira.viewmodel.layanan.LayananKuViewModel
 import com.capstone.karira.viewmodel.layanan.LayananMainViewModel
 import com.capstone.karira.viewmodel.layanan.LayananSearchViewModel
+import com.capstone.karira.viewmodel.rekomendasi.RekomendasiViewModel
 
 class ViewModelFactory(private val context: Context) : ViewModelProvider.NewInstanceFactory() {
 
@@ -22,15 +23,20 @@ class ViewModelFactory(private val context: Context) : ViewModelProvider.NewInst
 
         // Layanan
         else if (modelClass.isAssignableFrom(LayananMainViewModel::class.java)){
-            return LayananMainViewModel(Injection.provideAuthRepostory(context)) as T
+            return LayananMainViewModel(Injection.provideLayananRepostory(context)) as T
         } else if (modelClass.isAssignableFrom(LayananSearchViewModel::class.java)){
-            return LayananSearchViewModel(Injection.provideAuthRepostory(context)) as T
+            return LayananSearchViewModel(Injection.provideLayananRepostory(context)) as T
         } else if (modelClass.isAssignableFrom(LayananKuViewModel::class.java)){
-            return LayananKuViewModel(Injection.provideAuthRepostory(context)) as T
+            return LayananKuViewModel(Injection.provideLayananRepostory(context)) as T
         } else if (modelClass.isAssignableFrom(LayananBuatViewModel::class.java)){
-            return LayananBuatViewModel(Injection.provideAuthRepostory(context)) as T
+            return LayananBuatViewModel(Injection.provideLayananRepostory(context)) as T
         } else if (modelClass.isAssignableFrom(LayananDetailViewModel::class.java)){
-            return LayananDetailViewModel(Injection.provideAuthRepostory(context)) as T
+            return LayananDetailViewModel(Injection.provideLayananRepostory(context)) as T
+        }
+
+        // Rekomendasi
+        else if (modelClass.isAssignableFrom(RekomendasiViewModel::class.java)){
+            return RekomendasiViewModel(Injection.provideAuthRepostory(context)) as T
         }
 
         throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)

@@ -9,11 +9,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.capstone.karira.R
 import com.capstone.karira.activity.MockupActivity
+import com.capstone.karira.data.local.StaticDatas
+import com.capstone.karira.data.remote.model.response.AuthenticateResponse
 import com.capstone.karira.databinding.FragmentSignInBinding
-import com.capstone.karira.model.User
+import com.capstone.karira.model.UserDataStore
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -23,6 +26,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
 
 class SignInFragment : Fragment() {
 
@@ -72,6 +76,7 @@ class SignInFragment : Fragment() {
         val signInIntent = googleSignInClient.signInIntent
         resultLauncher.launch(signInIntent)
     }
+
     private var resultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -101,12 +106,36 @@ class SignInFragment : Fragment() {
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
                                 val idToken: String? = task.result.token
-                                Log.v("TOKEN", idToken.toString())
                                 // Send token to your backend via HTTPS
                                 // ...
+                                lifecycleScope.launch {
+                                    val response: AuthenticateResponse =
+                                        authActivity.authenticate(idToken as String)
+                                    if (response.user?.role == "WORKER") {
+                                        val userProfile = authActivity.getUserProfile(response.token.toString())
+                                        val userDataStore = UserDataStore(
+                                            firebaseToken = idToken.toString(),
+                                            token = response.token.toString(),
+                                            fullName = response.user?.fullName.toString(),
+                                            id = response.user?.id.toString(),
+                                            role = response.user?.role.toString(),
+                                            skills = userProfile.worker?.skills?.map { StaticDatas.skills.get((it.id as Int)-1) }?.joinToString(separator = ";").toString()
+                                        )
+                                        authActivity.saveUser(userDataStore)
+                                    } else {
+                                        val userDataStore = UserDataStore(
+                                            firebaseToken = idToken.toString(),
+                                            token = response.token.toString(),
+                                            fullName = response.user?.fullName.toString(),
+                                            id = response.user?.id.toString(),
+                                            role = response.user?.role.toString()
+                                        )
+                                        authActivity.saveUser(userDataStore)
+                                    }
 
-                                val user = User(idToken.toString(), mUser.email.toString())
-                                authActivity.saveUser(user)
+
+                                }
+
                             } else {
                                 // Handle error -> task.getException();
                             }
@@ -124,14 +153,14 @@ class SignInFragment : Fragment() {
         _binding = null
     }
 
-    private fun updateUI(currentUser: FirebaseUser?, user: User?) {
-        if (currentUser != null && user != null && user.isActivated) {
+    private fun updateUI(currentUser: FirebaseUser?, userDataStore: UserDataStore?) {
+        if (currentUser != null && userDataStore != null && ((userDataStore.role == "WORKER" && userDataStore.skills != "") || (userDataStore.role != "UNDEFINED" && userDataStore.role != "WORKER"))) {
             val i = Intent(requireActivity(), MockupActivity::class.java)
             startActivity(i)
             requireActivity().finish()
-        }
-        else if (currentUser != null && user != null &&  user.role != "") {
-            savedView.findNavController().navigate(R.id.action_signInFragment_to_selectSkillsFragment)
+        } else if (currentUser != null && userDataStore != null && userDataStore.role == "WORKER" && userDataStore.skills == "") {
+            savedView.findNavController()
+                .navigate(R.id.action_signInFragment_to_selectSkillsFragment)
         } else if (currentUser != null) {
             savedView.findNavController().navigate(R.id.action_signInFragment_to_selectRoleFragment)
         } else {

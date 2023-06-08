@@ -37,7 +37,7 @@ fun CustomTextField(
     icon: Any? = null
 ) {
     Column(modifier = Modifier.padding(vertical = 16.dp)) {
-        Text(text = title, fontSize = 18.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier)
+        Text(text = title, fontSize = 16.sp, fontWeight = FontWeight.Medium, modifier = Modifier)
         OutlinedTextField(
             value = text,
             onValueChange = { newText ->

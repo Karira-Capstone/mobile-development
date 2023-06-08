@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -50,13 +51,13 @@ fun HighlightCard(image: String, title: String, subtitle: String, price: String,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(72.dp)
+                    .size(84.dp)
                     .aspectRatio(1f / 1f)
                     .clip(RoundedCornerShape(8.dp))
             )
             Column(modifier = Modifier
                 .padding(start = 16.dp)
-                .height(72.dp)
+                .defaultMinSize(minHeight = 84.dp)
 //                .fillMaxHeight()
                 .fillMaxWidth(),
                 verticalArrangement = Arrangement.SpaceBetween) {

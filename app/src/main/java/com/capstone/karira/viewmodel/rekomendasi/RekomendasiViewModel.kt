@@ -1,9 +1,8 @@
-package com.capstone.karira.viewmodel.layanan
+package com.capstone.karira.viewmodel.rekomendasi
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.capstone.karira.data.repository.AuthRepository
-import com.capstone.karira.data.repository.LayananRepository
 import com.capstone.karira.model.DummyDatas
 import com.capstone.karira.model.Service
 import com.capstone.karira.model.UserDataStore
@@ -13,7 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class LayananKuViewModel(private val repository: LayananRepository): ViewModel() {
+class RekomendasiViewModel(private val repository: AuthRepository): ViewModel() {
 
     private val _uiState: MutableStateFlow<UiState<List<Service>>> =
         MutableStateFlow(UiState.Loading)
@@ -22,12 +21,9 @@ class LayananKuViewModel(private val repository: LayananRepository): ViewModel()
 
     val userDataStore: Flow<UserDataStore> get() = repository.getUser()
 
-    fun getLayanansByUser() {
+    fun getUser() {
         viewModelScope.launch {
-            userDataStore.collect {
-                val datas = repository.getLayanansByUser(it.id)
-                _uiState.value = UiState.Success(datas)
-            }
+            _uiState.value = UiState.Success(DummyDatas.serviceDatas)
         }
     }
 

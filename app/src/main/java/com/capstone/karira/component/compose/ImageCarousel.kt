@@ -1,5 +1,6 @@
 package com.capstone.karira.component.compose
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -33,12 +34,27 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.capstone.karira.R
 import com.capstone.karira.model.ImageUrl
+import com.capstone.karira.model.Images
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ImageCarousel(images: List<String>) {
-    val pageCount = images.size
+fun ImageCarousel(images: Images) {
+    var pageCount = 0
     val pagerState = rememberPagerState()
+    var imageList = mutableListOf<String>()
+
+    if (images.foto1.toString() != "null") {
+        pageCount++
+        imageList.add(images.foto1.toString())
+    }
+    if (images.foto2.toString() != "null") {
+        pageCount++
+        imageList.add(images.foto2.toString())
+    }
+    if (images.foto3.toString() != "null") {
+        pageCount++
+        imageList.add(images.foto3.toString())
+    }
 
     Box(
         modifier = Modifier
@@ -51,7 +67,7 @@ fun ImageCarousel(images: List<String>) {
     ) {
         HorizontalPager(pageCount = pageCount, state = pagerState, modifier = Modifier) { page ->
             AsyncImage(
-                model = images[page],
+                model = imageList[page],
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -144,7 +160,7 @@ fun ImageCarouselUri(images: List<ImageUrl>, handleImage: (Int) -> Unit) {
 @Preview(showBackground = true)
 @Composable
 private fun Preview() {
-    val images = listOf(
+    val images = Images(
         "https://wallpaperaccess.com/full/7889539.png",
         "https://wallpaperaccess.com/full/7889584.jpg",
         "https://wallpaperaccess.com/full/7889635.jpg"

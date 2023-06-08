@@ -21,24 +21,27 @@ import com.capstone.karira.activity.auth.AuthActivity
 @Composable
 fun SmallButton(
     text: String,
+    isClosable: Boolean = true,
     onClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Button(
         onClick = { onClick(text) },
-        colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+        colors = ButtonDefaults.buttonColors(backgroundColor = if (isClosable) Color.White else Color.Black),
         contentPadding = PaddingValues(8.dp),
         modifier = modifier
             .heightIn(min = 32.dp)
             .defaultMinSize(minHeight = 32.dp)
             .padding(start = 0.dp, end = 10.dp, top = 0.dp, bottom = 0.dp)
     ) {
-        Text(text = text, color = Color.Black)
-        Icon(Icons.Filled.Close,
-            "Close",
-            modifier = Modifier
-                .height(18.dp)
-                .padding(start = 8.dp))
+        Text(text = text, color = if (isClosable) Color.Black else Color.White)
+        if (isClosable) {
+            Icon(Icons.Filled.Close,
+                "Close",
+                modifier = Modifier
+                    .height(18.dp)
+                    .padding(start = 8.dp))
+        }
     }
 }
 

@@ -1,7 +1,7 @@
 package com.capstone.karira.activity.layanan
 
-import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +10,8 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
@@ -18,7 +20,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -33,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -44,16 +46,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
+import coil.compose.AsyncImage
 import com.capstone.karira.R
 import com.capstone.karira.component.compose.CenterHeadingWithDesc
 import com.capstone.karira.component.compose.ImageCarousel
-import com.capstone.karira.databinding.FragmentLayananBuatBinding
+import com.capstone.karira.data.local.StaticDatas
 import com.capstone.karira.databinding.FragmentLayananDetailBinding
 import com.capstone.karira.di.Injection
-import com.capstone.karira.model.User
+import com.capstone.karira.model.Images
+import com.capstone.karira.model.Service
+import com.capstone.karira.model.UserDataStore
 import com.capstone.karira.ui.theme.KariraTheme
 import com.capstone.karira.viewmodel.ViewModelFactory
-import com.capstone.karira.viewmodel.layanan.LayananBuatViewModel
 import com.capstone.karira.viewmodel.layanan.LayananDetailViewModel
 import com.dicoding.jetreward.ui.common.UiState
 
@@ -111,16 +115,12 @@ class LayananDetailFragment : Fragment() {
 }
 
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun LayananDetailApp(id: String, layananDetailViewModel: LayananDetailViewModel, view: View,  modifier: Modifier = Modifier) {
-    val images = listOf(
-        "https://wallpaperaccess.com/full/7889539.png",
-        "https://wallpaperaccess.com/full/7889584.jpg",
-        "https://wallpaperaccess.com/full/7889635.jpg"
-    )
 
     val context = LocalContext.current
-    val user = layananDetailViewModel.user.collectAsState(initial = User("", "ssss"))
+    val userDataStore = layananDetailViewModel.userDataStore.collectAsState(initial = UserDataStore("", "ssss"))
 
     layananDetailViewModel.uiState
         .collectAsState(initial = UiState.Loading).value.let { uiState ->
@@ -129,8 +129,7 @@ private fun LayananDetailApp(id: String, layananDetailViewModel: LayananDetailVi
                     layananDetailViewModel.getServiceById(id)
                 }
                 is UiState.Success -> {
-                    val service = uiState.data
-                    val listState = rememberLazyListState()
+                    val service = uiState.data as Service
                     Column(
                         modifier = modifier
                             .verticalScroll(rememberScrollState())
@@ -138,24 +137,31 @@ private fun LayananDetailApp(id: String, layananDetailViewModel: LayananDetailVi
                             .fillMaxWidth()
                     ) {
                         Row(modifier = Modifier) {
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_karira_logo_purple),
-                                contentDescription = "Karira coy",
+                            AsyncImage(
+                                service.worker?.user?.picture.toString(),
+                                contentDescription = service.worker?.user?.fullName.toString(),
                                 modifier = Modifier
-                                    .width(64.dp)
+                                    .width(72.dp)
                                     .aspectRatio(1f / 1f)
+                                    .clip(RoundedCornerShape(8.dp))
                             )
                             Column(modifier = Modifier.padding(start = 16.dp)) {
                                 Text(
-                                    text = service.title,
+                                    text = service.title.toString(),
                                     modifier = modifier,
-                                    fontSize = 24.sp,
+                                    fontSize = 20.sp,
                                     fontWeight = FontWeight.SemiBold
                                 )
                                 Text(
-                                    text = service.title,
+                                    text = service.categoryId?.let { StaticDatas.categories[it-1] }.toString(),
                                     modifier = modifier,
-                                    fontSize = 14.sp
+                                    fontSize = 16.sp
+                                )
+                                Text(
+                                    text = service.worker?.user?.fullName.toString(),
+                                    modifier = modifier,
+                                    color = colorResource(id = R.color.blackAlpha_300),
+                                    fontSize = 16.sp
                                 )
                             }
                         }
@@ -169,10 +175,8 @@ private fun LayananDetailApp(id: String, layananDetailViewModel: LayananDetailVi
                                 .padding(vertical = 8.dp)
                         ) {
                             CenterHeadingWithDesc(
-                                main = service.price,
-                                subtext = if (service.isNegotiable) stringResource(id = R.string.layanan_detail_isnegotiable) else stringResource(
-                                    id = R.string.layanan_detail_isnotnegotiable
-                                )
+                                main = "Rp${service.price.toString()}",
+                                subtext = stringResource(id = R.string.layanan_buat_price_formtitle)
                             )
                             Divider(
                                 color = colorResource(R.color.gray_200),
@@ -181,7 +185,7 @@ private fun LayananDetailApp(id: String, layananDetailViewModel: LayananDetailVi
                                     .width(1.dp)
                             )
                             CenterHeadingWithDesc(
-                                main = service.usedBy.toString(),
+                                main = service.numOfReviews.toString(),
                                 subtext = stringResource(id = R.string.layanan_detail_user)
                             )
                             Divider(
@@ -191,14 +195,29 @@ private fun LayananDetailApp(id: String, layananDetailViewModel: LayananDetailVi
                                     .width(1.dp)
                             )
                             CenterHeadingWithDesc(
-                                main = service.max_duration.toString(),
+                                main = service.duration.toString(),
                                 subtext = stringResource(id = R.string.layanan_detail_duration)
                             )
                         }
-                        ImageCarousel(images)
+                        if (service.images?.foto1 != null) {
+                            ImageCarousel(service.images as Images)
+                        }
                         Text(
-                            text = service.description,
+                            text = service.description.toString(),
                             modifier = modifier.padding(top = 12.dp, bottom = 24.dp)
+                        )
+                        FlowRow(
+                            modifier = Modifier
+                                .padding(top = 24.dp),
+                            verticalAlignment = Alignment.Top,
+                            horizontalArrangement = Arrangement.Start,
+                            content = {
+//                                for (skill in service.s) {
+//                                    if (skill != "") SmallButton(
+//                                        text = skill,
+//                                        onClick = { })
+//                                }
+                            }
                         )
                         Row(
                             modifier = Modifier,
@@ -207,7 +226,7 @@ private fun LayananDetailApp(id: String, layananDetailViewModel: LayananDetailVi
                             // ---------------------------------------------------------------
                             // ------------------------- GANTI COK ---------------------------
                             // ---------------------------------------------------------------
-                            if (!user.value.isActivated) {
+                            if (userDataStore.value.role == "WORKER" && userDataStore.value.id == service.workerId.toString()) {
                                 Button(
                                     onClick = { /*TODO*/ },
                                     shape = RoundedCornerShape(16),
@@ -237,7 +256,7 @@ private fun LayananDetailApp(id: String, layananDetailViewModel: LayananDetailVi
                                 ) {
                                     Text(stringResource(id = R.string.layanan_detail_outlined_button))
                                 }
-                            } else {
+                            } else if (userDataStore.value.id != service.workerId.toString()) {
                                 Button(
                                     onClick = {
                                         val bundle = Bundle()
@@ -262,9 +281,9 @@ private fun LayananDetailApp(id: String, layananDetailViewModel: LayananDetailVi
                 }
 
                 is UiState.Error -> {}
+                is UiState.Initiate -> {}
             }
         }
-
 
 }
 
@@ -273,6 +292,6 @@ private fun LayananDetailApp(id: String, layananDetailViewModel: LayananDetailVi
 private fun GreetingPreview() {
     val context = LocalContext.current
     KariraTheme {
-        LayananDetailApp("1", LayananDetailViewModel(Injection.provideAuthRepostory(context)), View(context))
+        LayananDetailApp("1", LayananDetailViewModel(Injection.provideLayananRepostory(context)), View(context))
     }
 }
