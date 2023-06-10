@@ -1,9 +1,8 @@
-package com.capstone.karira.activity.layanan
+package com.capstone.karira.activity.proyek
 
 import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,14 +10,23 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
@@ -31,7 +39,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -40,7 +50,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
@@ -51,29 +60,31 @@ import com.capstone.karira.component.compose.ImageCarouselUri
 import com.capstone.karira.component.compose.TitleSection
 import com.capstone.karira.data.local.StaticDatas
 import com.capstone.karira.databinding.FragmentLayananBuatBinding
+import com.capstone.karira.databinding.FragmentProyekBuatBinding
 import com.capstone.karira.di.Injection
 import com.capstone.karira.model.DummyDatas
 import com.capstone.karira.model.ImageUrl
+import com.capstone.karira.model.Project
 import com.capstone.karira.model.Service
 import com.capstone.karira.model.UserDataStore
 import com.capstone.karira.ui.theme.KariraTheme
-import com.capstone.karira.utils.createDotInNumber
+import com.capstone.karira.utils.getFileNameFromUri
 import com.capstone.karira.utils.reduceFileImage
-import com.capstone.karira.utils.removeDotInNumber
 import com.capstone.karira.utils.uriToFile
-import com.capstone.karira.utils.uriToImg
 import com.capstone.karira.viewmodel.ViewModelFactory
 import com.capstone.karira.viewmodel.layanan.LayananBuatViewModel
+import com.capstone.karira.viewmodel.proyek.ProyekBuatViewModel
 import com.dicoding.jetreward.ui.common.UiState
+import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.util.Collections.addAll
 
-class LayananBuatFragment : Fragment() {
+class ProyekBuatFragment : Fragment() {
 
     private lateinit var id: String
-    private var _binding: FragmentLayananBuatBinding? = null
+    private var _binding: FragmentProyekBuatBinding? = null
     private val binding get() = _binding!!
-    val layananBuatViewModel: LayananBuatViewModel by viewModels {
+    val proyekBuatViewModel: ProyekBuatViewModel by viewModels {
         ViewModelFactory.getInstance(
             requireContext()
         )
@@ -91,7 +102,7 @@ class LayananBuatFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        _binding = FragmentLayananBuatBinding.inflate(inflater, container, false)
+        _binding = FragmentProyekBuatBinding.inflate(inflater, container, false)
         val view = binding.root
 
         return view
@@ -112,7 +123,7 @@ class LayananBuatFragment : Fragment() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LayananBuatApp(id, layananBuatViewModel, view)
+                    ProyekBuatApp(id, proyekBuatViewModel, view)
                 }
             }
         }
@@ -127,9 +138,9 @@ class LayananBuatFragment : Fragment() {
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun LayananBuatApp(
+private fun ProyekBuatApp(
     id: String,
-    layananBuatViewModel: LayananBuatViewModel,
+    proyekBuatViewModel: ProyekBuatViewModel,
     view: View,
     modifier: Modifier = Modifier
 ) {
@@ -137,16 +148,16 @@ private fun LayananBuatApp(
     val context = LocalContext.current as Activity
     val coroutineScope = rememberCoroutineScope()
     val userDataStore =
-        layananBuatViewModel.userDataStore.collectAsState(initial = UserDataStore("", "ssss"))
+        proyekBuatViewModel.userDataStore.collectAsState(initial = UserDataStore("", "ssss"))
 
-    layananBuatViewModel.isCreated.collectAsState(initial = UiState.Initiate).value.let { isCreated ->
+    proyekBuatViewModel.isCreated.collectAsState(initial = UiState.Initiate).value.let { isCreated ->
         when (isCreated) {
             is UiState.Success -> {
-                val service = isCreated.data as Service
+                val project = isCreated.data as Project
 
                 var message = "";
-                if (id == "null") message = "Layanan ${service.title.toString()} berhasil dibuat"
-                else message = "Layanan ${service.title.toString()} berhasil diedit"
+                if (id == "null") message = "Proyek ${project.title.toString()} berhasil dibuat"
+                else message = "Proyek ${project.title.toString()} berhasil diedit"
 
                 Toast.makeText(
                     context,
@@ -155,52 +166,36 @@ private fun LayananBuatApp(
                 ).show()
 
                 val bundle = Bundle()
-                bundle.putString(LayananBuatFragment.EXTRA_ID, service.id.toString())
-                view.findNavController().navigate(R.id.action_layananBuatFragment_to_layananDetailFragment, bundle)
+                bundle.putString(ProyekBuatFragment.EXTRA_ID, project.id.toString())
+                view.findNavController().navigate(R.id.action_proyekBuatFragment_to_proyekDetailFragment, bundle)
             }
             else -> {}
         }
     }
 
-    layananBuatViewModel.uiState
+    proyekBuatViewModel.uiState
         .collectAsState(initial = UiState.Loading).value.let { uiState ->
             when (uiState) {
                 is UiState.Loading -> {
-                    layananBuatViewModel.getServiceById(id)
+                    proyekBuatViewModel.getProjectById(id)
                 }
 
                 is UiState.Success -> {
-                    val service = uiState.data as Service
+                    val project = uiState.data as Project
 
-                    var imageList = mutableListOf<ImageUrl>()
-
-                    if (service.images?.foto1.toString() != "null") {
-                        imageList.add(ImageUrl(Uri.parse(service.images?.foto1)))
-                    }
-                    if (service.images?.foto2.toString() != "null") {
-                        imageList.add(ImageUrl(Uri.parse(service.images?.foto2)))
-                    }
-                    if (service.images?.foto3.toString() != "null") {
-                        imageList.add(ImageUrl(Uri.parse(service.images?.foto3)))
-                    }
-
-                    var titleField by remember { mutableStateOf(service.title) }
-                    var descriptionField by remember { mutableStateOf(service.description) }
-                    var imagesUri = remember {
-                        mutableStateListOf<ImageUrl>().apply {
-                            addAll(imageList)
-                        }
-                    }
-                    var filesUri = remember { mutableStateListOf<File?>().apply { addAll(listOf(null, null, null)) } }
+                    var titleField by remember { mutableStateOf(project.title) }
+                    var durationField by remember { mutableStateOf(project.duration.toString()) }
+                    var descriptionField by remember { mutableStateOf(project.description) }
+                    var fileUri by remember { mutableStateOf(project.attachment?.split("/")?.last()) }
+                    var file by remember { mutableStateOf<File?>(null) }
 
                     val launcher = rememberLauncherForActivityResult(
                         contract =
                         ActivityResultContracts.GetContent()
                     ) { uri: Uri? ->
                         if (uri != null) {
-                            imagesUri.add(element = ImageUrl(uri))
-                            val file = reduceFileImage(uriToImg(uri, context))
-                            filesUri[filesUri.lastIndexOf(null)] = file
+                            file = uriToFile(uri, context)
+                            fileUri = uri.toString()
                         }
                     }
 
@@ -210,9 +205,9 @@ private fun LayananBuatApp(
                             .fillMaxWidth()
                     ) {
                         TitleSection(
-                            title = stringResource(id = R.string.layanan_title, "Edit ", ""),
+                            title = stringResource(id = R.string.proyek_title, "Edit ", ""),
                             subtitle = stringResource(
-                                id = R.string.layanan_titlesub_buat
+                                id = R.string.proyek_titlesub_buat
                             )
                         )
                         titleField?.let {
@@ -221,6 +216,12 @@ private fun LayananBuatApp(
                                 text = it,
                                 setText = { newText -> titleField = newText })
                         }
+                        CustomTextField(
+                            stringResource(id = R.string.layanan_buat_duration_formtitle),
+                            text = durationField,
+                            setText = { newText -> durationField = newText },
+                            type = "Number"
+                        )
                         descriptionField?.let {
                             CustomTextField(
                                 stringResource(id = R.string.layanan_buat_description_formtitle),
@@ -228,31 +229,57 @@ private fun LayananBuatApp(
                                     descriptionField = newText
                                 })
                         }
-                        if (imagesUri.size != 3) {
+                        if (fileUri == null && file == null) {
                             DashedButton(
-                                text = stringResource(id = R.string.layanan_buat_images_uploadboxtitle),
-                                onClick = { launcher.launch("image/*") }
+                                text = stringResource(id = R.string.proyek_buat_file_uploadboxtitle),
+                                onClick = { launcher.launch("*/*") }
                             )
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(colorResource(id = R.color.gray_200))
+                            ) {
+                                DashedButton(
+                                    text = if (file != null) getFileNameFromUri(Uri.parse(fileUri), context).toString() else fileUri.toString(),
+                                    asInput = true,
+                                    onClick = { },
+                                )
+                                FilledTonalIconButton(
+                                    onClick = {
+                                        file = null
+                                        fileUri = null
+                                    },
+                                    colors = IconButtonDefaults.iconButtonColors(containerColor = Color.White),
+                                    modifier = Modifier
+                                        .padding(8.dp)
+                                        .align(Alignment.TopEnd)
+                                        .size(32.dp)
+                                ) {
+                                    Icon(Icons.Outlined.Close, contentDescription = "Close", modifier = Modifier.size(24.dp))
+                                }
+                            }
                         }
-                        if (imagesUri.isNotEmpty()) {
-                            ImageCarouselUri(
-                                images = imagesUri,
-                                handleImage = { index ->
-                                    run {
-                                        imagesUri.removeAt(index)
-                                        filesUri[index] = null
-                                    }
-                                })
-                        }
+//                        if (imagesUri.isNotEmpty()) {
+//                            ImageCarouselUri(
+//                                images = imagesUri,
+//                                handleImage = { index ->
+//                                    run {
+//                                        imagesUri.removeAt(index)
+//                                        filesUri[index] = null
+//                                    }
+//                                })
+//                        }
                         // ------------------------------------------- RECCOMENDATION -----------------------------------
-                        layananBuatViewModel.isRecommended.collectAsState(initial = UiState.Initiate).value.let { recommendationState ->
+                        proyekBuatViewModel.isRecommended.collectAsState(initial = UiState.Initiate).value.let { recommendationState ->
                             when (recommendationState) {
                                 is UiState.Success -> {
-                                    val recommendationData = recommendationState.data as Service
+                                    val recommendationData = recommendationState.data as Project
 
-                                    var priceField by remember { mutableStateOf(recommendationData.price.toString()) }
+                                    var lowerBoundField by remember { mutableStateOf(recommendationData.lowerBound.toString()) }
+                                    var upperBoundField by remember { mutableStateOf(recommendationData.upperBound.toString()) }
 
-                                    Column(modifier = Modifier.padding(top = 8.dp)) {
+                                    Column(modifier = Modifier.padding(top = 16.dp)) {
                                         Text(
                                             text = stringResource(id = R.string.layanan_buat_category_formtitle),
                                             fontSize = 16.sp,
@@ -266,12 +293,19 @@ private fun LayananBuatApp(
                                             modifier = Modifier.padding(top = 4.dp)
                                         )
                                     }
-                                    priceField?.let {
+                                    lowerBoundField?.let {
                                         CustomTextField(
-                                            stringResource(id = R.string.layanan_buat_price_formtitle),
-                                            text = createDotInNumber(it),
+                                            stringResource(id = R.string.proyek_buat_lowerbound_formtitle),
+                                            text = it,
                                             type = "Number",
-                                            setText = { newText -> priceField = removeDotInNumber(newText) })
+                                            setText = { newText -> lowerBoundField = newText })
+                                    }
+                                    upperBoundField?.let {
+                                        CustomTextField(
+                                            stringResource(id = R.string.proyek_buat_upperbound_formtitle),
+                                            text = it,
+                                            type = "Number",
+                                            setText = { newText -> upperBoundField = newText })
                                     }
                                     Column() {
                                         Text(
@@ -296,13 +330,13 @@ private fun LayananBuatApp(
 //                                        )
                                     }
                                     OutlinedButton(
-                                        enabled = titleField != "" && descriptionField != "",
                                         onClick = {
                                             // Todo recommendation service
-                                            layananBuatViewModel.findReccomendation(
+                                            proyekBuatViewModel.findReccomendation(
                                                 titleField.toString(),
                                                 descriptionField.toString(),
-                                                service
+                                                durationField,
+                                                project
                                             )
                                         },
                                         shape = RoundedCornerShape(6.dp),
@@ -323,20 +357,21 @@ private fun LayananBuatApp(
                                         )
                                     }
                                     Button(
-                                        enabled = titleField != "" && descriptionField != "" && priceField.isNotEmpty(),
                                         onClick = {
                                             // Todo update service
                                             try {
-                                                 layananBuatViewModel.updateService(
-                                                    service.id.toString(),
+                                                proyekBuatViewModel.updateProject(
+                                                    project.id.toString(),
                                                     userDataStore.value.token,
                                                     titleField.toString(),
+                                                    durationField.toInt(),
                                                     descriptionField.toString(),
-                                                    removeDotInNumber(priceField).toInt(),
+                                                    lowerBoundField.toInt(),
+                                                    upperBoundField.toInt(),
                                                     recommendationData.categoryId as Int,
                                                     recommendationData.skills,
-                                                    imagesUri,
-                                                    filesUri
+                                                    fileUri,
+                                                    file
                                                 )
                                             } catch (e: Exception) {
                                                 Toast.makeText(
@@ -357,7 +392,7 @@ private fun LayananBuatApp(
                                     ) {
                                         Text(
                                             stringResource(
-                                                id = R.string.layanan_buat_button_alter
+                                                id = R.string.proyek_buat_button_alter
                                             )
                                         )
                                     }
@@ -365,13 +400,13 @@ private fun LayananBuatApp(
 
                                 is UiState.Initiate -> {
                                     Button(
-                                        enabled = titleField != "" && descriptionField != "",
                                         onClick = {
                                             // Todo recommendation service
-                                            layananBuatViewModel.findReccomendation(
+                                            proyekBuatViewModel.findReccomendation(
                                                 titleField.toString(),
                                                 descriptionField.toString(),
-                                                service
+                                                durationField,
+                                                project
                                             )
                                         },
                                         shape = RoundedCornerShape(6.dp),
@@ -401,19 +436,18 @@ private fun LayananBuatApp(
                 is UiState.Error -> {}
                 is UiState.Initiate -> {
                     var titleField by remember { mutableStateOf("") }
+                    var durationField by remember { mutableStateOf("") }
                     var descriptionField by remember { mutableStateOf("") }
-                    var priceField by remember { mutableStateOf("") }
-                    var imagesUri = remember { mutableStateListOf<ImageUrl>() }
-                    var filesUri = remember { mutableStateListOf<File>() }
+                    var fileName by remember { mutableStateOf<String?>("") }
+                    var file by remember { mutableStateOf<File?>(null) }
 
                     val launcher = rememberLauncherForActivityResult(
                         contract =
                         ActivityResultContracts.GetContent()
                     ) { uri: Uri? ->
                         if (uri != null) {
-                            imagesUri.add(element = ImageUrl(uri))
-                            val file = reduceFileImage(uriToImg(uri, context))
-                            filesUri.add(file)
+                            file = uriToFile(uri, context)
+                            fileName = getFileNameFromUri(uri, context)
                         }
                     }
 
@@ -424,12 +458,12 @@ private fun LayananBuatApp(
                     ) {
                         TitleSection(
                             title = stringResource(
-                                id = R.string.layanan_title,
+                                id = R.string.proyek_title,
                                 "Buat ",
                                 ""
                             ),
                             subtitle = stringResource(
-                                id = R.string.layanan_titlesub_buat
+                                id = R.string.proyek_titlesub_buat
                             )
                         )
                         titleField?.let {
@@ -438,6 +472,12 @@ private fun LayananBuatApp(
                                 text = it,
                                 setText = { newText -> titleField = newText })
                         }
+                        CustomTextField(
+                            stringResource(id = R.string.layanan_buat_duration_formtitle),
+                            text = durationField,
+                            setText = { newText -> durationField = newText },
+                            type = "Number"
+                        )
                         descriptionField?.let {
                             CustomTextField(
                                 stringResource(id = R.string.layanan_buat_description_formtitle),
@@ -445,30 +485,47 @@ private fun LayananBuatApp(
                                     descriptionField = newText
                                 })
                         }
-                        if (imagesUri.size != 3) {
+                        if (file == null) {
                             DashedButton(
-                                text = stringResource(id = R.string.layanan_buat_images_uploadboxtitle),
-                                onClick = { launcher.launch("image/*") }
+                                text = stringResource(id = R.string.proyek_buat_file_uploadboxtitle),
+                                onClick = { launcher.launch("*/*") }
                             )
-                        }
-                        if (imagesUri.isNotEmpty()) {
-                            ImageCarouselUri(
-                                images = imagesUri,
-                                handleImage = { index ->
-                                    run {
-                                        imagesUri.removeAt(index)
-                                        filesUri.removeAt(index)
+                        } else {
+                           fileName?.let {
+                                Box(
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(12.dp))
+                                        .background(colorResource(id = R.color.gray_200))
+                                ) {
+                                    DashedButton(
+                                        text = it,
+                                        asInput = true,
+                                        onClick = { },
+                                    )
+                                    FilledTonalIconButton(
+                                        onClick = { file = null },
+                                        colors = IconButtonDefaults.iconButtonColors(containerColor = Color.White),
+                                        modifier = Modifier
+                                            .padding(8.dp)
+                                            .align(Alignment.TopEnd)
+                                            .size(32.dp)
+                                    ) {
+                                        Icon(Icons.Outlined.Close, contentDescription = "Close", modifier = Modifier.size(24.dp))
                                     }
-                                })
+                                }
+                            }
                         }
 
                         // ------------------------------------------- RECCOMENDATION -----------------------------------
-                        layananBuatViewModel.isRecommended.collectAsState(initial = UiState.Initiate).value.let { recommendationState ->
+                        proyekBuatViewModel.isRecommended.collectAsState(initial = UiState.Initiate).value.let { recommendationState ->
                             when (recommendationState) {
                                 is UiState.Success -> {
-                                    val recommendationData = recommendationState.data as Service
+                                    val recommendationData = recommendationState.data as Project
 
-                                    Column(modifier = Modifier.padding(top = 8.dp)) {
+                                    var lowerBoundField by remember { mutableStateOf(recommendationData.lowerBound.toString()) }
+                                    var upperBoundField by remember { mutableStateOf(recommendationData.upperBound.toString()) }
+
+                                    Column(modifier = Modifier.padding(top = 16.dp)) {
                                         Text(
                                             text = stringResource(id = R.string.layanan_buat_category_formtitle),
                                             fontSize = 16.sp,
@@ -482,12 +539,19 @@ private fun LayananBuatApp(
                                             modifier = Modifier.padding(top = 4.dp)
                                         )
                                     }
-                                    priceField?.let {
+                                    lowerBoundField?.let {
                                         CustomTextField(
-                                            stringResource(id = R.string.layanan_buat_price_formtitle),
-                                            text = createDotInNumber(it),
+                                            stringResource(id = R.string.proyek_buat_lowerbound_formtitle),
+                                            text = it,
                                             type = "Number",
-                                            setText = { newText -> priceField = removeDotInNumber(newText) })
+                                            setText = { newText -> lowerBoundField = newText })
+                                    }
+                                    upperBoundField?.let {
+                                        CustomTextField(
+                                            stringResource(id = R.string.proyek_buat_upperbound_formtitle),
+                                            text = it,
+                                            type = "Number",
+                                            setText = { newText -> upperBoundField = newText })
                                     }
                                     Column() {
                                         Text(
@@ -512,13 +576,13 @@ private fun LayananBuatApp(
 //                                        )
                                     }
                                     OutlinedButton(
-                                        enabled = titleField != "" && descriptionField != "",
                                         onClick = {
                                             // Todo recommendation service
-                                            layananBuatViewModel.findReccomendation(
+                                            proyekBuatViewModel.findReccomendation(
                                                 titleField,
                                                 descriptionField,
-                                                DummyDatas.serviceDatas[0]
+                                                durationField,
+                                                DummyDatas.projectDatas[0]
                                             )
                                         },
                                         shape = RoundedCornerShape(6.dp),
@@ -539,18 +603,19 @@ private fun LayananBuatApp(
                                         )
                                     }
                                     Button(
-                                        enabled = titleField != "" && descriptionField != "" && priceField.isNotEmpty(),
                                         onClick = {
                                             // Todo create service
                                             try {
-                                                layananBuatViewModel.createService(
+                                                proyekBuatViewModel.createProject(
                                                     userDataStore.value.token,
                                                     titleField,
+                                                    durationField.toInt(),
                                                     descriptionField,
-                                                    removeDotInNumber(priceField).toInt(),
+                                                    lowerBoundField.toInt(),
+                                                    upperBoundField.toInt(),
                                                     recommendationData.categoryId as Int,
                                                     recommendationData.skills,
-                                                    filesUri
+                                                    file
                                                 )
                                             } catch (e: Exception) {
                                                 Toast.makeText(
@@ -572,7 +637,7 @@ private fun LayananBuatApp(
                                     ) {
                                         Text(
                                             stringResource(
-                                                id = R.string.layanan_buat_button
+                                                id = R.string.proyek_buat_button
                                             )
                                         )
                                     }
@@ -580,13 +645,13 @@ private fun LayananBuatApp(
 
                                 is UiState.Initiate -> {
                                     Button(
-                                        enabled = titleField != "" && descriptionField != "",
                                         onClick = {
                                             // Todo recommendation service
-                                            layananBuatViewModel.findReccomendation(
+                                            proyekBuatViewModel.findReccomendation(
                                                 titleField,
                                                 descriptionField,
-                                                DummyDatas.serviceDatas[0]
+                                                durationField,
+                                                DummyDatas.projectDatas[0]
                                             )
                                         },
                                         shape = RoundedCornerShape(6.dp),
@@ -621,9 +686,9 @@ private fun LayananBuatApp(
 private fun GreetingPreview() {
     val context = LocalContext.current
     KariraTheme {
-        LayananBuatApp(
+        ProyekBuatApp(
             "1",
-            LayananBuatViewModel(Injection.provideLayananRepostory(context)),
+            ProyekBuatViewModel(Injection.provideProyekRepostory(context)),
             View(context)
         )
     }

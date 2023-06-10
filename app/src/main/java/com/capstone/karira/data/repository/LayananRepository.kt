@@ -55,7 +55,7 @@ class LayananRepository private constructor(private val pref: UserPreferences, p
             file.name,
             requestImageFile
         )
-        return apiService.uploadPhoto("Bearer $token", imageMultipart)[0]
+        return apiService.uploadFile("Bearer $token", imageMultipart)[0]
     }
 
     companion object {

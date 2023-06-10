@@ -35,7 +35,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.capstone.karira.R
 
 @Composable
-fun ItemCard(image: String, title: String, subtitle: String, price: String, onClick: () -> Unit) {
+fun ItemCard(image: String, title: String, subtitle: String, price: String = "", onClick: () -> Unit) {
     Column(modifier = Modifier
         .clickable { onClick() }
         .fillMaxWidth()) {
@@ -60,7 +60,7 @@ fun ItemCard(image: String, title: String, subtitle: String, price: String, onCl
                     Text(text = title, fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
                     Text(text = subtitle, fontSize = 14.sp, color = colorResource(id = R.color.blackAlpha_300))
                 }
-                Row(modifier = Modifier) {
+                if (price != "") Row(modifier = Modifier) {
                     Image(painterResource(id = R.drawable.ic_money_black), contentDescription = null, modifier = Modifier.size(16.dp))
                     Text(text = "Rp$price", fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
                 }

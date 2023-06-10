@@ -49,7 +49,7 @@ class LayananBuatViewModel(private val repository: LayananRepository) : ViewMode
         }
     }
 
-    fun findReccomendation(title: String, description: String, duration: String, service: Service) {
+    fun findReccomendation(title: String, description: String, service: Service) {
         viewModelScope.launch {
 //            val data = repository.getLayananById(id)
             _isRecommended.value = UiState.Success(service)
@@ -60,7 +60,6 @@ class LayananBuatViewModel(private val repository: LayananRepository) : ViewMode
     fun createService(
         token: String,
         title: String,
-        duration: Int,
         description: String,
         price: Int,
         categoryId: Int,
@@ -89,7 +88,6 @@ class LayananBuatViewModel(private val repository: LayananRepository) : ViewMode
 
                 val newService = Service(
                     title = title,
-                    duration = duration,
                     description = description,
                     price = price,
                     categoryId = categoryId,
@@ -105,7 +103,6 @@ class LayananBuatViewModel(private val repository: LayananRepository) : ViewMode
         id: String,
         token: String,
         title: String,
-        duration: Int,
         description: String,
         price: Int,
         categoryId: Int,
@@ -137,7 +134,6 @@ class LayananBuatViewModel(private val repository: LayananRepository) : ViewMode
 
                 val newService = Service(
                     title = title,
-                    duration = duration,
                     description = description,
                     price = price,
                     category = Category(categoryId),

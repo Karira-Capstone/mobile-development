@@ -3,14 +3,14 @@ package com.capstone.karira.data.local
 object StaticDatas {
     val categories = listOf(
         "3D Design",
-        "Web Design",
-        "Property Design",
         "Game Development",
         "Graphic Design",
-        "Programming",
-        "Others",
-        "Mobile Development",
         "IT Services",
+        "Mobile Development",
+        "Others",
+        "Property Design",
+        "Programming",
+        "UI/UX Design",
         "Web Development"
     )
     val skills = listOf(

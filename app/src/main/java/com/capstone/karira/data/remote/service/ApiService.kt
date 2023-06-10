@@ -6,6 +6,7 @@ import com.capstone.karira.data.remote.model.response.AuthenticateResponse
 import com.capstone.karira.data.remote.model.response.SearchServiceResponse
 import com.capstone.karira.model.Client
 import com.capstone.karira.model.Freelancer
+import com.capstone.karira.model.Project
 import com.capstone.karira.model.Service
 import com.capstone.karira.model.User
 import okhttp3.MultipartBody
@@ -51,11 +52,11 @@ interface ApiService {
         @Body data: Client? = Client(),
     ): Client
 
-    // ------------------------------------------ UPLOAD IMAGE --------------------------------------------------
+    // ------------------------------------------ UPLOAD FILE --------------------------------------------------
 
     @Multipart
     @POST("upload")
-    suspend fun uploadPhoto(
+    suspend fun uploadFile(
         @Header("Authorization") token: String,
         @Part file: MultipartBody.Part,
     ): List<String>
@@ -86,5 +87,28 @@ interface ApiService {
     ): Service
 
     // -------------------------------------------------- PROJECTS ----------------------------------------------
+
+    @GET("projects")
+    suspend fun searchProjects(
+        @Query("q") q: String? = ""
+    ): List<Project>
+
+    @GET("projects/{id}")
+    suspend fun getProject(
+        @Path("id") id: String
+    ): Project
+
+    @POST("projects")
+    suspend fun createProject(
+        @Header("Authorization") token: String,
+        @Body data: Project
+    ): Project
+
+    @PUT("projects/{id}")
+    suspend fun updateProject(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Body data: Project
+    ): Project
 
 }

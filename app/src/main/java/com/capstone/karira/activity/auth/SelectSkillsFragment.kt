@@ -130,8 +130,19 @@ class SelectSkillsFragment : Fragment() {
             lifecycleScope.launch {
                 val skills = userDataStore.skills.split(";").filter { it != "" }
                 val skillsObjects = skills.map { Skills(it.toInt()) }
-                authActivity.updateFreelancer(userDataStore.token, Freelancer(skills = ArrayList(skillsObjects)))
-                authActivity.authenticate(userDataStore.firebaseToken)
+
+                val response = authActivity.updateFreelancer(userDataStore.token, Freelancer(skills = ArrayList(skillsObjects)))
+                val newerUserResponse = authActivity.authenticate(userDataStore.firebaseToken)
+
+                val userDataStore = UserDataStore(
+                    firebaseToken = userDataStore.token,
+                    token = newerUserResponse.token.toString(),
+                    fullName = response.user?.fullName.toString(),
+                    id = response.user?.id.toString(),
+                    role = response.user?.role.toString(),
+                    skills = userDataStore.skills
+                )
+                authActivity.saveUser(userDataStore)
                 changePage()
             }
         }

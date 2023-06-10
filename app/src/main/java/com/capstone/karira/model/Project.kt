@@ -16,6 +16,24 @@ data class Project(
     @SerializedName("client_id"    ) var clientId    : Int?    = null,
     @SerializedName("category_id"  ) var categoryId  : Int?    = null,
     @SerializedName("client"       ) var client      : Client? = null,
-    @SerializedName("category"       ) var category     : Category?    = null
+    @SerializedName("category"     ) var category    : Category?    = null,
+    @SerializedName("skills"       ) val skills      : List<Skills>? = null,
+    @SerializedName("bids"         ) val bids        : List<Bid>? = null
 
 )
+
+data class Bid(
+    @SerializedName("id"            ) var id          : Int?        = null,
+    @SerializedName("price"         ) var price       : Int?        = null,
+    @SerializedName("message"       ) var message     : String?     = null,
+    @SerializedName("selected"      ) var selected    : Boolean?    = null,
+    @SerializedName("created_at"    ) var createdAt   : String?     = null,
+    @SerializedName("worker_id"     ) var workerId    : Int?        = null,
+    @SerializedName("project_id"    ) var projectId   : Int?        = null,
+    @SerializedName("worker"        ) var worker      : Freelancer? = null,
+    @SerializedName("project"       ) var project     : Project?    = null,
+//    @SerializedName("order"         ) val order       : Order? = null
+
+)
+
+

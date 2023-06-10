@@ -18,11 +18,13 @@
 
     <string name="submit_button">Simpan</string>
 
-    <!--  LAYANAN  -->
+    <!-- ===================================================================================== -->
+    <!-- ==================================== LAYANAN ======================================== -->
+    <!-- ===================================================================================== -->
     <string name="layanan_title">%1$sLayanan%2$s</string>
     <string name="layanan_titlesub">Produk dari freelancer yang dibuat untuk kalian</string>
     <string name="layanan_recommend_title">Mungkin kamu suka layanan ini</string>
-    <string name="layanan_titlesub_ku">Gatau teksnya apa tapi intinya sekarang masih lorem ipsum dolor sit amet</string>
+    <string name="layanan_titlesub_ku">Kamu bisa melihat seluruh layanan yang pernah kamu buat disini</string>
     <string name="layanan_titlesub_search">Mungkin kamu bisa menemukan layanan yang paling cocok untukmu disini</string>
     <string name="layanan_titlesub_buat">Ciptakan layanan milikmu untuk pelanggan disini</string>
     <string name="layanan_titlesub_buat_rekomendasi">Kami akan memberikan kategori, rekomendasi harga &amp; tag untuk layananmu</string>
@@ -32,10 +34,8 @@
     <string name="layanan_ku_button">Layananku</string>
     <string name="layanan_main_button_rekomendasi">Rekomendasi</string>
 
-    <string name="layanan_detail_isnegotiable">Dapat dinegosiasi</string>
-    <string name="layanan_detail_isnotnegotiable">Tidak dinegosiasi</string>
     <string name="layanan_detail_user">Pengguna</string>
-    <string name="layanan_detail_duration">Durasi maksimal</string>
+    <string name="layanan_detail_rating">Rating</string>
     <string name="layanan_detail_primary_button">Pesan</string>
     <string name="layanan_detail_primary_button_alter">Edit layanan</string>
     <string name="layanan_detail_outlined_button">Tanya dulu</string>
@@ -53,6 +53,54 @@
 
     <string name="layanan_cari_notfound">Tidak ada layanan yang ditemukan</string>
     <string name="layanan_cari_found">Mencari layanan</string>
+
+    <!-- ===================================================================================== -->
+    <!-- ===================================== PROYEK ======================================== -->
+    <!-- ===================================================================================== -->
+    <string name="proyek_title">%1$sProyek%2$s</string>
+    <string name="proyek_titlesub">Produk dari client yang dibuat untuk kalian</string>
+    <string name="proyek_recommend_title">Mungkin kamu suka proyek ini</string>
+    <string name="proyek_titlesub_ku">Kamu bisa melihat seluruh proyek yang pernah kamu buat disini</string>
+    <string name="proyek_titlesub_search">Mungkin kamu bisa menemukan proyek yang paling cocok untukmu disini</string>
+    <string name="proyek_titlesub_buat">Ciptakan proyek milikmu untuk freelancer disini</string>
+    <string name="proyek_titlesub_buat_rekomendasi">Kami akan memberikan kategori, rekomendasi harga &amp; tag untuk proyekmu</string>
+    <string name="proyek_input_hint">Cari proyek</string>
+
+    <string name="proyek_cari_button">Cari proyek</string>
+    <string name="proyek_ku_button">Proyekku</string>
+    <string name="proyek_main_button_rekomendasi">Rekomendasi</string>
+
+    <string name="proyek_detail_bids">Tawaran</string>
+    <string name="proyek_detail_duration">Durasi</string>
+    <string name="proyek_detail_payment">Bayaran</string>
+    <string name="proyek_detail_primary_button">Tawar</string>
+    <string name="proyek_detail_primary_button_alter">Lihat tawaran</string>
+    <string name="proyek_detail_outlined_button_alter">Edit proyek</string>
+    <string name="proyek_detail_outlined_button">Tanya dulu</string>
+
+    <string name="proyek_buat_button_reccomend">Lihat prediksi harga terbaik</string>
+    <string name="proyek_buat_button">Buat proyek</string>
+    <string name="proyek_buat_button_alter">Edit proyek</string>
+    <string name="proyek_buat_title_formtitle">Judul</string>
+    <string name="proyek_buat_lowerbound_formtitle">Batas bawah harga tawaran (Rupiah)</string>
+    <string name="proyek_buat_upperbound_formtitle">Batas atas harga tawaran (Rupiah)</string>
+    <string name="proyek_buat_duration_formtitle">Durasi (hari)</string>
+    <string name="proyek_buat_category_formtitle">Kategori</string>
+    <string name="proyek_buat_tags_formtitle">Tags</string>
+    <string name="proyek_buat_description_formtitle">Deskripsi</string>
+    <string name="proyek_buat_file_uploadboxtitle">Tambahkan file</string>
+
+    <string name="proyek_cari_notfound">Tidak ada proyek yang ditemukan</string>
+    <string name="proyek_cari_found">Mencari proyek</string>
+
+    <string name="proyek_tawaran_title">Tawaran %1$s</string>
+    <string name="proyek_tawaran_subtitle">Terdapat %1$s tawaran untuk proyek ini</string>
+    <string name="proyek_tawaran_empty">Tidak ada tawaran yang dibuat</string>
+
+    <!-- ===================================================================================== -->
+    <!-- ================================== REKOMENDASI ====================================== -->
+    <!-- ===================================================================================== -->
+    <string name="rekomendasi_title">Kami akan memberikan preferensi %1$s untukmu</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

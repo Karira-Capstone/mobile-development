@@ -1,15 +1,20 @@
 package com.capstone.karira.activity.auth
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.capstone.karira.R
+import com.capstone.karira.activity.MockupActivity
+import com.capstone.karira.data.local.StaticDatas
+import com.capstone.karira.data.remote.model.response.AuthenticateResponse
 import com.capstone.karira.databinding.FragmentSelectRoleBinding
 import com.capstone.karira.model.Client
 import com.capstone.karira.model.Freelancer
@@ -66,7 +71,15 @@ class SelectRoleFragment : Fragment() {
                     } else {
                         val response: Client = authActivity.createClient(userDataStore.token)
                         authActivity.addUserRole("CLIENT")
-                        authActivity.authenticate(userDataStore.firebaseToken)
+                        val newerUserResponse = authActivity.authenticate(userDataStore.firebaseToken)
+                        val userDataStore = UserDataStore(
+                            firebaseToken = userDataStore.token,
+                            token = newerUserResponse.token.toString(),
+                            fullName = response.user?.fullName.toString(),
+                            id = response.user?.id.toString(),
+                            role = response.user?.role.toString()
+                        )
+                        authActivity.saveUser(userDataStore)
                     }
                 } catch (e: Exception) {
                     Toast.makeText(
@@ -92,6 +105,10 @@ class SelectRoleFragment : Fragment() {
             userDataStore = userLiveData
             if (userDataStore.role == "WORKER") {
                 view?.findNavController()?.navigate(R.id.action_selectRoleFragment_to_selectSkillsFragment)
+            } else {
+                val i = Intent(requireActivity(), MockupActivity::class.java)
+                startActivity(i)
+                requireActivity().finish()
             }
         }
     }

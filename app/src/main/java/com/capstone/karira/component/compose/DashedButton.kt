@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -24,7 +25,12 @@ import androidx.compose.ui.unit.dp
 import com.capstone.karira.R
 
 @Composable
-fun DashedButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun DashedButton(
+    text: String,
+    onClick: () -> Unit,
+    asInput: Boolean = false,
+    modifier: Modifier = Modifier
+) {
     Box(
         modifier = modifier
             .padding(vertical = 8.dp)
@@ -34,10 +40,16 @@ fun DashedButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifie
             ),
     ) {
         Button(
+            enabled = !asInput,
             onClick = { onClick() },
             shape = RoundedCornerShape(16.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-            modifier = Modifier
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Transparent,
+                disabledContainerColor = Color.Transparent
+            ),
+            modifier = if (asInput) Modifier
+                .fillMaxWidth()
+                .height(96.dp) else Modifier
                 .drawBehind {
                     drawRoundRect(
                         color = Color.Gray,
@@ -50,7 +62,12 @@ fun DashedButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifie
                 .fillMaxWidth()
                 .height(96.dp)
         ) {
-            Text(text = text, color = colorResource(id = R.color.blackAlpha_300))
+            Text(
+                text = text,
+                color = if (asInput) colorResource(id = R.color.blackAlpha_800) else colorResource(
+                    id = R.color.blackAlpha_300
+                )
+            )
         }
     }
 }

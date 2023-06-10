@@ -505,4 +505,46 @@ object DummyDatas {
             )
         ),
     )
+    val projectDatas = listOf(
+        Project(
+            2,
+            "2023-06-07T16:58:33.718Z",
+            "2023-06-07T16:58:33.718Z",
+            "project 2 approved",
+            "APPROVED",
+            200000,
+            2000000,
+            7,
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+            "attachement.zip",
+            1,
+            2,
+            Client(
+                1,
+                "628567681245",
+                "111111111111",
+                "2023-06-07T16:58:33.590Z",
+                "province1",
+                "city1",
+                "address1",
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+                0,
+                0,
+                "6b12afaa-72be-418c-a265-dcf69c3420cb",
+                User(
+                    "6b12afaa-72be-418c-a265-dcf69c3420cb",
+                    "user3@example.com",
+                    "user3",
+                    "CLIENT",
+                    "example.jpg",
+                    "2023-06-07T16:58:33.591Z",
+                    true,
+                    true,
+                    "2023-06-07T16:58:33.590Z",
+                    null
+                )
+            )
+        )
+
+    )
 }

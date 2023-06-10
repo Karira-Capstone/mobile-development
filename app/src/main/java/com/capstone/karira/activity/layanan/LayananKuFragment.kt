@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,6 +22,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -41,6 +43,7 @@ import com.capstone.karira.di.Injection
 import com.capstone.karira.model.Service
 import com.capstone.karira.model.UserDataStore
 import com.capstone.karira.ui.theme.KariraTheme
+import com.capstone.karira.utils.createDotInNumber
 import com.capstone.karira.viewmodel.ViewModelFactory
 import com.capstone.karira.viewmodel.layanan.LayananKuViewModel
 import com.dicoding.jetreward.ui.common.UiState
@@ -116,16 +119,17 @@ private fun LayananKuApp(layananKuViewModel: LayananKuViewModel, view: View) {
                                         modifier = Modifier,
                                         horizontalArrangement = Arrangement.SpaceBetween,
                                     ) {
-                                        Button(
+                                        OutlinedButton(
                                             onClick = {
                                                 val bundle = Bundle()
                                                 bundle.putString(LayananDetailFragment.EXTRA_ID, "null")
                                                 view.findNavController().navigate(R.id.action_layananKuFragment_to_layananBuatFragment, bundle)
                                             },
                                             shape = RoundedCornerShape(16),
+                                            border = BorderStroke(1.dp, colorResource(R.color.purple_500)),
                                             colors = ButtonDefaults.buttonColors(
-                                                contentColor = Color.White,
-                                                containerColor = colorResource(R.color.purple_500)
+                                                contentColor = colorResource(R.color.purple_500),
+                                                containerColor = Color.White
                                             ),
                                             modifier = Modifier
                                                 .padding(start = 4.dp)
@@ -148,7 +152,7 @@ private fun LayananKuApp(layananKuViewModel: LayananKuViewModel, view: View) {
                                 image = service.worker?.user?.picture.toString(),
                                 title = service.title.toString(),
                                 subtitle = service.worker?.user?.fullName.toString(),
-                                price = service.price.toString(),
+                                price = createDotInNumber(service.price.toString()),
                                 onClick = {
                                     val bundle = Bundle()
                                     bundle.putString(LayananDetailFragment.EXTRA_ID, service.id.toString())

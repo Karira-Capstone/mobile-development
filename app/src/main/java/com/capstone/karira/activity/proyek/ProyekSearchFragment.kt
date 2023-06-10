@@ -1,4 +1,4 @@
-package com.capstone.karira.activity.layanan
+package com.capstone.karira.activity.proyek
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -47,27 +47,30 @@ import com.capstone.karira.R
 import com.capstone.karira.component.compose.ItemCard
 import com.capstone.karira.component.compose.TitleSection
 import com.capstone.karira.databinding.FragmentLayananSearchBinding
+import com.capstone.karira.databinding.FragmentProyekSearchBinding
 import com.capstone.karira.di.Injection
+import com.capstone.karira.model.Project
 import com.capstone.karira.model.Service
 import com.capstone.karira.model.UserDataStore
 import com.capstone.karira.ui.theme.KariraTheme
 import com.capstone.karira.utils.createDotInNumber
 import com.capstone.karira.viewmodel.ViewModelFactory
 import com.capstone.karira.viewmodel.layanan.LayananSearchViewModel
+import com.capstone.karira.viewmodel.proyek.ProyekSearchViewModel
 import com.dicoding.jetreward.ui.common.UiState
 
-class LayananSearchFragment : Fragment() {
+class ProyekSearchFragment : Fragment() {
 
-    private var _binding: FragmentLayananSearchBinding? = null
+    private var _binding: FragmentProyekSearchBinding? = null
     private val binding get() = _binding!!
-    val layananSearchViewModel: LayananSearchViewModel by viewModels { ViewModelFactory(requireContext()) }
+    val proyekSearchViewModel: ProyekSearchViewModel by viewModels { ViewModelFactory(requireContext()) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        _binding = FragmentLayananSearchBinding.inflate(inflater, container, false)
+        _binding = FragmentProyekSearchBinding.inflate(inflater, container, false)
         val view = binding.root
 
         return view
@@ -88,7 +91,7 @@ class LayananSearchFragment : Fragment() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LayananSearchApp(layananSearchViewModel, view)
+                    ProyekSearchApp(proyekSearchViewModel, view)
                 }
             }
         }
@@ -98,22 +101,22 @@ class LayananSearchFragment : Fragment() {
 
 
 @Composable
-private fun LayananSearchApp(layananSearchViewModel: LayananSearchViewModel, view: View) {
+private fun ProyekSearchApp(proyekSearchViewModel: ProyekSearchViewModel, view: View) {
 
     val context = LocalContext.current
-    val query by layananSearchViewModel.query
-    val userDataStore = layananSearchViewModel.userDataStore.collectAsState(initial = UserDataStore("", "ssss"))
+    val query by proyekSearchViewModel.query
+    val userDataStore = proyekSearchViewModel.userDataStore.collectAsState(initial = UserDataStore("", "ssss"))
 
-    layananSearchViewModel.uiState
+    proyekSearchViewModel.uiState
         .collectAsState(initial = UiState.Initiate).value.let { uiState ->
             when (uiState) {
                 is UiState.Initiate -> {
                     Column(modifier = Modifier) {
                         Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 48.dp, bottom = 24.dp)) {
                             TitleSection(
-                                title = stringResource(id = R.string.layanan_title, "Cari ", ""),
+                                title = stringResource(id = R.string.proyek_title, "Cari ", ""),
                                 subtitle = stringResource(
-                                    id = R.string.layanan_titlesub_search
+                                    id = R.string.proyek_titlesub_search
                                 )
                             )
                             Row(
@@ -122,7 +125,7 @@ private fun LayananSearchApp(layananSearchViewModel: LayananSearchViewModel, vie
                             ) {
                                 BasicTextField(
                                     value = query,
-                                    onValueChange = { newText: String -> layananSearchViewModel.changeQuery(newText) },
+                                    onValueChange = { newText: String -> proyekSearchViewModel.changeQuery(newText) },
                                     textStyle = TextStyle(
                                         fontSize = 16.sp,
                                         color = Color.Black
@@ -143,7 +146,7 @@ private fun LayananSearchApp(layananSearchViewModel: LayananSearchViewModel, vie
                                         ) {
                                             if (query.isEmpty()) {
                                                 Text(
-                                                    text = stringResource(id = R.string.layanan_input_hint),
+                                                    text = stringResource(id = R.string.proyek_input_hint),
                                                     fontSize = 16.sp,
                                                     fontWeight = FontWeight.Normal,
                                                     color = colorResource(id = R.color.blackAlpha_300)
@@ -158,8 +161,8 @@ private fun LayananSearchApp(layananSearchViewModel: LayananSearchViewModel, vie
                                         .weight(1f)
                                 )
                                 FilledIconButton(onClick = {
-                                    layananSearchViewModel.search()
-                                    layananSearchViewModel.changeQuery("")
+                                    proyekSearchViewModel.search()
+                                    proyekSearchViewModel.changeQuery("")
                                 }, shape = RoundedCornerShape(4.dp), modifier = Modifier
                                     .height(40.dp)
                                     .aspectRatio(1f / 1f)) {
@@ -179,9 +182,9 @@ private fun LayananSearchApp(layananSearchViewModel: LayananSearchViewModel, vie
                     Column(modifier = Modifier) {
                         Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 48.dp, bottom = 24.dp)) {
                             TitleSection(
-                                title = stringResource(id = R.string.layanan_title, "Cari ", ""),
+                                title = stringResource(id = R.string.proyek_title, "Cari ", ""),
                                 subtitle = stringResource(
-                                    id = R.string.layanan_titlesub_search
+                                    id = R.string.proyek_titlesub_search
                                 )
                             )
                             Row(
@@ -190,7 +193,7 @@ private fun LayananSearchApp(layananSearchViewModel: LayananSearchViewModel, vie
                             ) {
                                 BasicTextField(
                                     value = query,
-                                    onValueChange = { newText: String -> layananSearchViewModel.changeQuery(newText) },
+                                    onValueChange = { newText: String -> proyekSearchViewModel.changeQuery(newText) },
                                     textStyle = TextStyle(
                                         fontSize = 16.sp,
                                         color = Color.Black
@@ -226,8 +229,8 @@ private fun LayananSearchApp(layananSearchViewModel: LayananSearchViewModel, vie
                                         .weight(1f)
                                 )
                                 FilledIconButton(onClick = {
-                                    layananSearchViewModel.search()
-                                    layananSearchViewModel.changeQuery("")
+                                    proyekSearchViewModel.search()
+                                    proyekSearchViewModel.changeQuery("")
                                 }, shape = RoundedCornerShape(4.dp), modifier = Modifier
                                     .height(40.dp)
                                     .aspectRatio(1f / 1f)) {
@@ -244,7 +247,7 @@ private fun LayananSearchApp(layananSearchViewModel: LayananSearchViewModel, vie
                     }
                 }
                 is UiState.Success -> {
-                    val data = uiState.data as List<Service>
+                    val data = uiState.data as List<Project>
                     val listState = rememberLazyListState()
 
                     LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
@@ -252,9 +255,9 @@ private fun LayananSearchApp(layananSearchViewModel: LayananSearchViewModel, vie
                             Column(modifier = Modifier) {
                                 Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 48.dp, bottom = 24.dp)) {
                                     TitleSection(
-                                        title = stringResource(id = R.string.layanan_cari_found),
+                                        title = stringResource(id = R.string.proyek_cari_found),
                                         subtitle = stringResource(
-                                            id = R.string.layanan_titlesub_search
+                                            id = R.string.proyek_titlesub_search
                                         )
                                     )
                                     Row(
@@ -263,7 +266,7 @@ private fun LayananSearchApp(layananSearchViewModel: LayananSearchViewModel, vie
                                     ) {
                                         BasicTextField(
                                             value = query,
-                                            onValueChange = { newText: String -> layananSearchViewModel.changeQuery(newText) },
+                                            onValueChange = { newText: String -> proyekSearchViewModel.changeQuery(newText) },
                                             textStyle = TextStyle(
                                                 fontSize = 16.sp,
                                                 color = Color.Black
@@ -284,7 +287,7 @@ private fun LayananSearchApp(layananSearchViewModel: LayananSearchViewModel, vie
                                                 ) {
                                                     if (query.isEmpty()) {
                                                         Text(
-                                                            text = stringResource(id = R.string.layanan_input_hint),
+                                                            text = stringResource(id = R.string.proyek_input_hint),
                                                             fontSize = 16.sp,
                                                             fontWeight = FontWeight.Normal,
                                                             color = colorResource(id = R.color.blackAlpha_300)
@@ -299,8 +302,8 @@ private fun LayananSearchApp(layananSearchViewModel: LayananSearchViewModel, vie
                                                 .weight(1f)
                                         )
                                         FilledIconButton(onClick = {
-                                            layananSearchViewModel.search()
-                                            layananSearchViewModel.changeQuery("")
+                                            proyekSearchViewModel.search()
+                                            proyekSearchViewModel.changeQuery("")
                                         }, shape = RoundedCornerShape(4.dp), modifier = Modifier
                                             .height(40.dp)
                                             .aspectRatio(1f / 1f)) {
@@ -317,22 +320,22 @@ private fun LayananSearchApp(layananSearchViewModel: LayananSearchViewModel, vie
                             }
                         }
                         if (data.size > 0) {
-                            items(data, key = { it.id.toString() }) { service ->
+                            items(data, key = { it.id.toString() }) { project ->
                                 ItemCard(
-                                    image = service.worker?.user?.picture.toString(),
-                                    title = service.title.toString(),
-                                    subtitle = service.worker?.user?.fullName.toString(),
-                                    price = createDotInNumber(service.price.toString()),
+                                    image = project.client?.user?.picture.toString(),
+                                    title = project.title.toString(),
+                                    subtitle = project.client?.user?.fullName.toString(),
+                                    price = "${createDotInNumber(project.lowerBound.toString())} - Rp${createDotInNumber(project.upperBound.toString())}",
                                     onClick = {
                                         val bundle = Bundle()
-                                        bundle.putString(LayananDetailFragment.EXTRA_ID, service.id.toString())
-                                        view.findNavController().navigate(R.id.action_layananSearchFragment_to_layananDetailFragment, bundle)
+                                        bundle.putString(ProyekDetailFragment.EXTRA_ID, project.id.toString())
+                                        view.findNavController().navigate(R.id.action_proyekSearchFragment_to_proyekDetailFragment, bundle)
                                     })
                             }
                         } else {
                             item {
                                 Text(
-                                    text = stringResource(id = R.string.layanan_cari_notfound),
+                                    text = stringResource(id = R.string.proyek_cari_notfound),
                                     fontSize = 24.sp,
                                     fontWeight = FontWeight.SemiBold,
                                     color = Color.Black,
@@ -354,6 +357,6 @@ private fun LayananSearchApp(layananSearchViewModel: LayananSearchViewModel, vie
 @Composable
 private fun Preview(){
     val context = LocalContext.current
-    LayananSearchApp(layananSearchViewModel = LayananSearchViewModel(Injection.provideLayananRepostory(context)), View(context))
+    ProyekSearchApp(proyekSearchViewModel = ProyekSearchViewModel(Injection.provideProyekRepostory(context)), View(context))
 }
 

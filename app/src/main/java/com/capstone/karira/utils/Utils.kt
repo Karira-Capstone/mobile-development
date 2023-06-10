@@ -1,12 +1,15 @@
 package com.capstone.karira.utils
 
+import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.Context
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Matrix
 import android.net.Uri
 import android.os.Environment
+import android.provider.OpenableColumns
+import android.util.Log
 import androidx.exifinterface.media.ExifInterface
 import com.bumptech.glide.load.resource.bitmap.TransformationUtils.rotateImage
 import java.io.ByteArrayOutputStream
@@ -25,27 +28,6 @@ val timeStamp: String = SimpleDateFormat(
     FILENAME_FORMAT,
     Locale.US
 ).format(System.currentTimeMillis())
-
-//fun rotateFile(file: File, isBackCamera: Boolean = false) {
-//    val matrix = Matrix()
-//    val bitmap = BitmapFactory.decodeFile(file.path)
-//    val rotation = if (isBackCamera) 90f else -90f
-//    matrix.postRotate(rotation)
-//    if (!isBackCamera) {
-//        matrix.postScale(-1f, 1f, bitmap.width / 2f, bitmap.height / 2f)
-//    }
-//    val result = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-//    result.compress(Bitmap.CompressFormat.JPEG, 100, FileOutputStream(file))
-//}
-
-fun rotateImage(source: Bitmap, angle: Float): Bitmap? {
-    val matrix = Matrix()
-    matrix.postRotate(angle)
-    return Bitmap.createBitmap(
-        source, 0, 0, source.width, source.height,
-        matrix, true
-    )
-}
 
 fun reduceFileImage(file: File): File {
     val ei = ExifInterface(file)
@@ -82,11 +64,42 @@ fun createCustomTempImage(context: Context): File {
     return File.createTempFile(timeStamp, ".jpg", storageDir)
 }
 
-fun uriToFile(selectedImg: Uri, context: Context): File {
+fun uriToImg(selectedImg: Uri, context: Context): File {
     val contentResolver: ContentResolver = context.contentResolver
     val myFile = createCustomTempImage(context)
 
     val inputStream = contentResolver.openInputStream(selectedImg) as InputStream
+    val outputStream: OutputStream = FileOutputStream(myFile)
+    val buf = ByteArray(1024)
+    var len: Int
+    while (inputStream.read(buf).also { len = it } > 0) outputStream.write(buf, 0, len)
+    outputStream.close()
+    inputStream.close()
+
+    return myFile
+}
+
+
+@SuppressLint("Range")
+fun getFileNameFromUri(uri: Uri, context: Context): String? {
+    val fileName: String?
+    val cursor = context.contentResolver.query(uri, null, null, null, null)
+    cursor?.moveToFirst()
+    fileName = cursor?.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+    cursor?.close()
+    return fileName
+}
+
+fun createCustomTempFile(suffix: String, context: Context): File {
+    val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+    return File.createTempFile(timeStamp, suffix, storageDir)
+}
+
+fun uriToFile(selectedFile: Uri, context: Context): File {
+    val contentResolver: ContentResolver = context.contentResolver
+    val myFile = createCustomTempFile(getFileNameFromUri(selectedFile, context).toString().takeLast(4), context)
+
+    val inputStream = contentResolver.openInputStream(selectedFile) as InputStream
     val outputStream: OutputStream = FileOutputStream(myFile)
     val buf = ByteArray(1024)
     var len: Int

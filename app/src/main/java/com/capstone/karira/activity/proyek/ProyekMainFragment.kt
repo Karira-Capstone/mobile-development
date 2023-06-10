@@ -1,4 +1,4 @@
-package com.capstone.karira.activity.layanan
+package com.capstone.karira.activity.proyek
 
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -42,22 +43,24 @@ import com.capstone.karira.component.compose.ItemCard
 import com.capstone.karira.component.compose.TitleSection
 import com.capstone.karira.data.local.StaticDatas
 import com.capstone.karira.databinding.FragmentLayananMainBinding
+import com.capstone.karira.databinding.FragmentProyekMainBinding
 import com.capstone.karira.di.Injection
+import com.capstone.karira.model.Project
 import com.capstone.karira.model.Service
 import com.capstone.karira.model.UserDataStore
 import com.capstone.karira.ui.theme.KariraTheme
 import com.capstone.karira.utils.createDotInNumber
 import com.capstone.karira.viewmodel.ViewModelFactory
 import com.capstone.karira.viewmodel.layanan.LayananMainViewModel
+import com.capstone.karira.viewmodel.proyek.ProyekMainViewModel
 import com.dicoding.jetreward.ui.common.UiState
-import kotlin.properties.Delegates
 
-class LayananMainFragment : Fragment() {
+class ProyekMainFragment : Fragment() {
 
     private var id = 8
-    private var _binding: FragmentLayananMainBinding? = null
+    private var _binding: FragmentProyekMainBinding? = null
     private val binding get() = _binding!!
-    val layananMainViewModel: LayananMainViewModel by viewModels { ViewModelFactory.getInstance(requireContext()) }
+    val proyekMainViewModel: ProyekMainViewModel by viewModels { ViewModelFactory.getInstance(requireContext()) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +74,7 @@ class LayananMainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        _binding = FragmentLayananMainBinding.inflate(inflater, container, false)
+        _binding = FragmentProyekMainBinding.inflate(inflater, container, false)
         val view = binding.root
 
         return view
@@ -91,7 +94,7 @@ class LayananMainFragment : Fragment() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LayananMainApp(layananMainViewModel, view, id)
+                    ProyekMainApp(proyekMainViewModel, view, id)
                 }
             }
         }
@@ -106,28 +109,28 @@ class LayananMainFragment : Fragment() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun LayananMainApp(layananMainViewModel: LayananMainViewModel, view: View, id: Int) {
+private fun ProyekMainApp(proyekMainViewModel: ProyekMainViewModel, view: View, id: Int) {
 
     val context = LocalContext.current
-    val userDataStore = layananMainViewModel.userDataStore.collectAsState(initial = UserDataStore("", "ssss"))
+    val userDataStore = proyekMainViewModel.userDataStore.collectAsState(initial = UserDataStore("", "ssss"))
 
-    layananMainViewModel.uiState
+    proyekMainViewModel.uiState
         .collectAsState(initial = UiState.Loading).value.let { uiState ->
             when (uiState) {
                 is UiState.Loading -> {
-                    layananMainViewModel.getLayanansByCategory(id)
+                    proyekMainViewModel.getProjectsByCategory(id)
                 }
                 is UiState.Success -> {
-                    val data = uiState.data as List<Service>
+                    val data = uiState.data as List<Project>
                     val listState = rememberLazyListState()
                     LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
                         item {
                             Column(modifier = Modifier) {
                                 Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 48.dp, bottom = 24.dp)) {
                                     TitleSection(
-                                        title = stringResource(id = R.string.layanan_title, "", " ${StaticDatas.categories[id]}"),
+                                        title = stringResource(id = R.string.proyek_title, "", " ${StaticDatas.categories[id]}"),
                                         subtitle = stringResource(
-                                            id = R.string.layanan_titlesub
+                                            id = R.string.proyek_titlesub
                                         )
                                     )
                                     Row(
@@ -136,7 +139,7 @@ private fun LayananMainApp(layananMainViewModel: LayananMainViewModel, view: Vie
                                     ) {
                                         OutlinedButton(
                                             onClick = {
-                                                view.findNavController().navigate(R.id.action_layananMainFragment_to_layananSearchFragment)
+                                                view.findNavController().navigate(R.id.action_proyekMainFragment_to_proyekSearchFragment)
                                             },
                                             shape = RoundedCornerShape(16),
                                             border = BorderStroke(1.dp, colorResource(R.color.purple_500)),
@@ -145,17 +148,16 @@ private fun LayananMainApp(layananMainViewModel: LayananMainViewModel, view: Vie
                                                 containerColor = Color.White
                                             ),
                                             modifier = Modifier
-                                                .padding(end = if (userDataStore.value.role == "CLIENT") 4.dp else 0.dp)
+                                                .padding(end = if (userDataStore.value.role == "WORKER") 4.dp else 0.dp)
                                                 .fillMaxWidth()
                                                 .weight(1f)
                                         ) {
-                                            Text(stringResource(id = R.string.layanan_cari_button))
+                                            Text(stringResource(id = R.string.proyek_cari_button))
                                         }
-                                        Log.d("LLLLLLLLLLLLLLL", userDataStore.value.toString())
-                                        if (userDataStore.value.role == "CLIENT") {
+                                        if (userDataStore.value.role == "WORKER") {
                                             Button(
                                                 onClick = {
-                                                    view.findNavController().navigate(R.id.action_layananMainFragment_to_rekomendasiFragment)
+                                                    view.findNavController().navigate(R.id.action_proyekMainFragment_to_rekomendasiFragment)
                                                 },
                                                 shape = RoundedCornerShape(16),
                                                 modifier = Modifier
@@ -176,16 +178,16 @@ private fun LayananMainApp(layananMainViewModel: LayananMainViewModel, view: Vie
                                 )
                             }
                         }
-                        items(data, key = { it.id.toString() }) { service ->
+                        items(data, key = { it.id.toString() }) { project ->
                             ItemCard(
-                                image = service.worker?.user?.picture.toString(),
-                                title = service.title.toString(),
-                                subtitle = service.worker?.user?.fullName.toString(),
-                                price = createDotInNumber(service.price.toString()),
+                                image = project.client?.user?.picture.toString(),
+                                title = project.title.toString(),
+                                subtitle = project.client?.user?.fullName.toString(),
+                                price = "${createDotInNumber(project.lowerBound.toString())} - Rp${createDotInNumber(project.upperBound.toString())}",
                                 onClick = {
                                     val bundle = Bundle()
-                                    bundle.putString(LayananDetailFragment.EXTRA_ID, service.id.toString())
-                                    view.findNavController().navigate(R.id.action_layananMainFragment_to_layananDetailFragment, bundle)
+                                    bundle.putString(ProyekDetailFragment.EXTRA_ID, project.id.toString())
+                                    view.findNavController().navigate(R.id.action_proyekMainFragment_to_proyekDetailFragment, bundle)
                                 })
                         }
                     }
@@ -201,5 +203,5 @@ private fun LayananMainApp(layananMainViewModel: LayananMainViewModel, view: Vie
 @Composable
 private fun Preview(){
     val context = LocalContext.current
-    LayananMainApp(layananMainViewModel = LayananMainViewModel(Injection.provideLayananRepostory(context)), View(context), 1)
+    ProyekMainApp(proyekMainViewModel = ProyekMainViewModel(Injection.provideProyekRepostory(context)), View(context), 1)
 }
