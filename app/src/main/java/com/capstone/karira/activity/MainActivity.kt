@@ -18,6 +18,9 @@ class MainActivity : AppCompatActivity() {
 
         replaceFragment(HomeFragment())
 
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_baseline_account_circle)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         binding.bottomNavigationView.setOnItemSelectedListener {
 
             when(it.itemId) {

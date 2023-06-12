@@ -12,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.capstone.karira.R
+import com.capstone.karira.activity.MainActivity
 import com.capstone.karira.activity.MockupActivity
 import com.capstone.karira.data.local.StaticDatas
 import com.capstone.karira.data.remote.model.response.AuthenticateResponse
@@ -155,7 +156,7 @@ class SignInFragment : Fragment() {
 
     private fun updateUI(currentUser: FirebaseUser?, userDataStore: UserDataStore?) {
         if (currentUser != null && userDataStore != null && ((userDataStore.role == "WORKER" && userDataStore.skills != "") || (userDataStore.role != "UNDEFINED" && userDataStore.role != "WORKER"))) {
-            val i = Intent(requireActivity(), MockupActivity::class.java)
+            val i = Intent(requireActivity(), MainActivity::class.java)
             startActivity(i)
             requireActivity().finish()
         } else if (currentUser != null && userDataStore != null && userDataStore.role == "WORKER" && userDataStore.skills == "") {
