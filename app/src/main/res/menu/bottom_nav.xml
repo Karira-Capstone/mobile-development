@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Beranda"
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_baseline_home" />
+    <item android:title="Layananku"
+        android:icon="@drawable/ic_baseline_featured_play_list" />
+    <item android:title="Rekomendasi"
+        android:icon="@drawable/ic_baseline_recommend" />
+    <item android:title="Transaksi"
+        android:icon="@drawable/ic_baseline_shopping_basket" />
+</menu>

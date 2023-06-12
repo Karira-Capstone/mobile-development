@@ -2,11 +2,12 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.KariraApp" parent="Theme.Material3.DayNight">
         <!-- Customize your light theme here. -->
-         <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimary">@color/purple_500</item>
 
         <!--   Status Bar  -->
         <item name="android:statusBarColor">@color/purple_500</item>
         <item name="toolbarStyle">@style/ToolbarStyle</item>
+        <item name="bottomNavigationStyle">@style/BottomNavigationStyle</item>
 
     </style>
 
@@ -17,6 +18,12 @@
         <item name="titleTextColor">@color/white</item>
 <!--        <item name="titleCentered">true</item>-->
         <item name="android:background">@color/purple_500</item>
+    </style>
+
+    <!--   Bottom Navigation   -->
+    <style name="BottomNavigationStyle" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="android:textColor">@color/purple_600</item>
+        <item name="itemIconTint">@color/bottom_nav_item_color</item>
     </style>
 
 </resources>
