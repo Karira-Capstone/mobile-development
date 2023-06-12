@@ -1,17 +1,13 @@
 package com.capstone.karira.activity.auth
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.viewModelScope
-import com.capstone.karira.R
 import com.capstone.karira.databinding.ActivityAuthBinding
-import com.capstone.karira.model.User
+import com.capstone.karira.model.Freelancer
+import com.capstone.karira.model.UserDataStore
 import com.capstone.karira.viewmodel.ViewModelFactory
 import com.capstone.karira.viewmodel.auth.AuthViewModel
-import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.launch
 
 
 class AuthActivity : AppCompatActivity() {
@@ -32,13 +28,25 @@ class AuthActivity : AppCompatActivity() {
 
     fun getUser() = authViewModel.getUser()
 
-    fun saveUser(user: User) = authViewModel.saveUser(user)
+    fun saveUser(userDataStore: UserDataStore) = authViewModel.saveUser(userDataStore)
 
     fun addUserRole(role: String) = authViewModel.addUserRole(role)
 
     fun addUserSkill(skill: String) = authViewModel.addUserSkill(skill)
 
     fun removeUserSkill(skill: String) = authViewModel.removeUserSkill(skill)
+
+    fun activateUser() = authViewModel.activateUser()
+
+    suspend fun authenticate(idToken: String) = authViewModel.authenticate(idToken)
+
+    suspend fun createFreelancer(idToken: String) = authViewModel.createFreelancer(idToken)
+
+    suspend fun createClient(idToken: String) = authViewModel.createClient(idToken)
+
+    suspend fun updateFreelancer(token: String, freelancer: Freelancer) = authViewModel.updateFreelancer(token, freelancer)
+
+    suspend fun getUserProfile(token: String) = authViewModel.getUserProfile(token)
 
     companion object {
         private const val TAG = "AuthActivity"

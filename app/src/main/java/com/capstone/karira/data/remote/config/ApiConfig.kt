@@ -15,7 +15,7 @@ class ApiConfig {
                 .addInterceptor(loggingInterceptor)
                 .build()
             val retrofit = Retrofit.Builder()
-                .baseUrl("https://none")
+                .baseUrl("https://karira.id/api/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build()

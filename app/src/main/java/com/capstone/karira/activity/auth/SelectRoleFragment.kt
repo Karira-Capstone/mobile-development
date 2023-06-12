@@ -1,24 +1,32 @@
 package com.capstone.karira.activity.auth
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.navigation.Navigation
+import androidx.core.content.ContextCompat.startActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.capstone.karira.R
+import com.capstone.karira.activity.MockupActivity
+import com.capstone.karira.data.local.StaticDatas
+import com.capstone.karira.data.remote.model.response.AuthenticateResponse
 import com.capstone.karira.databinding.FragmentSelectRoleBinding
-import com.capstone.karira.model.User
+import com.capstone.karira.model.Client
+import com.capstone.karira.model.Freelancer
+import com.capstone.karira.model.UserDataStore
+import kotlinx.coroutines.launch
 
 class SelectRoleFragment : Fragment() {
 
     private var _binding: FragmentSelectRoleBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var user: User
+    private lateinit var userDataStore: UserDataStore
     private lateinit var authActivity: AuthActivity
 
     override fun onCreateView(
@@ -37,12 +45,12 @@ class SelectRoleFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.clientCard.setOnClickListener {
-            createDialog("Client")
+        binding.freelancerCard.setOnClickListener {
+            createDialog("FREELANCER")
         }
 
-        binding.ownerCard.setOnClickListener {
-            createDialog("Owner")
+        binding.clientCard.setOnClickListener {
+            createDialog("CLIENT")
         }
 
         observeViewModel()
@@ -55,11 +63,31 @@ class SelectRoleFragment : Fragment() {
         builder.setMessage(getString(R.string.selectrole_notes))
 
         builder.setPositiveButton("Simpan") { _, _ ->
-            if (type == "Client") {
-//                view?.findNavController()?.navigate(R.id.action_selectRoleFragment_to_selectSkillsFragment)
-                authActivity.addUserRole("Client")
-            } else {
-                authActivity.addUserRole("Client")
+            lifecycleScope.launch {
+                try {
+                    if (type == "FREELANCER") {
+                        val response: Freelancer = authActivity.createFreelancer(userDataStore.token)
+                        authActivity.addUserRole("WORKER")
+                    } else {
+                        val response: Client = authActivity.createClient(userDataStore.token)
+                        authActivity.addUserRole("CLIENT")
+                        val newerUserResponse = authActivity.authenticate(userDataStore.firebaseToken)
+                        val userDataStore = UserDataStore(
+                            firebaseToken = userDataStore.token,
+                            token = newerUserResponse.token.toString(),
+                            fullName = response.user?.fullName.toString(),
+                            id = response.user?.id.toString(),
+                            role = response.user?.role.toString()
+                        )
+                        authActivity.saveUser(userDataStore)
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(
+                        requireContext(),
+                        e.message.toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
 
@@ -74,9 +102,13 @@ class SelectRoleFragment : Fragment() {
 
     private fun observeViewModel() {
         authActivity.getUserLiveData().observe(viewLifecycleOwner) { userLiveData ->
-            user = userLiveData
-            if (user.role == "Client") {
+            userDataStore = userLiveData
+            if (userDataStore.role == "WORKER") {
                 view?.findNavController()?.navigate(R.id.action_selectRoleFragment_to_selectSkillsFragment)
+            } else {
+                val i = Intent(requireActivity(), MockupActivity::class.java)
+                startActivity(i)
+                requireActivity().finish()
             }
         }
     }

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mockup_navigation"
+    app:startDestination="@id/layananMainFragment">
+
+    <fragment
+        android:id="@+id/layananMainFragment"
+        android:name="com.capstone.karira.activity.layanan.LayananMainFragment"
+        android:label="LayananMainFragment" >
+        <action
+            android:id="@+id/action_layananMainFragment_to_layananSearchFragment"
+            app:destination="@id/layananSearchFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_layananMainFragment_to_layananDetailFragment"
+            app:destination="@id/layananDetailFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_layananMainFragment_to_rekomendasiFragment"
+            app:destination="@id/rekomendasiFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/layananKuFragment"
+        android:name="com.capstone.karira.activity.layanan.LayananKuFragment"
+        android:label="LayananKuFragment" >
+        <action
+            android:id="@+id/action_layananKuFragment_to_layananDetailFragment"
+            app:destination="@id/layananDetailFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_layananKuFragment_to_layananBuatFragment"
+            app:destination="@id/layananBuatFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/layananDetailFragment"
+        android:name="com.capstone.karira.activity.layanan.LayananDetailFragment"
+        android:label="LayananDetailFragment" >
+        <action
+            android:id="@+id/action_layananDetailFragment_to_layananBuatFragment"
+            app:destination="@id/layananBuatFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/layananSearchFragment"
+        android:name="com.capstone.karira.activity.layanan.LayananSearchFragment"
+        android:label="LayananSearchFragment" >
+        <action
+            android:id="@+id/action_layananSearchFragment_to_layananDetailFragment"
+            app:destination="@id/layananDetailFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/layananBuatFragment"
+        android:name="com.capstone.karira.activity.layanan.LayananBuatFragment"
+        android:label="LayananBuatFragment" >
+        <action
+            android:id="@+id/action_layananBuatFragment_to_layananDetailFragment"
+            app:destination="@id/layananDetailFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:popUpTo="@+id/layananDetailFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/rekomendasiFragment"
+        android:name="com.capstone.karira.activity.layanan.RekomendasiFragment"
+        android:label="RekomendasiFragment" >
+        <action
+            android:id="@+id/action_rekomendasiFragment_to_layananDetailFragment"
+            app:destination="@id/layananDetailFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_rekomendasiFragment_to_proyekDetailFragment"
+            app:destination="@id/proyekDetailFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/proyekBuatFragment"
+        android:name="com.capstone.karira.activity.proyek.ProyekBuatFragment"
+        android:label="ProyekBuatFragment" >
+        <action
+            android:id="@+id/action_proyekBuatFragment_to_proyekDetailFragment"
+            app:destination="@id/proyekDetailFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:popUpTo="@+id/proyekDetailFragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
+    <fragment
+        android:id="@+id/proyekDetailFragment"
+        android:name="com.capstone.karira.activity.proyek.ProyekDetailFragment"
+        android:label="ProyekDetailFragment" >
+        <action
+            android:id="@+id/action_proyekDetailFragment_to_proyekBuatFragment"
+            app:destination="@id/proyekBuatFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_proyekDetailFragment_to_proyekTawaranFragment"
+            app:destination="@id/proyekTawaranFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/proyekKuFragment"
+        android:name="com.capstone.karira.activity.proyek.ProyekKuFragment"
+        android:label="ProyekKuFragment" >
+        <action
+            android:id="@+id/action_proyekKuFragment_to_proyekBuatFragment"
+            app:destination="@id/proyekBuatFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_proyekKuFragment_to_proyekDetailFragment"
+            app:destination="@id/proyekDetailFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:popUpToInclusive="true"/>
+    </fragment>
+    <fragment
+        android:id="@+id/proyekMainFragment"
+        android:name="com.capstone.karira.activity.proyek.ProyekMainFragment"
+        android:label="ProyekMainFragment" >
+        <action
+            android:id="@+id/action_proyekMainFragment_to_proyekSearchFragment"
+            app:destination="@id/proyekSearchFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_proyekMainFragment_to_proyekDetailFragment"
+            app:destination="@id/proyekDetailFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_proyekMainFragment_to_rekomendasiFragment"
+            app:destination="@id/rekomendasiFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/proyekSearchFragment"
+        android:name="com.capstone.karira.activity.proyek.ProyekSearchFragment"
+        android:label="ProyekSearchFragment" >
+        <action
+            android:id="@+id/action_proyekSearchFragment_to_proyekDetailFragment"
+            app:destination="@id/proyekDetailFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:popUpToInclusive="true"/>
+    </fragment>
+    <fragment
+        android:id="@+id/proyekTawaranFragment"
+        android:name="com.capstone.karira.activity.proyek.ProyekTawaranFragment"
+        android:label="ProyekTawaranFragment" />
+
+</navigation>
