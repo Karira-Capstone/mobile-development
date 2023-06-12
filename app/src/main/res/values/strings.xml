@@ -77,6 +77,13 @@
     <string name="proyek_detail_primary_button_alter">Lihat tawaran</string>
     <string name="proyek_detail_outlined_button_alter">Edit proyek</string>
     <string name="proyek_detail_outlined_button">Tanya dulu</string>
+    <string name="proyek_detail_dialog_title">Tawar proyek</string>
+    <string name="proyek_detail_dialog_price">Imbalan</string>
+    <string name="proyek_detail_dialog_price_undertext">Masukkan antara Rp%1$s - Rp%2$s</string>
+    <string name="proyek_detail_dialog_message">Pesan</string>
+    <string name="proyek_detail_dialog_alert">Anda hanya bisa menawar sekali</string>
+    <string name="proyek_detail_dialog_button_primary">Tawar</string>
+    <string name="proyek_detail_dialog_button_outlined">Tutup</string>
 
     <string name="proyek_buat_button_reccomend">Lihat prediksi harga terbaik</string>
     <string name="proyek_buat_button">Buat proyek</string>
@@ -96,6 +103,9 @@
     <string name="proyek_tawaran_title">Tawaran %1$s</string>
     <string name="proyek_tawaran_subtitle">Terdapat %1$s tawaran untuk proyek ini</string>
     <string name="proyek_tawaran_empty">Tidak ada tawaran yang dibuat</string>
+    <string name="proyek_tawaran_dialog_title">Detail penawaran</string>
+    <string name="proyek_tawaran_dialog_name">Nama penawwar</string>
+    <string name="proyek_tawaran_dialog_primary_button">Terima &amp; bayar</string>
 
     <!-- ===================================================================================== -->
     <!-- ================================== REKOMENDASI ====================================== -->

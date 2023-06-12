@@ -132,8 +132,6 @@ class SignInFragment : Fragment() {
                                         )
                                         authActivity.saveUser(userDataStore)
                                     }
-
-
                                 }
 
                             } else {
