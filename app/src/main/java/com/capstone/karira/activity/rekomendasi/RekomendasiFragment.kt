@@ -139,16 +139,16 @@ private fun RekomendasiApp(rekomendasiViewModel: RekomendasiViewModel, view: Vie
                                 }
                             }
                             if (data.size > 0) {
-                                items(data, key = { it.id.toString() }) { service ->
+                                items(data, key = { it.id.toString() }) { project ->
                                     ItemCard(
-                                        image = service.client?.user?.picture.toString(),
-                                        title = service.title.toString(),
-                                        subtitle = service.client?.user?.fullName.toString(),
-                                        price = "${service.lowerBound.toString()} - Rp${service.upperBound.toString()}",
+                                        image = project.client?.user?.picture.toString(),
+                                        title = project.title.toString(),
+                                        subtitle = project.client?.user?.fullName.toString(),
+                                        price = "${project.lowerBound.toString()} - Rp${project.upperBound.toString()}",
                                         onClick = {
                                             val bundle = Bundle()
-                                            bundle.putString(LayananDetailFragment.EXTRA_ID, service.id.toString())
-                                            view.findNavController().navigate(R.id.action_rekomendasiFragment_to_layananDetailFragment, bundle)
+                                            bundle.putString(LayananDetailFragment.EXTRA_ID, project.id.toString())
+                                            view.findNavController().navigate(R.id.action_rekomendasiFragment_to_proyekDetailFragment, bundle)
                                         })
                                 }
                             } else {
