@@ -147,7 +147,7 @@ fun ConfirmBiddingDialog(
                             }
                         )
                     }
-                    if (bid.attachment != null || bid.attachment != "null" || bid.attachment != "") {
+                    if (bid.attachment != "") {
                         Box(
                             modifier = Modifier
                                 .padding(bottom = 16.dp)
