@@ -17,6 +17,7 @@ import com.capstone.karira.viewmodel.proyek.ProyekMainViewModel
 import com.capstone.karira.viewmodel.proyek.ProyekSearchViewModel
 import com.capstone.karira.viewmodel.proyek.ProyekTawaranViewModel
 import com.capstone.karira.viewmodel.rekomendasi.RekomendasiViewModel
+import com.capstone.karira.viewmodel.notification.NotificationViewModel
 
 class ViewModelFactory(private val context: Context) : ViewModelProvider.NewInstanceFactory() {
 
@@ -58,6 +59,11 @@ class ViewModelFactory(private val context: Context) : ViewModelProvider.NewInst
         // Rekomendasi
         else if (modelClass.isAssignableFrom(RekomendasiViewModel::class.java)){
             return RekomendasiViewModel(Injection.provideRekomendasiRepostory(context)) as T
+        }
+
+        // Notifikasi
+        else if (modelClass.isAssignableFrom(NotificationViewModel::class.java)){
+            return NotificationViewModel(Injection.provideNotificationRepository(context)) as T
         }
 
         throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)

@@ -8,6 +8,7 @@ import com.capstone.karira.data.repository.AuthRepository
 import com.capstone.karira.data.local.UserPreferences
 import com.capstone.karira.data.remote.config.ApiConfig
 import com.capstone.karira.data.repository.LayananRepository
+import com.capstone.karira.data.repository.NotificationRepository
 import com.capstone.karira.data.repository.ProyekRepository
 import com.capstone.karira.data.repository.RekomendasiRepository
 import com.capstone.karira.utils.AppExecutors
@@ -41,5 +42,12 @@ object Injection {
         val appExecutors = AppExecutors()
         val apiService = ApiConfig.getApiService()
         return RekomendasiRepository.getInstance(userPreferences, appExecutors, apiService)
+    }
+
+    fun provideNotificationRepository(context: Context): NotificationRepository {
+        val userPreferences: UserPreferences =  UserPreferences.getInstance(context.dataStore)
+        val appExecutors = AppExecutors()
+        val apiService = ApiConfig.getApiService()
+        return NotificationRepository.getInstance(userPreferences, appExecutors, apiService)
     }
 }

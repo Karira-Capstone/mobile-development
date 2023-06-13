@@ -29,6 +29,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.capstone.karira.R
+import com.capstone.karira.activity.MainActivity
 import com.capstone.karira.activity.MockupActivity
 import com.capstone.karira.component.compose.SmallButton
 import com.capstone.karira.data.local.StaticDatas
@@ -160,7 +161,7 @@ class SelectSkillsFragment : Fragment() {
     }
 
     fun changePage() {
-        val i = Intent(requireActivity(), MockupActivity::class.java)
+        val i = Intent(requireActivity(), MainActivity::class.java)
         startActivity(i)
         requireActivity().finish()
     }

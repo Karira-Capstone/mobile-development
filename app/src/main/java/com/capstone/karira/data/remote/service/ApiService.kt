@@ -6,6 +6,7 @@ import com.capstone.karira.data.remote.model.response.AuthenticateResponse
 import com.capstone.karira.data.remote.model.response.SearchServiceResponse
 import com.capstone.karira.model.Client
 import com.capstone.karira.model.Freelancer
+import com.capstone.karira.model.Notification
 import com.capstone.karira.model.Project
 import com.capstone.karira.model.Service
 import com.capstone.karira.model.User
@@ -110,5 +111,12 @@ interface ApiService {
         @Path("id") id: String,
         @Body data: Project
     ): Project
+
+    // ---------------------------------------------- NOTIFICATIONS ---------------------------------------------
+
+    @GET("users/notifications")
+    suspend fun getNotifications(
+        @Header("Authorization") token: String
+    ): List<Notification>
 
 }

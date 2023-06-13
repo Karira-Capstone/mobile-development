@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.capstone.karira.R
+import com.capstone.karira.activity.MainActivity
 import com.capstone.karira.activity.MockupActivity
 import com.capstone.karira.data.local.StaticDatas
 import com.capstone.karira.data.remote.model.response.AuthenticateResponse
@@ -106,7 +107,7 @@ class SelectRoleFragment : Fragment() {
             if (userDataStore.role == "WORKER") {
                 view?.findNavController()?.navigate(R.id.action_selectRoleFragment_to_selectSkillsFragment)
             } else {
-                val i = Intent(requireActivity(), MockupActivity::class.java)
+                val i = Intent(requireActivity(), MainActivity::class.java)
                 startActivity(i)
                 requireActivity().finish()
             }

@@ -116,5 +116,8 @@
     <string name="lainnya">Lainnya</string>
     <string name="proyek">Proyek</string>
     <string name="layanan">Layanan</string>
+    <string name="chat">Chat</string>
+    <string name="notifications">Notifications</string>
+    <string name="belum_ada_notifikasi">Belum ada notifikasi</string>
 
 </resources>
