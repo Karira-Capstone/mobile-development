@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.capstone.karira.di.Injection
 import com.capstone.karira.viewmodel.auth.AuthViewModel
+import com.capstone.karira.viewmodel.dashboard.home.HomeViewModel
 import com.capstone.karira.viewmodel.layanan.LayananBuatViewModel
 import com.capstone.karira.viewmodel.layanan.LayananDetailViewModel
 import com.capstone.karira.viewmodel.layanan.LayananKuViewModel
@@ -22,9 +23,18 @@ class ViewModelFactory(private val context: Context) : ViewModelProvider.NewInst
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        // Auth
+        // Auth Activity
         if (modelClass.isAssignableFrom(AuthViewModel::class.java)) {
             return AuthViewModel(Injection.provideAuthRepostory(context)) as T
+        }
+
+        // Main Activity
+        else if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
+            return MainViewModel(Injection.provideMainRepository(context)) as T
+        }
+        // Home
+        else if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
+            return HomeViewModel(Injection.provideMainRepository(context)) as T
         }
 
         // Layanan

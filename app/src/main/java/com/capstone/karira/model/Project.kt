@@ -32,7 +32,8 @@ data class Bid(
     @SerializedName("project_id"    ) var projectId   : Int?        = null,
     @SerializedName("worker"        ) var worker      : Freelancer? = null,
     @SerializedName("project"       ) var project     : Project?    = null,
-//    @SerializedName("order"         ) val order       : Order? = null
+    @SerializedName("attachment"    ) var attachment  : String? = null,
+    @SerializedName("order"         ) val order       : Order? = null
 
 )
 

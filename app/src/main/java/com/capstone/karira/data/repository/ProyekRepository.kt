@@ -1,8 +1,11 @@
 package com.capstone.karira.data.repository
 
 import com.capstone.karira.data.local.UserPreferences
-import com.capstone.karira.data.remote.model.response.SearchServiceResponse
+import com.capstone.karira.data.remote.model.request.RecommendationRequest
+import com.capstone.karira.data.remote.model.response.RecommendationResponse
 import com.capstone.karira.data.remote.service.ApiService
+import com.capstone.karira.model.Bid
+import com.capstone.karira.model.Order
 import com.capstone.karira.model.Project
 import com.capstone.karira.model.Service
 import com.capstone.karira.model.UserDataStore
@@ -57,6 +60,21 @@ class ProyekRepository private constructor(private val pref: UserPreferences, pr
             requestFile
         )
         return apiService.uploadFile("Bearer $token", fileMultipart)[0]
+    }
+
+    suspend fun createBid(id: String, token: String, bid: Bid): Bid {
+        val response = apiService.createBid(id, "Bearer $token", bid)
+        return response
+    }
+
+    suspend fun createOrderFromProjectBid(token: String, id: String, order: Order): Order {
+        val response = apiService.createOrderFromProjectBid("Bearer $token", id, order)
+        return response
+    }
+
+    suspend fun getProjectRecommendation(recommendationRequest: RecommendationRequest): RecommendationResponse {
+        val response = apiService.getProjectRecommendation(recommendationRequest)
+        return response
     }
 
     companion object {

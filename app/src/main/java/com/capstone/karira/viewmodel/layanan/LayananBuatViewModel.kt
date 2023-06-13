@@ -3,8 +3,12 @@ package com.capstone.karira.viewmodel.layanan
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.capstone.karira.data.local.StaticDatas.skills
+import com.capstone.karira.data.remote.model.request.RecommendationRequest
+import com.capstone.karira.data.remote.model.response.RecommendationResponse
 import com.capstone.karira.data.repository.LayananRepository
 import com.capstone.karira.model.Category
+import com.capstone.karira.model.DummyDatas
 import com.capstone.karira.model.ImageUrl
 import com.capstone.karira.model.Images
 import com.capstone.karira.model.Service
@@ -29,9 +33,9 @@ class LayananBuatViewModel(private val repository: LayananRepository) : ViewMode
     val uiState: StateFlow<UiState<Service>>
         get() = _uiState
 
-    private val _isRecommended: MutableStateFlow<UiState<Service>> =
+    private val _isRecommended: MutableStateFlow<UiState<RecommendationResponse>> =
         MutableStateFlow(UiState.Initiate)
-    val isRecommended: StateFlow<UiState<Service>>
+    val isRecommended: StateFlow<UiState<RecommendationResponse>>
         get() = _isRecommended
 
     private val _isCreated: MutableStateFlow<UiState<Service>> = MutableStateFlow(UiState.Initiate)
@@ -41,18 +45,28 @@ class LayananBuatViewModel(private val repository: LayananRepository) : ViewMode
     val userDataStore: Flow<UserDataStore> get() = repository.getUser()
 
     fun getServiceById(id: String) {
-        viewModelScope.launch {
-            if (id != "null") {
-                val data = repository.getLayananById(id)
-                _uiState.value = UiState.Success(data)
-            } else _uiState.value = UiState.Initiate
+        try {
+            viewModelScope.launch {
+                if (id != "null") {
+                    val data = repository.getLayananById(id)
+                    _uiState.value = UiState.Success(data)
+                } else _uiState.value = UiState.Initiate
+            }
+        } catch (e: Exception) {
+            _uiState.value = UiState.Error("Gagal mengecek keberadaan layanan")
         }
     }
 
-    fun findReccomendation(title: String, description: String, service: Service) {
-        viewModelScope.launch {
-//            val data = repository.getLayananById(id)
-            _isRecommended.value = UiState.Success(service)
+    fun findReccomendation(title: String, description: String) {
+        _isRecommended.value = UiState.Loading
+        try {
+            viewModelScope.launch {
+                val request = RecommendationRequest(title, description)
+                val data = repository.getServiceRecommendation(request)
+                _isRecommended.value = UiState.Success(data)
+            }
+        } catch (e: Exception) {
+            _isRecommended.value = UiState.Error("Gagal mendapatkan rekomendasi, coba beberapa saat lagi")
         }
     }
 
@@ -62,40 +76,40 @@ class LayananBuatViewModel(private val repository: LayananRepository) : ViewMode
         title: String,
         description: String,
         price: Int,
-        categoryId: Int,
-        skills: List<Skills>?,
         files: List<File>
     ) {
         _isCreated.value = UiState.Loading
 
-        viewModelScope.launch {
-            val uploadedImageUrls = mutableListOf<String>()
-            files.map { file ->
+        try {
+            viewModelScope.launch {
+                val uploadedImageUrls = mutableListOf<String>()
+                files.map { file ->
+                    async(Dispatchers.IO) {
+                        val response = repository.uploadPhoto(token, file)
+                        uploadedImageUrls.add(response)
+                        return@async response
+                    }
+                }.awaitAll()
+
                 async(Dispatchers.IO) {
-                    val response = repository.uploadPhoto(token, file)
-                    uploadedImageUrls.add(response)
-                    return@async response
-                }
-            }.awaitAll()
+                    val images = when (uploadedImageUrls.size) {
+                        3 -> Images(uploadedImageUrls[2], uploadedImageUrls[0], uploadedImageUrls[1])
+                        2 -> Images(uploadedImageUrls[0], uploadedImageUrls[1])
+                        1 -> Images(uploadedImageUrls[0])
+                        else -> Images()
+                    }
 
-            async(Dispatchers.IO) {
-                val images = when (uploadedImageUrls.size) {
-                    3 -> Images(uploadedImageUrls[2], uploadedImageUrls[0], uploadedImageUrls[1])
-                    2 -> Images(uploadedImageUrls[0], uploadedImageUrls[1])
-                    1 -> Images(uploadedImageUrls[0])
-                    else -> Images()
+                    val newService = Service(
+                        title = title,
+                        description = description,
+                        price = price,
+                        images = images
+                    )
+                    _isCreated.value = UiState.Success(repository.createService(token, newService))
                 }
-
-                val newService = Service(
-                    title = title,
-                    description = description,
-                    price = price,
-                    categoryId = categoryId,
-                    skills = skills,
-                    images = images
-                )
-                _isCreated.value = UiState.Success(repository.createService(token, newService))
             }
+        } catch (e: Exception) {
+            _isCreated.value = UiState.Error("Gagal membuat layanan, coba beberapa saat lagi")
         }
     }
 
@@ -106,45 +120,47 @@ class LayananBuatViewModel(private val repository: LayananRepository) : ViewMode
         description: String,
         price: Int,
         categoryId: Int,
-        skills: List<Skills>?,
         imagesUri: List<ImageUrl>,
         files: List<File?>
     ) {
         _isCreated.value = UiState.Loading
-        viewModelScope.launch {
-            val stringUrls = imagesUri.map { it.url.toString() }.filter { it.contains("https://storage.googleapis.com/karira/") }
-            val uploadedImageUrls = mutableListOf<String>().apply { addAll(stringUrls) }
-            files.map { file ->
-                async(Dispatchers.IO) {
-                    file?.let {
-                        val response = repository.uploadPhoto(token, file)
-                        uploadedImageUrls.add(response)
-                        return@async response
+        try {
+            viewModelScope.launch {
+                val stringUrls = imagesUri.map { it.url.toString() }.filter { it.contains("https://storage.googleapis.com/karira/") }
+                val uploadedImageUrls = mutableListOf<String>().apply { addAll(stringUrls) }
+                files.map { file ->
+                    async(Dispatchers.IO) {
+                        file?.let {
+                            val response = repository.uploadPhoto(token, file)
+                            uploadedImageUrls.add(response)
+                            return@async response
+                        }
                     }
+                }.awaitAll()
+
+                async(Dispatchers.IO) {
+                    val images = when (uploadedImageUrls.size) {
+                        3 -> Images(uploadedImageUrls[0], uploadedImageUrls[1], uploadedImageUrls[2])
+                        2 -> Images(uploadedImageUrls[0], uploadedImageUrls[1])
+                        1 -> Images(uploadedImageUrls[0])
+                        else -> Images()
+                    }
+
+                    val newService = Service(
+                        title = title,
+                        description = description,
+                        price = price,
+                        images = images,
+                        category = Category(categoryId)
+                    )
+
+                    val data = repository.updateService(token, id, newService)
+                    _isCreated.value = UiState.Success(data)
                 }
-            }.awaitAll()
 
-            async(Dispatchers.IO) {
-                val images = when (uploadedImageUrls.size) {
-                    3 -> Images(uploadedImageUrls[0], uploadedImageUrls[1], uploadedImageUrls[2])
-                    2 -> Images(uploadedImageUrls[0], uploadedImageUrls[1])
-                    1 -> Images(uploadedImageUrls[0])
-                    else -> Images()
-                }
-
-                val newService = Service(
-                    title = title,
-                    description = description,
-                    price = price,
-                    category = Category(categoryId),
-                    skills = skills,
-                    images = images
-                )
-
-                val data = repository.updateService(token, id, newService)
-                _isCreated.value = UiState.Success(data)
             }
-
+        } catch (e: Exception) {
+            _isCreated.value = UiState.Error("Gagal mengedit layanan, coba beberapa saat lagi")
         }
 
     }

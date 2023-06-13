@@ -25,6 +25,8 @@ class AuthRepository private constructor(private val pref: UserPreferences, priv
 
     suspend fun activateUser() = pref.activateUser()
 
+    suspend fun deleteUser() = pref.deleteUser()
+
     // Remote
     suspend fun authenticate(authenticateRequest: AuthenticateRequest): AuthenticateResponse {
         return apiService.authenticate(authenticateRequest);

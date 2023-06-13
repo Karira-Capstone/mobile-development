@@ -67,7 +67,7 @@ fun HighlightCard(image: String, title: String, subtitle: String, price: String,
                 }
                 Row(modifier = Modifier) {
                     Image(painterResource(id = R.drawable.ic_money_white), contentDescription = null, modifier = Modifier.size(16.dp))
-                    Text(text = "Rp$price", color = Color.White, fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
+                    Text(text = price, color = Color.White, fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
                 }
             }
         }

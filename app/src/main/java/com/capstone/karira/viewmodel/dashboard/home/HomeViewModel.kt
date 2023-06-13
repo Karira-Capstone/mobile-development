@@ -1,10 +1,9 @@
-package com.capstone.karira.viewmodel.rekomendasi
+package com.capstone.karira.viewmodel.dashboard.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.capstone.karira.data.repository.AuthRepository
-import com.capstone.karira.data.repository.RekomendasiRepository
-import com.capstone.karira.model.DummyDatas
+import com.capstone.karira.data.repository.MainRepository
 import com.capstone.karira.model.Project
 import com.capstone.karira.model.Service
 import com.capstone.karira.model.UserDataStore
@@ -14,7 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class RekomendasiViewModel(private val repository: RekomendasiRepository): ViewModel() {
+class HomeViewModel(private val repository: MainRepository): ViewModel() {
 
     private val _uiStateService: MutableStateFlow<UiState<Service>> = MutableStateFlow(UiState.Initiate)
     val uiStateService: StateFlow<UiState<Service>>

@@ -7,7 +7,7 @@ object StaticDatas {
         "Graphic Design",
         "IT Services",
         "Mobile Development",
-        "Others",
+        "Lainnya",
         "Property Design",
         "Programming",
         "UI/UX Design",

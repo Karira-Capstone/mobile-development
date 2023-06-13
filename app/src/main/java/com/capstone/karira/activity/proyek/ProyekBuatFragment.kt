@@ -12,9 +12,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,6 +27,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
@@ -57,8 +61,10 @@ import com.capstone.karira.R
 import com.capstone.karira.component.compose.CustomTextField
 import com.capstone.karira.component.compose.DashedButton
 import com.capstone.karira.component.compose.ImageCarouselUri
+import com.capstone.karira.component.compose.SmallButton
 import com.capstone.karira.component.compose.TitleSection
 import com.capstone.karira.data.local.StaticDatas
+import com.capstone.karira.data.remote.model.response.RecommendationResponse
 import com.capstone.karira.databinding.FragmentLayananBuatBinding
 import com.capstone.karira.databinding.FragmentProyekBuatBinding
 import com.capstone.karira.di.Injection
@@ -68,6 +74,7 @@ import com.capstone.karira.model.Project
 import com.capstone.karira.model.Service
 import com.capstone.karira.model.UserDataStore
 import com.capstone.karira.ui.theme.KariraTheme
+import com.capstone.karira.utils.convertStringDescTextToNumber
 import com.capstone.karira.utils.getFileNameFromUri
 import com.capstone.karira.utils.reduceFileImage
 import com.capstone.karira.utils.uriToFile
@@ -156,7 +163,8 @@ private fun ProyekBuatApp(
                 val project = isCreated.data as Project
 
                 var message = "";
-                if (id == "null") message = "Proyek ${project.title.toString()} berhasil dibuat"
+                if (id == "null") message =
+                    "Proyek ${project.title.toString()} berhasil dibuat, menunggu review oleh admin"
                 else message = "Proyek ${project.title.toString()} berhasil diedit"
 
                 Toast.makeText(
@@ -167,8 +175,10 @@ private fun ProyekBuatApp(
 
                 val bundle = Bundle()
                 bundle.putString(ProyekBuatFragment.EXTRA_ID, project.id.toString())
-                view.findNavController().navigate(R.id.action_proyekBuatFragment_to_proyekDetailFragment, bundle)
+                view.findNavController()
+                    .navigate(R.id.action_proyekBuatFragment_to_proyekDetailFragment, bundle)
             }
+
             else -> {}
         }
     }
@@ -178,6 +188,13 @@ private fun ProyekBuatApp(
             when (uiState) {
                 is UiState.Loading -> {
                     proyekBuatViewModel.getProjectById(id)
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxHeight()
+                    ) {
+                        CircularProgressIndicator()
+                    }
                 }
 
                 is UiState.Success -> {
@@ -186,7 +203,11 @@ private fun ProyekBuatApp(
                     var titleField by remember { mutableStateOf(project.title) }
                     var durationField by remember { mutableStateOf(project.duration.toString()) }
                     var descriptionField by remember { mutableStateOf(project.description) }
-                    var fileUri by remember { mutableStateOf(project.attachment?.split("/")?.last()) }
+                    var fileUri by remember {
+                        mutableStateOf(
+                            project.attachment?.split("/")?.last()
+                        )
+                    }
                     var file by remember { mutableStateOf<File?>(null) }
 
                     val launcher = rememberLauncherForActivityResult(
@@ -232,16 +253,20 @@ private fun ProyekBuatApp(
                         if (fileUri == null && file == null) {
                             DashedButton(
                                 text = stringResource(id = R.string.proyek_buat_file_uploadboxtitle),
+                                unclickable = true,
                                 onClick = { launcher.launch("*/*") }
                             )
                         } else {
                             Box(
                                 modifier = Modifier
-                                    .clip(RoundedCornerShape(12.dp))
+                                    .clip(RoundedCornerShape(8.dp))
                                     .background(colorResource(id = R.color.gray_200))
                             ) {
                                 DashedButton(
-                                    text = if (file != null) getFileNameFromUri(Uri.parse(fileUri), context).toString() else fileUri.toString(),
+                                    text = if (file != null) getFileNameFromUri(
+                                        Uri.parse(fileUri),
+                                        context
+                                    ).toString() else fileUri.toString(),
                                     asInput = true,
                                     onClick = { },
                                 )
@@ -256,38 +281,47 @@ private fun ProyekBuatApp(
                                         .align(Alignment.TopEnd)
                                         .size(32.dp)
                                 ) {
-                                    Icon(Icons.Outlined.Close, contentDescription = "Close", modifier = Modifier.size(24.dp))
+                                    Icon(
+                                        Icons.Outlined.Close,
+                                        contentDescription = "Close",
+                                        modifier = Modifier.size(24.dp)
+                                    )
                                 }
                             }
                         }
-//                        if (imagesUri.isNotEmpty()) {
-//                            ImageCarouselUri(
-//                                images = imagesUri,
-//                                handleImage = { index ->
-//                                    run {
-//                                        imagesUri.removeAt(index)
-//                                        filesUri[index] = null
-//                                    }
-//                                })
-//                        }
                         // ------------------------------------------- RECCOMENDATION -----------------------------------
                         proyekBuatViewModel.isRecommended.collectAsState(initial = UiState.Initiate).value.let { recommendationState ->
                             when (recommendationState) {
                                 is UiState.Success -> {
-                                    val recommendationData = recommendationState.data as Project
+                                    val recommendationData =
+                                        recommendationState.data as RecommendationResponse
 
-                                    var lowerBoundField by remember { mutableStateOf(recommendationData.lowerBound.toString()) }
-                                    var upperBoundField by remember { mutableStateOf(recommendationData.upperBound.toString()) }
+                                    val lowerUpperPriceRecommendation = remember {
+                                        mutableStateListOf<Int>().apply {
+                                            addAll(convertStringDescTextToNumber(recommendationData.result))
+                                        }
+                                    }
+
+                                    var lowerBoundField by remember {
+                                        mutableStateOf(
+                                            lowerUpperPriceRecommendation[0].toString()
+                                        )
+                                    }
+                                    var upperBoundField by remember {
+                                        mutableStateOf(
+                                            lowerUpperPriceRecommendation[1].toString()
+                                        )
+                                    }
 
                                     Column(modifier = Modifier.padding(top = 16.dp)) {
                                         Text(
-                                            text = stringResource(id = R.string.layanan_buat_category_formtitle),
+                                            text = stringResource(id = R.string.proyek_buat_recommendation_formtitle),
                                             fontSize = 16.sp,
                                             fontWeight = FontWeight.Medium,
                                             modifier = Modifier
                                         )
                                         Text(
-                                            text = StaticDatas.categories[(recommendationData.categoryId as Int) - 1],
+                                            text = if (recommendationData.result == "Others") "Tidak ada rekomendasi" else recommendationData.result,
                                             fontSize = 20.sp,
                                             fontWeight = FontWeight.SemiBold,
                                             modifier = Modifier.padding(top = 4.dp)
@@ -307,36 +341,12 @@ private fun ProyekBuatApp(
                                             type = "Number",
                                             setText = { newText -> upperBoundField = newText })
                                     }
-                                    Column() {
-                                        Text(
-                                            text = stringResource(id = R.string.layanan_buat_tags_formtitle),
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.Medium,
-                                            modifier = Modifier
-                                        )
-//                                        FlowRow(
-//                                            modifier = Modifier
-//                                                .padding(top = 4.dp),
-//                                            verticalAlignment = Alignment.Top,
-//                                            horizontalArrangement = Arrangement.Start,
-//                                            content = {
-//                                                for (skill in recommendationData.s) {
-//                                                    if (skill != "") SmallButton(
-//                                                        text = skill,
-//                                                        isClosable = false,
-//                                                        onClick = { })
-//                                                }
-//                                            }
-//                                        )
-                                    }
                                     OutlinedButton(
+                                        enabled = (titleField != "" && descriptionField != "" && durationField != ""),
                                         onClick = {
-                                            // Todo recommendation service
                                             proyekBuatViewModel.findReccomendation(
                                                 titleField.toString(),
-                                                descriptionField.toString(),
-                                                durationField,
-                                                project
+                                                descriptionField.toString()
                                             )
                                         },
                                         shape = RoundedCornerShape(6.dp),
@@ -357,8 +367,8 @@ private fun ProyekBuatApp(
                                         )
                                     }
                                     Button(
+                                        enabled = (titleField != "" && descriptionField != "" && durationField != "" && upperBoundField != "" && lowerBoundField != "" && lowerBoundField.toInt() <= upperBoundField.toInt()),
                                         onClick = {
-                                            // Todo update service
                                             try {
                                                 proyekBuatViewModel.updateProject(
                                                     project.id.toString(),
@@ -368,8 +378,7 @@ private fun ProyekBuatApp(
                                                     descriptionField.toString(),
                                                     lowerBoundField.toInt(),
                                                     upperBoundField.toInt(),
-                                                    recommendationData.categoryId as Int,
-                                                    recommendationData.skills,
+                                                    project.categoryId!!.toInt(),
                                                     fileUri,
                                                     file
                                                 )
@@ -400,13 +409,12 @@ private fun ProyekBuatApp(
 
                                 is UiState.Initiate -> {
                                     Button(
+                                        enabled = (titleField != "" && descriptionField != "" && durationField != ""),
                                         onClick = {
                                             // Todo recommendation service
                                             proyekBuatViewModel.findReccomendation(
                                                 titleField.toString(),
-                                                descriptionField.toString(),
-                                                durationField,
-                                                project
+                                                descriptionField.toString()
                                             )
                                         },
                                         shape = RoundedCornerShape(6.dp),
@@ -418,6 +426,15 @@ private fun ProyekBuatApp(
                                             .padding(top = 24.dp)
                                             .fillMaxWidth()
                                     ) {
+                                        proyekBuatViewModel.isCreated.collectAsState().value.let {
+                                            when (it) {
+                                                is UiState.Loading -> {
+                                                    CircularProgressIndicator()
+                                                }
+
+                                                else -> {}
+                                            }
+                                        }
                                         Text(
                                             stringResource(id = R.string.layanan_buat_button_reccomend)
                                         )
@@ -425,7 +442,17 @@ private fun ProyekBuatApp(
                                 }
 
                                 is UiState.Error -> {}
-                                is UiState.Loading -> {}
+                                is UiState.Loading -> {
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center,
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                            .fillMaxWidth()
+                                    ) {
+                                        CircularProgressIndicator()
+                                    }
+                                }
                             }
                         }
                         // ----------------------------------------------------------------------------------------------
@@ -491,10 +518,10 @@ private fun ProyekBuatApp(
                                 onClick = { launcher.launch("*/*") }
                             )
                         } else {
-                           fileName?.let {
+                            fileName?.let {
                                 Box(
                                     modifier = Modifier
-                                        .clip(RoundedCornerShape(12.dp))
+                                        .clip(RoundedCornerShape(8.dp))
                                         .background(colorResource(id = R.color.gray_200))
                                 ) {
                                     DashedButton(
@@ -503,14 +530,21 @@ private fun ProyekBuatApp(
                                         onClick = { },
                                     )
                                     FilledTonalIconButton(
-                                        onClick = { file = null },
+                                        onClick = {
+                                            file = null
+                                            fileName = null
+                                        },
                                         colors = IconButtonDefaults.iconButtonColors(containerColor = Color.White),
                                         modifier = Modifier
                                             .padding(8.dp)
                                             .align(Alignment.TopEnd)
                                             .size(32.dp)
                                     ) {
-                                        Icon(Icons.Outlined.Close, contentDescription = "Close", modifier = Modifier.size(24.dp))
+                                        Icon(
+                                            Icons.Outlined.Close,
+                                            contentDescription = "Close",
+                                            modifier = Modifier.size(24.dp)
+                                        )
                                     }
                                 }
                             }
@@ -520,20 +554,35 @@ private fun ProyekBuatApp(
                         proyekBuatViewModel.isRecommended.collectAsState(initial = UiState.Initiate).value.let { recommendationState ->
                             when (recommendationState) {
                                 is UiState.Success -> {
-                                    val recommendationData = recommendationState.data as Project
+                                    val recommendationData =
+                                        recommendationState.data as RecommendationResponse
 
-                                    var lowerBoundField by remember { mutableStateOf(recommendationData.lowerBound.toString()) }
-                                    var upperBoundField by remember { mutableStateOf(recommendationData.upperBound.toString()) }
+                                    val lowerUpperPriceRecommendation = remember {
+                                        mutableStateListOf<Int>().apply {
+                                            addAll(convertStringDescTextToNumber(recommendationData.result))
+                                        }
+                                    }
 
-                                    Column(modifier = Modifier.padding(top = 16.dp)) {
+                                    var lowerBoundField by remember {
+                                        mutableStateOf(
+                                            lowerUpperPriceRecommendation[0].toString()
+                                        )
+                                    }
+                                    var upperBoundField by remember {
+                                        mutableStateOf(
+                                            lowerUpperPriceRecommendation[1].toString()
+                                        )
+                                    }
+
+                                    Column(modifier = Modifier.padding(top = 24.dp)) {
                                         Text(
-                                            text = stringResource(id = R.string.layanan_buat_category_formtitle),
+                                            text = stringResource(id = R.string.proyek_buat_recommendation_formtitle),
                                             fontSize = 16.sp,
                                             fontWeight = FontWeight.Medium,
                                             modifier = Modifier
                                         )
                                         Text(
-                                            text = StaticDatas.categories[(recommendationData.categoryId as Int) - 1],
+                                            text = if (recommendationData.result == "Others") "Tidak ada rekomendasi" else recommendationData.result,
                                             fontSize = 20.sp,
                                             fontWeight = FontWeight.SemiBold,
                                             modifier = Modifier.padding(top = 4.dp)
@@ -553,36 +602,13 @@ private fun ProyekBuatApp(
                                             type = "Number",
                                             setText = { newText -> upperBoundField = newText })
                                     }
-                                    Column() {
-                                        Text(
-                                            text = stringResource(id = R.string.layanan_buat_tags_formtitle),
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.Medium,
-                                            modifier = Modifier
-                                        )
-//                                        FlowRow(
-//                                            modifier = Modifier
-//                                                .padding(top = 4.dp),
-//                                            verticalAlignment = Alignment.Top,
-//                                            horizontalArrangement = Arrangement.Start,
-//                                            content = {
-//                                                for (skill in recommendationData.s) {
-//                                                    if (skill != "") SmallButton(
-//                                                        text = skill,
-//                                                        isClosable = false,
-//                                                        onClick = { })
-//                                                }
-//                                            }
-//                                        )
-                                    }
                                     OutlinedButton(
+                                        enabled = (titleField != "" && descriptionField != "" && durationField != ""),
                                         onClick = {
                                             // Todo recommendation service
                                             proyekBuatViewModel.findReccomendation(
                                                 titleField,
-                                                descriptionField,
-                                                durationField,
-                                                DummyDatas.projectDatas[0]
+                                                descriptionField
                                             )
                                         },
                                         shape = RoundedCornerShape(6.dp),
@@ -603,8 +629,8 @@ private fun ProyekBuatApp(
                                         )
                                     }
                                     Button(
+                                        enabled = (titleField != "" && descriptionField != "" && durationField != "" && upperBoundField != "" && lowerBoundField != "" && lowerBoundField.toInt() <= upperBoundField.toInt()),
                                         onClick = {
-                                            // Todo create service
                                             try {
                                                 proyekBuatViewModel.createProject(
                                                     userDataStore.value.token,
@@ -613,8 +639,6 @@ private fun ProyekBuatApp(
                                                     descriptionField,
                                                     lowerBoundField.toInt(),
                                                     upperBoundField.toInt(),
-                                                    recommendationData.categoryId as Int,
-                                                    recommendationData.skills,
                                                     file
                                                 )
                                             } catch (e: Exception) {
@@ -645,13 +669,12 @@ private fun ProyekBuatApp(
 
                                 is UiState.Initiate -> {
                                     Button(
+                                        enabled = (titleField != "" && descriptionField != "" && durationField != ""),
                                         onClick = {
                                             // Todo recommendation service
                                             proyekBuatViewModel.findReccomendation(
                                                 titleField,
-                                                descriptionField,
-                                                durationField,
-                                                DummyDatas.projectDatas[0]
+                                                descriptionField
                                             )
                                         },
                                         shape = RoundedCornerShape(6.dp),
@@ -670,7 +693,17 @@ private fun ProyekBuatApp(
                                 }
 
                                 is UiState.Error -> {}
-                                is UiState.Loading -> {}
+                                is UiState.Loading -> {
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center,
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                            .fillMaxWidth()
+                                    ) {
+                                        CircularProgressIndicator()
+                                    }
+                                }
                             }
                         }
                         // ----------------------------------------------------------------------------------------------

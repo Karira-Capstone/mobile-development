@@ -35,13 +35,21 @@ import coil.compose.rememberAsyncImagePainter
 import com.capstone.karira.R
 
 @Composable
-fun ItemCard(image: String, title: String, subtitle: String, price: String = "", onClick: () -> Unit) {
+fun ItemCard(
+    image: String,
+    title: String,
+    subtitle: String,
+    price: String = "",
+    onClick: () -> Unit
+) {
     Column(modifier = Modifier
         .clickable { onClick() }
         .fillMaxWidth()) {
-        Row(modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 24.dp)
-            .fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 16.dp, vertical = 24.dp)
+                .fillMaxWidth()
+        ) {
             AsyncImage(
                 model = image,
                 contentDescription = null,
@@ -51,18 +59,33 @@ fun ItemCard(image: String, title: String, subtitle: String, price: String = "",
                     .aspectRatio(1f / 1f)
                     .clip(RoundedCornerShape(8.dp))
             )
-            Column(modifier = Modifier
-                .padding(start = 16.dp)
-                .defaultMinSize(minHeight = 84.dp)
-                .fillMaxWidth(),
-                verticalArrangement = Arrangement.SpaceBetween) {
-                Column(modifier = Modifier) {
+            Column(
+                modifier = Modifier
+                    .padding(start = 16.dp)
+                    .defaultMinSize(minHeight = 84.dp)
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column(modifier = Modifier.padding(bottom = 8.dp)) {
                     Text(text = title, fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
-                    Text(text = subtitle, fontSize = 14.sp, color = colorResource(id = R.color.blackAlpha_300))
+                    Text(
+                        text = subtitle,
+                        fontSize = 14.sp,
+                        color = colorResource(id = R.color.blackAlpha_300),
+                        maxLines = 2
+                    )
                 }
                 if (price != "") Row(modifier = Modifier) {
-                    Image(painterResource(id = R.drawable.ic_money_black), contentDescription = null, modifier = Modifier.size(16.dp))
-                    Text(text = "Rp$price", fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
+                    Image(
+                        painterResource(id = R.drawable.ic_money_black),
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Text(
+                        text = "Rp$price",
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
                 }
             }
         }
@@ -78,7 +101,12 @@ fun ItemCard(image: String, title: String, subtitle: String, price: String = "",
 @Preview(showBackground = true)
 @Composable
 private fun Preview() {
-    ItemCard(image = "https://mediaassets.airbus.com/permalinks/608923/win/lufthansa-orders-10-airbus-a350-1000-and-5-more-a350-900-aircraft.jpg", title = "Hello World", subtitle = "Muhammad Haqqi Al Farizi", price = "200000") {
-        
+    ItemCard(
+        image = "https://mediaassets.airbus.com/permalinks/608923/win/lufthansa-orders-10-airbus-a350-1000-and-5-more-a350-900-aircraft.jpg",
+        title = "Hello World",
+        subtitle = "Muhammad Haqqi Al Farizi",
+        price = "200000"
+    ) {
+
     }
 }

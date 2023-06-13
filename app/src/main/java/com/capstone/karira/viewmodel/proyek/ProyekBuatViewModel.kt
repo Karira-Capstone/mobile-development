@@ -3,9 +3,13 @@ package com.capstone.karira.viewmodel.proyek
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.capstone.karira.data.local.StaticDatas.skills
+import com.capstone.karira.data.remote.model.request.RecommendationRequest
+import com.capstone.karira.data.remote.model.response.RecommendationResponse
 import com.capstone.karira.data.repository.LayananRepository
 import com.capstone.karira.data.repository.ProyekRepository
 import com.capstone.karira.model.Category
+import com.capstone.karira.model.DummyDatas
 import com.capstone.karira.model.ImageUrl
 import com.capstone.karira.model.Images
 import com.capstone.karira.model.Project
@@ -29,9 +33,9 @@ class ProyekBuatViewModel(private val repository: ProyekRepository) : ViewModel(
     val uiState: StateFlow<UiState<Project>>
         get() = _uiState
 
-    private val _isRecommended: MutableStateFlow<UiState<Project>> =
+    private val _isRecommended: MutableStateFlow<UiState<RecommendationResponse>> =
         MutableStateFlow(UiState.Initiate)
-    val isRecommended: StateFlow<UiState<Project>>
+    val isRecommended: StateFlow<UiState<RecommendationResponse>>
         get() = _isRecommended
 
     private val _isCreated: MutableStateFlow<UiState<Project>> = MutableStateFlow(UiState.Initiate)
@@ -41,21 +45,32 @@ class ProyekBuatViewModel(private val repository: ProyekRepository) : ViewModel(
     val userDataStore: Flow<UserDataStore> get() = repository.getUser()
 
     fun getProjectById(id: String) {
-        viewModelScope.launch {
-            if (id != "null") {
-                val data = repository.getProjectById(id)
-                _uiState.value = UiState.Success(data)
-            } else _uiState.value = UiState.Initiate
+        _uiState.value = UiState.Loading
+
+        try {
+            viewModelScope.launch {
+                if (id != "null") {
+                    val data = repository.getProjectById(id)
+                    _uiState.value = UiState.Success(data)
+                } else _uiState.value = UiState.Initiate
+            }
+        } catch (e: Exception) {
+            _uiState.value = UiState.Error("Gagal mengecek keberadaan proyek")
         }
     }
 
-    fun findReccomendation(title: String, description: String, duration: String, service: Project) {
-        viewModelScope.launch {
-//            val data = repository.getLayananById(id)
-            _isRecommended.value = UiState.Success(service)
+    fun findReccomendation(title: String, description: String) {
+        _isRecommended.value = UiState.Loading
+        try {
+            viewModelScope.launch {
+                val request = RecommendationRequest(title, description)
+                val data = repository.getProjectRecommendation(request)
+                _isRecommended.value = UiState.Success(data)
+            }
+        } catch (e: Exception) {
+            _isRecommended.value = UiState.Error("Gagal mendapatkan rekomendasi, coba beberapa saat lagi")
         }
     }
-
 
     fun createProject(
         token: String,
@@ -64,25 +79,25 @@ class ProyekBuatViewModel(private val repository: ProyekRepository) : ViewModel(
         description: String,
         lowerBound: Int,
         upperBound: Int,
-        categoryId: Int,
-        skills: List<Skills>?,
         file: File?
     ) {
         _isCreated.value = UiState.Loading
 
-        viewModelScope.launch {
-            val response = repository.uploadFile(token, file as File)
-            val newProject = Project(
-                title = title,
-                duration = duration,
-                description = description,
-                lowerBound = lowerBound,
-                upperBound = upperBound,
-                category = Category(categoryId),
-                skills = skills,
-                attachment = response
-            )
-            _isCreated.value = UiState.Success(repository.createProject(token, newProject))
+        try {
+            viewModelScope.launch {
+                val response = if (file != null) repository.uploadFile(token, file) else ""
+                val newProject = Project(
+                    title = title,
+                    duration = duration,
+                    description = description,
+                    lowerBound = lowerBound,
+                    upperBound = upperBound,
+                    attachment = response
+                )
+                _isCreated.value = UiState.Success(repository.createProject(token, newProject))
+            }
+        } catch (e: Exception) {
+            _isCreated.value = UiState.Error("Gagal membuat proyek, coba beberapa saat lagi")
         }
     }
 
@@ -95,30 +110,32 @@ class ProyekBuatViewModel(private val repository: ProyekRepository) : ViewModel(
         lowerBound: Int,
         upperBound: Int,
         categoryId: Int,
-        skills: List<Skills>?,
         fileUri: String?,
         file: File?
     ) {
         _isCreated.value = UiState.Loading
 
-        viewModelScope.launch {
-            var response = ""
-            if (fileUri != null && !fileUri.contains("content://com.android.providers")) response = fileUri.toString()
-            else response = repository.uploadFile(token, file as File)
+        try {
+            viewModelScope.launch {
+                var response = ""
+                if (fileUri != null && !fileUri.contains("content://com.android.providers")) response = fileUri.toString()
+                else response = if (file != null) repository.uploadFile(token, file) else ""
 
-            val newProject = Project(
-                title = title,
-                duration = duration,
-                description = description,
-                lowerBound = lowerBound,
-                upperBound = upperBound,
-                category = Category(categoryId),
-                skills = skills,
-                attachment = response
-            )
+                val newProject = Project(
+                    title = title,
+                    duration = duration,
+                    description = description,
+                    lowerBound = lowerBound,
+                    upperBound = upperBound,
+                    attachment = response,
+                    category = Category(categoryId)
+                )
 
-            val data = repository.updateProject(token, id, newProject)
-            _isCreated.value = UiState.Success(data)
+                val data = repository.updateProject(token, id, newProject)
+                _isCreated.value = UiState.Success(data)
+            }
+        } catch (e: Exception) {
+            _isCreated.value = UiState.Error("Gagal mengedit proyek, coba beberapa saat lagi")
         }
 
     }

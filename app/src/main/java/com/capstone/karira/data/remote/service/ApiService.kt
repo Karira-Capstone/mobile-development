@@ -1,17 +1,17 @@
 package com.capstone.karira.data.remote.service
 
 import com.capstone.karira.data.remote.model.request.AuthenticateRequest
-import com.capstone.karira.data.remote.model.request.SearchServiceRequest
+import com.capstone.karira.data.remote.model.request.RecommendationRequest
 import com.capstone.karira.data.remote.model.response.AuthenticateResponse
-import com.capstone.karira.data.remote.model.response.SearchServiceResponse
+import com.capstone.karira.data.remote.model.response.RecommendationResponse
+import com.capstone.karira.model.Bid
 import com.capstone.karira.model.Client
 import com.capstone.karira.model.Freelancer
+import com.capstone.karira.model.Order
 import com.capstone.karira.model.Project
 import com.capstone.karira.model.Service
 import com.capstone.karira.model.User
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import retrofit2.Call
 import retrofit2.http.*
 
 interface ApiService {
@@ -30,6 +30,16 @@ interface ApiService {
         @Header("Authorization") token: String,
     ): User
 
+    @GET("users/recommendations")
+    suspend fun getUserServiceRecommendation(
+        @Header("Authorization") token: String,
+    ): List<Service>
+
+    @GET("users/recommendations")
+    suspend fun getUserProjectRecommendation(
+        @Header("Authorization") token: String,
+    ): List<Project>
+
     // ------------------------------------------ FREELANCER / WORKERS --------------------------------------------------
 
     @POST("workers")
@@ -43,6 +53,13 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body data: Freelancer? = Freelancer(),
     ): Freelancer
+
+    @POST("workers/bids/projects/{id}")
+    suspend fun createBid(
+        @Path("id") id: String,
+        @Header("Authorization") token: String,
+        @Body data: Bid? = Bid(),
+    ): Bid
 
     // ------------------------------------------ CLIENT --------------------------------------------------
 
@@ -110,5 +127,32 @@ interface ApiService {
         @Path("id") id: String,
         @Body data: Project
     ): Project
+
+    // ----------------------------------------- ORDERS ---------------------------------------------------
+    @POST("orders/projects/bids/{id}")
+    suspend fun createOrderFromProjectBid(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Body data: Order
+    ): Order
+
+    @POST("orders/services/{id}")
+    suspend fun createOrderFromService(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Body data: Order
+    ): Order
+
+    // --------------------------------------- RECCOMENDATION ------------------------------------------------
+
+    @POST("recommendation/service-budget")
+    suspend fun getServiceRecommendation(
+        @Body data: RecommendationRequest
+    ): RecommendationResponse
+
+    @POST("recommendation/project-budget")
+    suspend fun getProjectRecommendation(
+        @Body data: RecommendationRequest
+    ): RecommendationResponse
 
 }
