@@ -6,11 +6,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,12 +24,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -45,6 +51,8 @@ import androidx.navigation.findNavController
 import com.capstone.karira.R
 import com.capstone.karira.component.compose.ItemCard
 import com.capstone.karira.component.compose.TitleSection
+import com.capstone.karira.component.compose.dialog.BiddingDialog
+import com.capstone.karira.component.compose.dialog.ConfirmBiddingDialog
 import com.capstone.karira.data.local.StaticDatas
 import com.capstone.karira.databinding.FragmentProyekBuatBinding
 import com.capstone.karira.databinding.FragmentProyekTawaranBinding
@@ -53,6 +61,7 @@ import com.capstone.karira.model.Bid
 import com.capstone.karira.model.Project
 import com.capstone.karira.model.UserDataStore
 import com.capstone.karira.ui.theme.KariraTheme
+import com.capstone.karira.utils.createDotInNumber
 import com.capstone.karira.viewmodel.ViewModelFactory
 import com.capstone.karira.viewmodel.proyek.ProyekBuatViewModel
 import com.capstone.karira.viewmodel.proyek.ProyekMainViewModel
@@ -126,10 +135,48 @@ private fun ProyekTawaranApp(id: String, proyekTawaranViewModel: ProyekTawaranVi
             when (uiState) {
                 is UiState.Loading -> {
                     proyekTawaranViewModel.getProjectById(id)
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxHeight()
+                    ) {
+                        CircularProgressIndicator()
+                    }
                 }
                 is UiState.Success -> {
                     val data = uiState.data as Project
                     val listState = rememberLazyListState()
+
+                    val showDialog = remember { mutableStateOf(false) }
+                    val selectedBidId = remember { mutableStateOf(0) }
+
+                    if (showDialog.value) {
+                        ConfirmBiddingDialog(
+                            bid = data.bids?.find { it.id == selectedBidId.value } as Bid,
+                            userDataStore = userDataStore.value,
+                            proyekTawaranViewModel = proyekTawaranViewModel,
+                            setShowDialog = {
+                                showDialog.value = it
+                            },
+                            closeDialog = {
+                                showDialog.value = false
+                            })
+                    }
+
+                    proyekTawaranViewModel.isCreated.collectAsState().value.let { isCreated ->
+                        when (isCreated) {
+                            is UiState.Loading -> {}
+                            is UiState.Success -> {
+                                /* TODO KE HALAMAN RYAN COK */
+                                Toast.makeText(context, "Berhasil memesan, lanjutkan ke pembayaran", Toast.LENGTH_SHORT).show()
+                            }
+                            is UiState.Initiate -> {}
+                            is UiState.Error -> {
+                                Toast.makeText(context, isCreated.errorMessage, Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+
                     LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
                         item {
                             Column(modifier = Modifier) {
@@ -154,12 +201,11 @@ private fun ProyekTawaranApp(id: String, proyekTawaranViewModel: ProyekTawaranVi
                                 ItemCard(
                                     image = bid.worker?.user?.picture.toString(),
                                     title = bid.worker?.user?.fullName.toString(),
-                                    subtitle = "",
-                                    price = bid.price.toString(),
+                                    subtitle = bid.message.toString(),
+                                    price = createDotInNumber(bid.price.toString()),
                                     onClick = {
-//                                    val bundle = Bundle()
-//                                    bundle.putString(ProyekDetailFragment.EXTRA_ID, project.id.toString())
-//                                    view.findNavController().navigate(R.id.action_proyekMainFragment_to_proyekDetailFragment, bundle)
+                                        selectedBidId.value = bid.id!!
+                                        showDialog.value = true
                                     })
                             }
                         } else {
@@ -170,7 +216,7 @@ private fun ProyekTawaranApp(id: String, proyekTawaranViewModel: ProyekTawaranVi
                                     fontWeight = FontWeight.SemiBold,
                                     color = Color.Black,
                                     textAlign = TextAlign.Center,
-                                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 96.dp)
+                                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 96.dp).fillMaxWidth()
                                 )
                             }
                         }

@@ -16,7 +16,7 @@ class UserPreferences private constructor(private val dataStore: DataStore<Prefe
             UserDataStore(
                 preferences[FIREBASETOKEN_KEY] ?: "",
                 preferences[TOKEN_KEY] ?:"",
-                preferences[ROLE_KEY] ?: "CLIENT",
+                preferences[ROLE_KEY] ?: "",
                 preferences[SKILLS_KEY] ?: "",
                 preferences[ISACTIVATED] ?: false,
                 preferences[PICTURE_KEY] ?: "",
@@ -67,6 +67,12 @@ class UserPreferences private constructor(private val dataStore: DataStore<Prefe
     suspend fun activateUser() {
         dataStore.edit { preferences ->
             preferences[ISACTIVATED] = true
+        }
+    }
+
+    suspend fun deleteUser() {
+        dataStore.edit {
+            it.clear()
         }
     }
 

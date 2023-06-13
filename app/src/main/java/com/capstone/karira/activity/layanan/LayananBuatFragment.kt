@@ -11,14 +11,18 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
@@ -31,6 +35,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -48,8 +53,10 @@ import com.capstone.karira.R
 import com.capstone.karira.component.compose.CustomTextField
 import com.capstone.karira.component.compose.DashedButton
 import com.capstone.karira.component.compose.ImageCarouselUri
+import com.capstone.karira.component.compose.SmallButton
 import com.capstone.karira.component.compose.TitleSection
 import com.capstone.karira.data.local.StaticDatas
+import com.capstone.karira.data.remote.model.response.RecommendationResponse
 import com.capstone.karira.databinding.FragmentLayananBuatBinding
 import com.capstone.karira.di.Injection
 import com.capstone.karira.model.DummyDatas
@@ -124,8 +131,6 @@ class LayananBuatFragment : Fragment() {
     }
 }
 
-
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun LayananBuatApp(
     id: String,
@@ -135,7 +140,6 @@ private fun LayananBuatApp(
 ) {
 
     val context = LocalContext.current as Activity
-    val coroutineScope = rememberCoroutineScope()
     val userDataStore =
         layananBuatViewModel.userDataStore.collectAsState(initial = UserDataStore("", "ssss"))
 
@@ -145,7 +149,7 @@ private fun LayananBuatApp(
                 val service = isCreated.data as Service
 
                 var message = "";
-                if (id == "null") message = "Layanan ${service.title.toString()} berhasil dibuat"
+                if (id == "null") message = "Layanan ${service.title.toString()} berhasil dibuat, menunggu review oleh admin"
                 else message = "Layanan ${service.title.toString()} berhasil diedit"
 
                 Toast.makeText(
@@ -167,6 +171,13 @@ private fun LayananBuatApp(
             when (uiState) {
                 is UiState.Loading -> {
                     layananBuatViewModel.getServiceById(id)
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxHeight()
+                    ) {
+                        CircularProgressIndicator()
+                    }
                 }
 
                 is UiState.Success -> {
@@ -248,19 +259,19 @@ private fun LayananBuatApp(
                         layananBuatViewModel.isRecommended.collectAsState(initial = UiState.Initiate).value.let { recommendationState ->
                             when (recommendationState) {
                                 is UiState.Success -> {
-                                    val recommendationData = recommendationState.data as Service
+                                    val recommendationData = recommendationState.data as RecommendationResponse
 
-                                    var priceField by remember { mutableStateOf(recommendationData.price.toString()) }
+                                    var priceField by remember { mutableStateOf("") }
 
-                                    Column(modifier = Modifier.padding(top = 8.dp)) {
+                                    Column(modifier = Modifier.padding(top = 24.dp)) {
                                         Text(
-                                            text = stringResource(id = R.string.layanan_buat_category_formtitle),
+                                            text = stringResource(id = R.string.layanan_buat_recommendation_formtitle),
                                             fontSize = 16.sp,
                                             fontWeight = FontWeight.Medium,
                                             modifier = Modifier
                                         )
                                         Text(
-                                            text = StaticDatas.categories[(recommendationData.categoryId as Int) - 1],
+                                            text = if (recommendationData.result == "Others") "Tidak ada rekomendasi" else recommendationData.result,
                                             fontSize = 20.sp,
                                             fontWeight = FontWeight.SemiBold,
                                             modifier = Modifier.padding(top = 4.dp)
@@ -269,31 +280,9 @@ private fun LayananBuatApp(
                                     priceField?.let {
                                         CustomTextField(
                                             stringResource(id = R.string.layanan_buat_price_formtitle),
-                                            text = createDotInNumber(it),
+                                            text = it,
                                             type = "Number",
-                                            setText = { newText -> priceField = removeDotInNumber(newText) })
-                                    }
-                                    Column() {
-                                        Text(
-                                            text = stringResource(id = R.string.layanan_buat_tags_formtitle),
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.Medium,
-                                            modifier = Modifier
-                                        )
-//                                        FlowRow(
-//                                            modifier = Modifier
-//                                                .padding(top = 4.dp),
-//                                            verticalAlignment = Alignment.Top,
-//                                            horizontalArrangement = Arrangement.Start,
-//                                            content = {
-//                                                for (skill in recommendationData.s) {
-//                                                    if (skill != "") SmallButton(
-//                                                        text = skill,
-//                                                        isClosable = false,
-//                                                        onClick = { })
-//                                                }
-//                                            }
-//                                        )
+                                            setText = { newText -> priceField = newText })
                                     }
                                     OutlinedButton(
                                         enabled = titleField != "" && descriptionField != "",
@@ -301,8 +290,7 @@ private fun LayananBuatApp(
                                             // Todo recommendation service
                                             layananBuatViewModel.findReccomendation(
                                                 titleField.toString(),
-                                                descriptionField.toString(),
-                                                service
+                                                descriptionField.toString()
                                             )
                                         },
                                         shape = RoundedCornerShape(6.dp),
@@ -323,9 +311,8 @@ private fun LayananBuatApp(
                                         )
                                     }
                                     Button(
-                                        enabled = titleField != "" && descriptionField != "" && priceField.isNotEmpty(),
+                                        enabled = titleField != "" && descriptionField != "" && priceField != "",
                                         onClick = {
-                                            // Todo update service
                                             try {
                                                  layananBuatViewModel.updateService(
                                                     service.id.toString(),
@@ -333,8 +320,7 @@ private fun LayananBuatApp(
                                                     titleField.toString(),
                                                     descriptionField.toString(),
                                                     removeDotInNumber(priceField).toInt(),
-                                                    recommendationData.categoryId as Int,
-                                                    recommendationData.skills,
+                                                    service.categoryId!!.toInt(),
                                                     imagesUri,
                                                     filesUri
                                                 )
@@ -370,8 +356,7 @@ private fun LayananBuatApp(
                                             // Todo recommendation service
                                             layananBuatViewModel.findReccomendation(
                                                 titleField.toString(),
-                                                descriptionField.toString(),
-                                                service
+                                                descriptionField.toString()
                                             )
                                         },
                                         shape = RoundedCornerShape(6.dp),
@@ -390,7 +375,15 @@ private fun LayananBuatApp(
                                 }
 
                                 is UiState.Error -> {}
-                                is UiState.Loading -> {}
+                                is UiState.Loading -> {
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center,
+                                        modifier = Modifier.fillMaxHeight().fillMaxWidth()
+                                    ) {
+                                        CircularProgressIndicator()
+                                    }
+                                }
                             }
                         }
                         // ----------------------------------------------------------------------------------------------
@@ -466,17 +459,17 @@ private fun LayananBuatApp(
                         layananBuatViewModel.isRecommended.collectAsState(initial = UiState.Initiate).value.let { recommendationState ->
                             when (recommendationState) {
                                 is UiState.Success -> {
-                                    val recommendationData = recommendationState.data as Service
+                                    val recommendationData = recommendationState.data as RecommendationResponse
 
-                                    Column(modifier = Modifier.padding(top = 8.dp)) {
+                                    Column(modifier = Modifier.padding(top = 24.dp)) {
                                         Text(
-                                            text = stringResource(id = R.string.layanan_buat_category_formtitle),
+                                            text = stringResource(id = R.string.layanan_buat_recommendation_formtitle),
                                             fontSize = 16.sp,
                                             fontWeight = FontWeight.Medium,
                                             modifier = Modifier
                                         )
                                         Text(
-                                            text = StaticDatas.categories[(recommendationData.categoryId as Int) - 1],
+                                            text = if (recommendationData.result == "Others") "Tidak ada rekomendasi" else recommendationData.result,
                                             fontSize = 20.sp,
                                             fontWeight = FontWeight.SemiBold,
                                             modifier = Modifier.padding(top = 4.dp)
@@ -485,40 +478,16 @@ private fun LayananBuatApp(
                                     priceField?.let {
                                         CustomTextField(
                                             stringResource(id = R.string.layanan_buat_price_formtitle),
-                                            text = createDotInNumber(it),
+                                            text = it,
                                             type = "Number",
-                                            setText = { newText -> priceField = removeDotInNumber(newText) })
-                                    }
-                                    Column() {
-                                        Text(
-                                            text = stringResource(id = R.string.layanan_buat_tags_formtitle),
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.Medium,
-                                            modifier = Modifier
-                                        )
-//                                        FlowRow(
-//                                            modifier = Modifier
-//                                                .padding(top = 4.dp),
-//                                            verticalAlignment = Alignment.Top,
-//                                            horizontalArrangement = Arrangement.Start,
-//                                            content = {
-//                                                for (skill in recommendationData.s) {
-//                                                    if (skill != "") SmallButton(
-//                                                        text = skill,
-//                                                        isClosable = false,
-//                                                        onClick = { })
-//                                                }
-//                                            }
-//                                        )
+                                            setText = { newText -> priceField = newText })
                                     }
                                     OutlinedButton(
                                         enabled = titleField != "" && descriptionField != "",
                                         onClick = {
-                                            // Todo recommendation service
                                             layananBuatViewModel.findReccomendation(
                                                 titleField,
-                                                descriptionField,
-                                                DummyDatas.serviceDatas[0]
+                                                descriptionField
                                             )
                                         },
                                         shape = RoundedCornerShape(6.dp),
@@ -541,15 +510,12 @@ private fun LayananBuatApp(
                                     Button(
                                         enabled = titleField != "" && descriptionField != "" && priceField.isNotEmpty(),
                                         onClick = {
-                                            // Todo create service
                                             try {
                                                 layananBuatViewModel.createService(
                                                     userDataStore.value.token,
                                                     titleField,
                                                     descriptionField,
-                                                    removeDotInNumber(priceField).toInt(),
-                                                    recommendationData.categoryId as Int,
-                                                    recommendationData.skills,
+                                                    priceField.toInt(),
                                                     filesUri
                                                 )
                                             } catch (e: Exception) {
@@ -585,8 +551,7 @@ private fun LayananBuatApp(
                                             // Todo recommendation service
                                             layananBuatViewModel.findReccomendation(
                                                 titleField,
-                                                descriptionField,
-                                                DummyDatas.serviceDatas[0]
+                                                descriptionField
                                             )
                                         },
                                         shape = RoundedCornerShape(6.dp),
@@ -605,7 +570,15 @@ private fun LayananBuatApp(
                                 }
 
                                 is UiState.Error -> {}
-                                is UiState.Loading -> {}
+                                is UiState.Loading -> {
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center,
+                                        modifier = Modifier.fillMaxHeight().fillMaxWidth()
+                                    ) {
+                                        CircularProgressIndicator()
+                                    }
+                                }
                             }
                         }
                         // ----------------------------------------------------------------------------------------------

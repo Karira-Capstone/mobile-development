@@ -36,6 +36,8 @@ class AuthActivity : AppCompatActivity() {
 
     fun removeUserSkill(skill: String) = authViewModel.removeUserSkill(skill)
 
+    fun deleteUser() = authViewModel.deleteUser()
+
     fun activateUser() = authViewModel.activateUser()
 
     suspend fun authenticate(idToken: String) = authViewModel.authenticate(idToken)

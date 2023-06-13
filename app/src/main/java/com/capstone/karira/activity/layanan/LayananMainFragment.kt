@@ -11,6 +11,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,18 +24,23 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Surface
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.capstone.karira.R
@@ -104,7 +110,6 @@ class LayananMainFragment : Fragment() {
 
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun LayananMainApp(layananMainViewModel: LayananMainViewModel, view: View, id: Int) {
 
@@ -115,7 +120,14 @@ private fun LayananMainApp(layananMainViewModel: LayananMainViewModel, view: Vie
         .collectAsState(initial = UiState.Loading).value.let { uiState ->
             when (uiState) {
                 is UiState.Loading -> {
-                    layananMainViewModel.getLayanansByCategory(id)
+                    layananMainViewModel.getLayanansByCategory(id+1)
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxHeight()
+                    ) {
+                        CircularProgressIndicator()
+                    }
                 }
                 is UiState.Success -> {
                     val data = uiState.data as List<Service>
@@ -134,6 +146,20 @@ private fun LayananMainApp(layananMainViewModel: LayananMainViewModel, view: Vie
                                         modifier = Modifier,
                                         horizontalArrangement = Arrangement.SpaceBetween,
                                     ) {
+                                        if (userDataStore.value.role == "CLIENT") {
+                                            Button(
+                                                onClick = {
+                                                    view.findNavController().navigate(R.id.action_layananMainFragment_to_rekomendasiFragment)
+                                                },
+                                                shape = RoundedCornerShape(16),
+                                                modifier = Modifier
+                                                    .padding(end = 4.dp)
+                                                    .fillMaxWidth()
+                                                    .weight(1f)
+                                            ) {
+                                                Text(stringResource(id = R.string.layanan_main_button_rekomendasi))
+                                            }
+                                        }
                                         OutlinedButton(
                                             onClick = {
                                                 view.findNavController().navigate(R.id.action_layananMainFragment_to_layananSearchFragment)
@@ -145,26 +171,11 @@ private fun LayananMainApp(layananMainViewModel: LayananMainViewModel, view: Vie
                                                 containerColor = Color.White
                                             ),
                                             modifier = Modifier
-                                                .padding(end = if (userDataStore.value.role == "CLIENT") 4.dp else 0.dp)
+                                                .padding(start = if (userDataStore.value.role == "CLIENT") 4.dp else 0.dp)
                                                 .fillMaxWidth()
                                                 .weight(1f)
                                         ) {
                                             Text(stringResource(id = R.string.layanan_cari_button))
-                                        }
-                                        Log.d("LLLLLLLLLLLLLLL", userDataStore.value.toString())
-                                        if (userDataStore.value.role == "CLIENT") {
-                                            Button(
-                                                onClick = {
-                                                    view.findNavController().navigate(R.id.action_layananMainFragment_to_rekomendasiFragment)
-                                                },
-                                                shape = RoundedCornerShape(16),
-                                                modifier = Modifier
-                                                    .padding(start = 4.dp)
-                                                    .fillMaxWidth()
-                                                    .weight(1f)
-                                            ) {
-                                                Text(stringResource(id = R.string.layanan_main_button_rekomendasi))
-                                            }
                                         }
                                     }
                                 }
@@ -176,17 +187,30 @@ private fun LayananMainApp(layananMainViewModel: LayananMainViewModel, view: Vie
                                 )
                             }
                         }
-                        items(data, key = { it.id.toString() }) { service ->
-                            ItemCard(
-                                image = service.worker?.user?.picture.toString(),
-                                title = service.title.toString(),
-                                subtitle = service.worker?.user?.fullName.toString(),
-                                price = createDotInNumber(service.price.toString()),
-                                onClick = {
-                                    val bundle = Bundle()
-                                    bundle.putString(LayananDetailFragment.EXTRA_ID, service.id.toString())
-                                    view.findNavController().navigate(R.id.action_layananMainFragment_to_layananDetailFragment, bundle)
-                                })
+                        if (data.size > 0) {
+                            items(data, key = { it.id.toString() }) { service ->
+                                ItemCard(
+                                    image = service.worker?.user?.picture.toString(),
+                                    title = service.title.toString(),
+                                    subtitle = service.worker?.user?.fullName.toString(),
+                                    price = createDotInNumber(service.price.toString()),
+                                    onClick = {
+                                        val bundle = Bundle()
+                                        bundle.putString(LayananDetailFragment.EXTRA_ID, service.id.toString())
+                                        view.findNavController().navigate(R.id.action_layananMainFragment_to_layananDetailFragment, bundle)
+                                    })
+                            }
+                        } else {
+                            item {
+                                Text(
+                                    text = stringResource(id = R.string.layanan_cari_notfound),
+                                    fontSize = 24.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Color.Black,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 96.dp).fillMaxWidth()
+                                )
+                            }
                         }
                     }
                 }

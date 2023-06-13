@@ -6,9 +6,10 @@ import com.capstone.karira.model.Project
 import com.capstone.karira.model.Service
 import com.capstone.karira.model.UserDataStore
 import com.capstone.karira.utils.AppExecutors
-import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
-class RekomendasiRepository private constructor(private val pref: UserPreferences, private val appExecutors: AppExecutors, private val apiService: ApiService)  {
+
+
+class MainRepository private constructor(private val pref: UserPreferences, private val appExecutors: AppExecutors, private val apiService: ApiService) {
 
     fun getUser(): Flow<UserDataStore> = pref.getUser()
 
@@ -24,14 +25,14 @@ class RekomendasiRepository private constructor(private val pref: UserPreference
 
     companion object {
         @Volatile
-        private var instance: RekomendasiRepository? = null
+        private var instance: MainRepository? = null
         fun getInstance(
             pref: UserPreferences,
             appExecutors: AppExecutors,
             apiService: ApiService
-        ): RekomendasiRepository =
+        ): MainRepository =
             instance ?: synchronized(this) {
-                instance ?: RekomendasiRepository(pref, appExecutors, apiService)
+                instance ?: MainRepository(pref, appExecutors, apiService)
             }.also { instance = it }
     }
 

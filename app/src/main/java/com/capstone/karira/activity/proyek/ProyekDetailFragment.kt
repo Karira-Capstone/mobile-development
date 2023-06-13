@@ -1,5 +1,6 @@
 package com.capstone.karira.activity.proyek
 
+import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.Log
@@ -7,31 +8,47 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme.colors
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,8 +67,10 @@ import coil.compose.AsyncImage
 import com.capstone.karira.R
 import com.capstone.karira.activity.layanan.LayananBuatFragment
 import com.capstone.karira.component.compose.CenterHeadingWithDesc
+import com.capstone.karira.component.compose.DashedButton
 import com.capstone.karira.component.compose.ImageCarousel
 import com.capstone.karira.component.compose.SmallButton
+import com.capstone.karira.component.compose.dialog.BiddingDialog
 import com.capstone.karira.data.local.StaticDatas
 import com.capstone.karira.databinding.FragmentLayananDetailBinding
 import com.capstone.karira.databinding.FragmentProyekDetailBinding
@@ -63,6 +82,8 @@ import com.capstone.karira.model.Service
 import com.capstone.karira.model.UserDataStore
 import com.capstone.karira.ui.theme.KariraTheme
 import com.capstone.karira.utils.createDotInNumber
+import com.capstone.karira.utils.downloadFile
+import com.capstone.karira.utils.getFileNameFromUri
 import com.capstone.karira.viewmodel.ViewModelFactory
 import com.capstone.karira.viewmodel.layanan.LayananDetailViewModel
 import com.capstone.karira.viewmodel.proyek.ProyekDetailViewModel
@@ -144,16 +165,82 @@ private fun ProyekDetailApp(
             when (uiState) {
                 is UiState.Loading -> {
                     proyekDetailViewModel.getProjectById(id)
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxHeight()
+                    ) {
+                        CircularProgressIndicator()
+                    }
                 }
 
                 is UiState.Success -> {
                     val project = uiState.data as Project
+
+                    val showDialog = remember { mutableStateOf(false) }
+                    var isCreatedBidding by remember {
+                        mutableStateOf(false)
+                    }
+
+                    if (showDialog.value) {
+                        BiddingDialog(
+                            project = project,
+                            userDataStore = userDataStore.value,
+                            proyekDetailViewModel = proyekDetailViewModel,
+                            setShowDialog = {
+                                showDialog.value = it
+                            },
+                            closeDialog = {
+                                showDialog.value = false
+                            })
+                    }
+
+                    proyekDetailViewModel.isCreated.collectAsState(initial = UiState.Initiate).value.let { isCreated ->
+                        when (isCreated) {
+                            is UiState.Loading -> {}
+                            is UiState.Success -> {
+                                Toast.makeText(
+                                    context,
+                                    "Bidding berhasil dibuat",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                showDialog.value = false
+                                isCreatedBidding = true
+                            }
+
+                            is UiState.Error -> {
+                                Toast.makeText(context, isCreated.errorMessage, Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+
+                            is UiState.Initiate -> {}
+                        }
+                    }
+
                     Column(
                         modifier = modifier
                             .verticalScroll(rememberScrollState())
                             .padding(start = 16.dp, end = 16.dp, bottom = 48.dp, top = 48.dp)
                             .fillMaxWidth()
                     ) {
+                        if (project.type.toString() == "ONREVIEW" || project.type.toString() == "CLOSED") {
+                            Text(
+                                text = if (project.type.toString() == "ONREVIEW") stringResource(id = R.string.proyek_detail_status_review) else stringResource(
+                                    id = R.string.proyek_detail_status_closed
+                                ),
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color.Black,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .padding(
+                                        start = 24.dp,
+                                        end = 24.dp,
+                                        bottom = 24.dp
+                                    )
+                                    .fillMaxWidth()
+                            )
+                        }
                         Row(modifier = Modifier) {
                             AsyncImage(
                                 project.client?.user?.picture.toString(),
@@ -171,8 +258,9 @@ private fun ProyekDetailApp(
                                     fontWeight = FontWeight.SemiBold
                                 )
                                 Text(
-                                    text = project.categoryId?.let { StaticDatas.categories[it - 1] }
-                                        .toString(),
+                                    text = if (project.categoryId != null) StaticDatas.categories[project.categoryId!! - 1] else stringResource(
+                                        R.string.proyek_detail_type_null
+                                    ),
                                     modifier = modifier,
                                     fontSize = 16.sp
                                 )
@@ -194,9 +282,12 @@ private fun ProyekDetailApp(
                                 .height(IntrinsicSize.Min)
                                 .padding(vertical = 8.dp)
                         ) {
-                            Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.padding(end = 16.dp)) {
+                            Row(
+                                verticalAlignment = Alignment.Bottom,
+                                modifier = Modifier.padding(end = 16.dp)
+                            ) {
                                 Text(
-                                    project.bids?.size.toString(),
+                                    if (isCreatedBidding) (project.bids?.size?.plus(1)).toString() else project.bids?.size.toString(),
                                     fontWeight = FontWeight.SemiBold,
                                     modifier = Modifier.padding(end = 8.dp)
                                 )
@@ -210,7 +301,10 @@ private fun ProyekDetailApp(
                                     .height(16.dp) //fill the max height
                                     .width(1.dp)
                             )
-                            Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.padding(start = 16.dp)) {
+                            Row(
+                                verticalAlignment = Alignment.Bottom,
+                                modifier = Modifier.padding(start = 16.dp)
+                            ) {
                                 Text(
                                     "${project.duration.toString()} Hari",
                                     fontWeight = FontWeight.SemiBold,
@@ -220,7 +314,6 @@ private fun ProyekDetailApp(
                                     stringResource(id = R.string.proyek_detail_duration)
                                 )
                             }
-
                         }
                         Row(
                             horizontalArrangement = Arrangement.Center,
@@ -232,7 +325,11 @@ private fun ProyekDetailApp(
                                 .padding(vertical = 8.dp)
                         ) {
                             CenterHeadingWithDesc(
-                                main = "Rp${createDotInNumber(project.lowerBound.toString())} - Rp${createDotInNumber(project.upperBound.toString())}",
+                                main = "Rp${createDotInNumber(project.lowerBound.toString())} - Rp${
+                                    createDotInNumber(
+                                        project.upperBound.toString()
+                                    )
+                                }",
                                 subtext = stringResource(id = R.string.proyek_detail_payment)
                             )
                         }
@@ -248,7 +345,8 @@ private fun ProyekDetailApp(
                                 verticalAlignment = Alignment.Top,
                                 horizontalArrangement = Arrangement.Start,
                                 content = {
-                                    val skills = project.skills.map { StaticDatas.skills[(it.id as Int) - 1] }
+                                    val skills =
+                                        project.skills.map { StaticDatas.skills[(it.id as Int) - 1] }
                                     for (skill in skills) {
                                         if (skill != "") SmallButton(
                                             text = skill,
@@ -258,27 +356,48 @@ private fun ProyekDetailApp(
                                 }
                             )
                         }
+                        if (project.attachment != "") {
+                            Box(
+                                modifier = Modifier
+                                    .padding(bottom = 16.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(colorResource(id = R.color.gray_200)),
+                            ) {
+                                DashedButton(
+                                    text = project.attachment?.split("/")?.last().toString(),
+                                    asInput = true,
+                                    onClick = {
+                                        downloadFile(
+                                            context,
+                                            project.attachment,
+                                            project.attachment?.split("/")?.last().toString()
+                                        )
+                                    },
+                                )
+                            }
+                        }
                         Row(
                             modifier = Modifier,
                             horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
-                            // ---------------------------------------------------------------
-                            // ------------------------- GANTI COK ---------------------------
-                            // ---------------------------------------------------------------
-                            if (userDataStore.value.role == "WORKER") {
-                                Button(
-                                    onClick = { /*TODO*/ },
-                                    shape = RoundedCornerShape(16),
-                                    colors = ButtonDefaults.buttonColors(
-                                        contentColor = Color.White,
-                                        containerColor = colorResource(R.color.purple_500)
-                                    ),
-                                    modifier = Modifier
-                                        .padding(end = 4.dp)
-                                        .fillMaxWidth()
-                                        .weight(1f)
-                                ) {
-                                    Text(stringResource(id = R.string.proyek_detail_primary_button))
+                            if (userDataStore.value.role == "WORKER" && project.bids?.find { it.worker?.userId.toString() == userDataStore.value.id } == null) {
+                                if (!isCreatedBidding) {
+                                    Button(
+                                        onClick = {
+                                            showDialog.value = true
+                                        },
+                                        shape = RoundedCornerShape(16),
+                                        colors = ButtonDefaults.buttonColors(
+                                            contentColor = Color.White,
+                                            containerColor = colorResource(R.color.purple_500)
+                                        ),
+                                        modifier = Modifier
+                                            .padding(end = 8.dp)
+                                            .fillMaxWidth()
+                                            .weight(1f)
+                                    ) {
+                                        Text(stringResource(id = R.string.proyek_detail_primary_button))
+                                    }
                                 }
                                 OutlinedButton(
                                     onClick = { /*TODO*/ },
@@ -289,32 +408,42 @@ private fun ProyekDetailApp(
                                         containerColor = Color.White
                                     ),
                                     modifier = Modifier
-                                        .padding(start = 4.dp)
                                         .fillMaxWidth()
                                         .weight(1f)
                                 ) {
                                     Text(stringResource(id = R.string.proyek_detail_outlined_button))
                                 }
                             } else if (userDataStore.value.id == project.client?.userId.toString()) {
-                                Button(
-                                    onClick = {
-                                        val bundle = Bundle()
-                                        bundle.putString(ProyekTawaranFragment.EXTRA_ID, id)
-                                        view.findNavController().navigate(R.id.action_proyekDetailFragment_to_proyekTawaranFragment, bundle)
-                                    },
-                                    shape = RoundedCornerShape(16),
-                                    modifier = Modifier
-                                        .padding(end = 4.dp)
-                                        .fillMaxWidth()
-                                        .weight(1f)
-                                ) {
-                                    Text(stringResource(id = R.string.proyek_detail_primary_button_alter))
+                                if (project.type == "APPROVED" || project.type == "INPROGRESS") {
+                                    Button(
+                                        onClick = {
+                                            val bundle = Bundle()
+                                            bundle.putString(ProyekTawaranFragment.EXTRA_ID, id)
+                                            view.findNavController().navigate(
+                                                R.id.action_proyekDetailFragment_to_proyekTawaranFragment,
+                                                bundle
+                                            )
+                                        },
+                                        shape = RoundedCornerShape(16),
+                                        modifier = Modifier
+                                            .padding(end = 8.dp)
+                                            .fillMaxWidth()
+                                            .weight(1f)
+                                    ) {
+                                        Text(stringResource(id = R.string.proyek_detail_primary_button_alter))
+                                    }
                                 }
                                 OutlinedButton(
                                     onClick = {
                                         val bundle = Bundle()
-                                        bundle.putString(LayananBuatFragment.EXTRA_ID, project.id.toString())
-                                        view.findNavController().navigate(R.id.action_proyekDetailFragment_to_proyekBuatFragment, bundle)
+                                        bundle.putString(
+                                            LayananBuatFragment.EXTRA_ID,
+                                            project.id.toString()
+                                        )
+                                        view.findNavController().navigate(
+                                            R.id.action_proyekDetailFragment_to_proyekBuatFragment,
+                                            bundle
+                                        )
                                     },
                                     shape = RoundedCornerShape(16),
                                     border = BorderStroke(1.dp, colorResource(R.color.purple_500)),
@@ -323,7 +452,6 @@ private fun ProyekDetailApp(
                                         containerColor = Color.White
                                     ),
                                     modifier = Modifier
-                                        .padding(start = 4.dp)
                                         .fillMaxWidth()
                                         .weight(1f)
                                 ) {

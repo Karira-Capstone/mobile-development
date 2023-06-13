@@ -29,7 +29,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.capstone.karira.R
-import com.capstone.karira.activity.MockupActivity
+import com.capstone.karira.activity.MainActivity
 import com.capstone.karira.component.compose.SmallButton
 import com.capstone.karira.data.local.StaticDatas
 import com.capstone.karira.databinding.FragmentSelectSkillsBinding
@@ -107,7 +107,7 @@ class SelectSkillsFragment : Fragment() {
 
                         is UiState.Success -> {
                             val data = uiState.data as UserDataStore
-                            val skills: List<String> = data.skills.split(";").filter { it != "" }.map { StaticDatas.skills[it.toInt()-1] }
+                            val skills: List<String> = data.skills.split(";").filter { it != "" }
                             SelectedButtons(skills, authActivity)
 
                             handleButtonEnable(skills)
@@ -120,29 +120,36 @@ class SelectSkillsFragment : Fragment() {
         }
 
         binding.skillAdd.setOnClickListener {
+            val skills = userDataStore.skills.split(";").filter { it != "" }
             val inputText = binding.skillTextview.text.toString()
             val id = (StaticDatas.skills.indexOf(inputText)+1).toString()
+
             if (id == "0") Toast.makeText(requireContext(), "$inputText tidak valid", Toast.LENGTH_SHORT)
-            else authActivity.addUserSkill(id)
+            else if (skills.indexOf(inputText) != -1) Toast.makeText(requireContext(), "$inputText sudah diisi", Toast.LENGTH_SHORT)
+            else authActivity.addUserSkill(inputText)
         }
 
         binding.authButton.setOnClickListener {
+            binding.authSkillLoading.visibility = View.VISIBLE
+
             lifecycleScope.launch {
-                val skills = userDataStore.skills.split(";").filter { it != "" }
-                val skillsObjects = skills.map { Skills(it.toInt()) }
+                val skillsObjects = userDataStore.skills.split(";").filter { it != "" }.map { (StaticDatas.skills.indexOf(it))+1 }.map { Skills(it) }
 
                 val response = authActivity.updateFreelancer(userDataStore.token, Freelancer(skills = ArrayList(skillsObjects)))
-                val newerUserResponse = authActivity.authenticate(userDataStore.firebaseToken)
+                authActivity.activateUser()
 
+                val newerUserResponse = authActivity.authenticate(userDataStore.firebaseToken)
                 val userDataStore = UserDataStore(
-                    firebaseToken = userDataStore.token,
+                    firebaseToken = userDataStore.firebaseToken,
                     token = newerUserResponse.token.toString(),
                     fullName = response.user?.fullName.toString(),
                     id = response.user?.id.toString(),
                     role = response.user?.role.toString(),
-                    skills = userDataStore.skills
+                    skills = userDataStore.skills,
+                    isActivated = true
                 )
                 authActivity.saveUser(userDataStore)
+
                 changePage()
             }
         }
@@ -160,7 +167,7 @@ class SelectSkillsFragment : Fragment() {
     }
 
     fun changePage() {
-        val i = Intent(requireActivity(), MockupActivity::class.java)
+        val i = Intent(requireActivity(), MainActivity::class.java)
         startActivity(i)
         requireActivity().finish()
     }
@@ -183,6 +190,7 @@ private fun SelectedButtons(skills: List<String>, activity: AuthActivity) {
                         for (skill in skills) {
                             if (skill != "") SmallButton(
                                 text = skill,
+                                isClosable = true,
                                 onClick = { activity.removeUserSkill(skill) })
                         }
                     }

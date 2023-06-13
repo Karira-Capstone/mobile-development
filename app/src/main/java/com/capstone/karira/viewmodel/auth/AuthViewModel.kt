@@ -1,5 +1,6 @@
 package com.capstone.karira.viewmodel.auth
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -58,6 +59,12 @@ class AuthViewModel(private val repository: AuthRepository): ViewModel() {
     fun activateUser() {
         viewModelScope.launch {
             repository.activateUser()
+        }
+    }
+
+    fun deleteUser() {
+        viewModelScope.launch {
+            repository.deleteUser()
         }
     }
 

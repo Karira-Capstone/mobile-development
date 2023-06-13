@@ -1,5 +1,6 @@
 package com.capstone.karira.component.compose
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.height
@@ -12,11 +13,13 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -55,8 +58,9 @@ fun SmallButton(
             Icon(
                 Icons.Filled.Close,
                 "Close",
+                tint = Color.Black,
                 modifier = Modifier
-                    .height(18.dp)
+                    .height(20.dp)
                     .padding(start = 8.dp)
             )
         }
@@ -68,6 +72,6 @@ fun SmallButton(
 private fun preview() {
     SmallButton(
         text = "Hello World",
-        isClosable = false,
+        isClosable = true,
         onClick = { AuthActivity().authViewModel.removeUserSkill("Hello World") })
 }

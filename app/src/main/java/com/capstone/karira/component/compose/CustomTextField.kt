@@ -34,7 +34,7 @@ fun CustomTextField(
     text: String,
     setText: (String) -> Unit,
     type: String = "Text",
-    icon: Any? = null
+    undertext: String? = null,
 ) {
     Column(modifier = Modifier.padding(vertical = 16.dp)) {
         Text(text = title, fontSize = 16.sp, fontWeight = FontWeight.Medium, modifier = Modifier)
@@ -57,6 +57,9 @@ fun CustomTextField(
                 .fillMaxWidth()
                 .defaultMinSize(minHeight = if (type == "LongText") 128.dp else 0.dp)
         )
+        undertext?.let {
+            Text(text = undertext, fontSize = 14.sp, modifier = Modifier.padding(top = 6.dp))
+        }
     }
 }
 
@@ -65,5 +68,5 @@ fun CustomTextField(
 private fun Preview() {
     var text by remember { mutableStateOf("") }
 
-    CustomTextField("Nama", text = text, setText = { newText -> text = newText })
+    CustomTextField("Nama", text = text, setText = { newText -> text = newText }, undertext = "Tes 1 2 3")
 }

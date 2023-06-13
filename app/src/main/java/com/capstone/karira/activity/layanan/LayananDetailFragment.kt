@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,12 +28,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,6 +46,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,6 +57,8 @@ import com.capstone.karira.R
 import com.capstone.karira.component.compose.CenterHeadingWithDesc
 import com.capstone.karira.component.compose.ImageCarousel
 import com.capstone.karira.component.compose.SmallButton
+import com.capstone.karira.component.compose.dialog.BiddingDialog
+import com.capstone.karira.component.compose.dialog.OrderFromService
 import com.capstone.karira.data.local.StaticDatas
 import com.capstone.karira.databinding.FragmentLayananDetailBinding
 import com.capstone.karira.di.Injection
@@ -68,7 +76,11 @@ class LayananDetailFragment : Fragment() {
     private lateinit var id: String
     private var _binding: FragmentLayananDetailBinding? = null
     private val binding get() = _binding!!
-    val layananDetailViewModel: LayananDetailViewModel by viewModels { ViewModelFactory.getInstance(requireContext()) }
+    val layananDetailViewModel: LayananDetailViewModel by viewModels {
+        ViewModelFactory.getInstance(
+            requireContext()
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,7 +104,6 @@ class LayananDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         handleBinding(view)
-
     }
 
     fun handleBinding(view: View) {
@@ -119,25 +130,93 @@ class LayananDetailFragment : Fragment() {
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun LayananDetailApp(id: String, layananDetailViewModel: LayananDetailViewModel, view: View,  modifier: Modifier = Modifier) {
+private fun LayananDetailApp(
+    id: String,
+    layananDetailViewModel: LayananDetailViewModel,
+    view: View,
+    modifier: Modifier = Modifier
+) {
 
     val context = LocalContext.current
-    val userDataStore = layananDetailViewModel.userDataStore.collectAsState(initial = UserDataStore("", "ssss"))
+    val userDataStore =
+        layananDetailViewModel.userDataStore.collectAsState(initial = UserDataStore("", "ssss"))
 
     layananDetailViewModel.uiState
         .collectAsState(initial = UiState.Loading).value.let { uiState ->
             when (uiState) {
                 is UiState.Loading -> {
                     layananDetailViewModel.getServiceById(id)
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxHeight()
+                    ) {
+                        CircularProgressIndicator()
+                    }
                 }
+
                 is UiState.Success -> {
                     val service = uiState.data as Service
+
+                    val showDialog = remember { mutableStateOf(false) }
+
+                    if (showDialog.value) {
+                        OrderFromService(
+                            service = service,
+                            userDataStore = userDataStore.value,
+                            layananDetailViewModel = layananDetailViewModel,
+                            setShowDialog = {
+                                showDialog.value = it
+                            },
+                            closeDialog = {
+                                showDialog.value = false
+                            })
+                    }
+
+                    layananDetailViewModel.isCreated.collectAsState().value.let { isCreated ->
+                        when (isCreated) {
+                            is UiState.Loading -> {}
+                            is UiState.Success -> {
+                                /* TODO KE HALAMAN RYAN COK */
+                                Toast.makeText(
+                                    context,
+                                    "Berhasil memesan, lanjutkan ke pembayaran",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+                            is UiState.Initiate -> {}
+                            is UiState.Error -> {
+                                Toast.makeText(context, isCreated.errorMessage, Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+                        }
+                    }
+
                     Column(
                         modifier = modifier
                             .verticalScroll(rememberScrollState())
                             .padding(start = 16.dp, end = 16.dp, bottom = 48.dp, top = 48.dp)
                             .fillMaxWidth()
                     ) {
+                        if (service.type.toString() == "ONREVIEW" || service.type.toString() == "CLOSED") {
+                            Text(
+                                text = if (service.type.toString() == "ONREVIEW") stringResource(id = R.string.layanan_detail_status_review) else stringResource(
+                                    id = R.string.layanan_detail_status_closed
+                                ),
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color.Black,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .padding(
+                                        start = 24.dp,
+                                        end = 24.dp,
+                                        bottom = 24.dp
+                                    )
+                                    .fillMaxWidth()
+                            )
+                        }
                         Row(modifier = Modifier) {
                             AsyncImage(
                                 service.worker?.user?.picture.toString(),
@@ -155,7 +234,9 @@ private fun LayananDetailApp(id: String, layananDetailViewModel: LayananDetailVi
                                     fontWeight = FontWeight.SemiBold
                                 )
                                 Text(
-                                    text = service.categoryId?.let { StaticDatas.categories[it-1] }.toString(),
+                                    text = if (service.categoryId != null) StaticDatas.categories[service.categoryId!! - 1] else stringResource(
+                                        R.string.layanan_detail_type_null
+                                    ),
                                     modifier = modifier,
                                     fontSize = 16.sp
                                 )
@@ -168,38 +249,48 @@ private fun LayananDetailApp(id: String, layananDetailViewModel: LayananDetailVi
                             }
                         }
                         Row(
-                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 4.dp)
+                                .padding(top = 12.dp)
                                 .height(IntrinsicSize.Min)
                                 .padding(vertical = 8.dp)
                         ) {
-                            CenterHeadingWithDesc(
-                                main = service.avgRating.toString(),
-                                subtext = stringResource(id = R.string.layanan_detail_rating)
-                            )
+                            Row(
+                                verticalAlignment = Alignment.Bottom,
+                                modifier = Modifier.padding(end = 16.dp)
+                            ) {
+                                Text(
+                                    "Rp${createDotInNumber(service.price.toString())}",
+                                    fontWeight = FontWeight.SemiBold,
+                                    modifier = Modifier.padding(end = 8.dp)
+                                )
+                                Text(
+                                    stringResource(id = R.string.layanan_buat_price_formtitle)
+                                )
+                            }
                             Divider(
                                 color = colorResource(R.color.gray_200),
                                 modifier = Modifier
                                     .height(16.dp) //fill the max height
                                     .width(1.dp)
                             )
-                            CenterHeadingWithDesc(
-                                main = "Rp${createDotInNumber(service.price.toString())}",
-                                subtext = stringResource(id = R.string.layanan_buat_price_formtitle)
-                            )
-                            Divider(
-                                color = colorResource(R.color.gray_200),
-                                modifier = Modifier
-                                    .height(16.dp)  //fill the max height
-                                    .width(1.dp)
-                            )
-                            CenterHeadingWithDesc(
-                                main = service.numOfReviews.toString(),
-                                subtext = stringResource(id = R.string.layanan_detail_user)
-                            )
+                            Row(
+                                verticalAlignment = Alignment.Bottom,
+                                modifier = Modifier.padding(start = 16.dp)
+                            ) {
+                                Text(
+                                    if (service.order != null) service.order?.size.toString() else "0",
+                                    fontWeight = FontWeight.SemiBold,
+                                    modifier = Modifier.padding(end = 8.dp)
+                                )
+                                Text(
+                                    stringResource(id = R.string.layanan_detail_user)
+                                )
+                            }
+
                         }
                         if (service.images?.foto1 != null) {
                             ImageCarousel(service.images as Images)
@@ -215,7 +306,8 @@ private fun LayananDetailApp(id: String, layananDetailViewModel: LayananDetailVi
                                 verticalAlignment = Alignment.Top,
                                 horizontalArrangement = Arrangement.Start,
                                 content = {
-                                    val skills = service.skills.map { StaticDatas.skills[(it.id as Int) - 1] }
+                                    val skills =
+                                        service.skills.map { StaticDatas.skills[(it.id as Int) - 1] }
                                     for (skill in skills) {
                                         if (skill != "") SmallButton(
                                             text = skill,
@@ -229,23 +321,24 @@ private fun LayananDetailApp(id: String, layananDetailViewModel: LayananDetailVi
                             modifier = Modifier,
                             horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
-                            // ---------------------------------------------------------------
-                            // ------------------------- GANTI COK ---------------------------
-                            // ---------------------------------------------------------------
                             if (userDataStore.value.id != service.worker?.userId.toString()) {
-                                Button(
-                                    onClick = { /*TODO*/ },
-                                    shape = RoundedCornerShape(16),
-                                    colors = ButtonDefaults.buttonColors(
-                                        contentColor = Color.White,
-                                        containerColor = colorResource(R.color.purple_500)
-                                    ),
-                                    modifier = Modifier
-                                        .padding(end = 4.dp)
-                                        .fillMaxWidth()
-                                        .weight(1f)
-                                ) {
-                                    Text(stringResource(id = R.string.layanan_detail_primary_button))
+                                if (service.type == "APPROVED") {
+                                    Button(
+                                        onClick = {
+                                            showDialog.value = true
+                                        },
+                                        shape = RoundedCornerShape(16),
+                                        colors = ButtonDefaults.buttonColors(
+                                            contentColor = Color.White,
+                                            containerColor = colorResource(R.color.purple_500)
+                                        ),
+                                        modifier = Modifier
+                                            .padding(end = 8.dp)
+                                            .fillMaxWidth()
+                                            .weight(1f)
+                                    ) {
+                                        Text(stringResource(id = R.string.layanan_detail_primary_button))
+                                    }
                                 }
                                 OutlinedButton(
                                     onClick = { /*TODO*/ },
@@ -256,7 +349,6 @@ private fun LayananDetailApp(id: String, layananDetailViewModel: LayananDetailVi
                                         containerColor = Color.White
                                     ),
                                     modifier = Modifier
-                                        .padding(start = 4.dp)
                                         .fillMaxWidth()
                                         .weight(1f)
                                 ) {
@@ -266,8 +358,14 @@ private fun LayananDetailApp(id: String, layananDetailViewModel: LayananDetailVi
                                 Button(
                                     onClick = {
                                         val bundle = Bundle()
-                                        bundle.putString(LayananBuatFragment.EXTRA_ID, service.id.toString())
-                                        view.findNavController().navigate(R.id.action_layananDetailFragment_to_layananBuatFragment, bundle)
+                                        bundle.putString(
+                                            LayananBuatFragment.EXTRA_ID,
+                                            service.id.toString()
+                                        )
+                                        view.findNavController().navigate(
+                                            R.id.action_layananDetailFragment_to_layananBuatFragment,
+                                            bundle
+                                        )
                                     },
                                     shape = RoundedCornerShape(16),
                                     colors = ButtonDefaults.buttonColors(
@@ -298,6 +396,10 @@ private fun LayananDetailApp(id: String, layananDetailViewModel: LayananDetailVi
 private fun GreetingPreview() {
     val context = LocalContext.current
     KariraTheme {
-        LayananDetailApp("1", LayananDetailViewModel(Injection.provideLayananRepostory(context)), View(context))
+        LayananDetailApp(
+            "1",
+            LayananDetailViewModel(Injection.provideLayananRepostory(context)),
+            View(context)
+        )
     }
 }

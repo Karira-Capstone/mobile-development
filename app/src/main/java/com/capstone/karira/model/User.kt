@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class UserDataStore (
     val firebaseToken: String,
     val token: String,
-    val role: String = "",
+    val role: String = "UNDEFINED",
     val skills: String = "",
     val isActivated: Boolean = false,
     val picture: String = "",

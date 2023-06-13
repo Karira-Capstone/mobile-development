@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.capstone.karira.R
 
 @Composable
@@ -29,6 +30,7 @@ fun DashedButton(
     text: String,
     onClick: () -> Unit,
     asInput: Boolean = false,
+    unclickable: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -40,7 +42,7 @@ fun DashedButton(
             ),
     ) {
         Button(
-            enabled = !asInput,
+            enabled = !unclickable,
             onClick = { onClick() },
             shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(
@@ -64,6 +66,7 @@ fun DashedButton(
         ) {
             Text(
                 text = text,
+                fontSize = 12.sp,
                 color = if (asInput) colorResource(id = R.color.blackAlpha_800) else colorResource(
                     id = R.color.blackAlpha_300
                 )

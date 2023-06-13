@@ -1,6 +1,7 @@
 package com.capstone.karira.utils
 
 import android.annotation.SuppressLint
+import android.app.DownloadManager
 import android.content.ContentResolver
 import android.content.Context
 import android.database.Cursor
@@ -10,6 +11,7 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.OpenableColumns
 import android.util.Log
+import android.widget.Toast
 import androidx.exifinterface.media.ExifInterface
 import com.bumptech.glide.load.resource.bitmap.TransformationUtils.rotateImage
 import java.io.ByteArrayOutputStream
@@ -108,4 +110,25 @@ fun uriToFile(selectedFile: Uri, context: Context): File {
     inputStream.close()
 
     return myFile
+}
+
+fun downloadFile(baseActivity:Context, url: String?, title: String?): Long {
+    val direct = File(Environment.getExternalStorageDirectory().toString() + "/your_folder")
+
+    if (!direct.exists()) {
+        direct.mkdirs()
+    }
+    val downloadReference: Long
+    var  dm: DownloadManager
+    dm= baseActivity.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+    val uri = Uri.parse(url)
+    val request = DownloadManager.Request(uri)
+    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+    request.setTitle(title)
+    Toast.makeText(baseActivity, "Download $title", Toast.LENGTH_SHORT).show()
+
+    downloadReference = dm?.enqueue(request) ?: 0
+
+    return downloadReference
+
 }
