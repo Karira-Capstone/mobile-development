@@ -35,6 +35,10 @@
             android:name=".activity.MainActivity"
             android:exported="false" />
         <activity
+            android:name=".activity.dashboard.notification.NotificationActivity"
+            android:exported="false"
+            android:label="Notifikasi" />
+        <activity
             android:name=".activity.auth.AuthActivity"
             android:exported="false"
             android:theme="@style/Theme.Material3.Light.NoActionBar" />

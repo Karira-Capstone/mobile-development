@@ -1,5 +1,8 @@
 package com.capstone.karira.viewmodel.layanan
 
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.capstone.karira.data.repository.AuthRepository
@@ -24,11 +27,25 @@ class LayananDetailViewModel(private val repository: LayananRepository) : ViewMo
     val uiState: StateFlow<UiState<Service>>
         get() = _uiState
 
+    private val _serviceData = MutableLiveData<Service?>()
+    val serviceData: LiveData<Service?> = _serviceData
+
     private val _isCreated: MutableStateFlow<UiState<Order>> = MutableStateFlow(UiState.Initiate)
     val isCreated: StateFlow<UiState<Order>>
         get() = _isCreated
 
     val userDataStore: Flow<UserDataStore> get() = repository.getUser()
+
+    fun getDataServiceById(id: String) {
+        viewModelScope.launch {
+            if (id != "null") {
+                val data = repository.getLayananById(id)
+                _serviceData.value = data
+            } else {
+                _serviceData.value = null
+            }
+        }
+    }
 
     fun getServiceById(id: String) {
         viewModelScope.launch {
