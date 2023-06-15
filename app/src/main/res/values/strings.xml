@@ -38,7 +38,7 @@
     <string name="layanan_detail_status_review">Layanan masih direview</string>
     <string name="layanan_detail_status_closed">Layanan sudah ditutup</string>
     <string name="layanan_detail_type_null">Tipe belum ditetapkan admin</string>
-    <string name="layanan_detail_user">Pengguna</string>
+    <string name="layanan_detail_user">Pesanan</string>
     <string name="layanan_detail_rating">Rating</string>
     <string name="layanan_detail_primary_button">Pesan</string>
     <string name="layanan_detail_primary_button_alter">Lihat pesanan</string>
@@ -90,8 +90,9 @@
     <string name="proyek_detail_status_review">Proyek masih direview</string>
     <string name="proyek_detail_status_closed">Proyek sudah ditutup</string>
     <string name="proyek_detail_type_null">Tipe belum ditetapkan admin</string>
+    <string name="proyek_detail_order">Pesanan</string>
     <string name="proyek_detail_bids">Tawaran</string>
-    <string name="proyek_detail_duration">Durasi</string>
+    <string name="proyek_detail_duration">Durasi proyek</string>
     <string name="proyek_detail_payment">Bayaran</string>
     <string name="proyek_detail_primary_button">Tawar</string>
     <string name="proyek_detail_primary_button_alter">Lihat tawaran</string>

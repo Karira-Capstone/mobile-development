@@ -274,7 +274,7 @@ private fun ProyekDetailApp(
                             }
                         }
                         Row(
-                            horizontalArrangement = Arrangement.Center,
+                            horizontalArrangement = Arrangement.SpaceEvenly,
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -283,38 +283,33 @@ private fun ProyekDetailApp(
                                 .height(IntrinsicSize.Min)
                                 .padding(vertical = 8.dp)
                         ) {
-                            Row(
-                                verticalAlignment = Alignment.Bottom,
-                                modifier = Modifier.padding(end = 16.dp)
-                            ) {
-                                Text(
-                                    if (isCreatedBidding) (project.bids?.size?.plus(1)).toString() else project.bids?.size.toString(),
-                                    fontWeight = FontWeight.SemiBold,
-                                    modifier = Modifier.padding(end = 8.dp)
-                                )
-                                Text(
-                                    stringResource(id = R.string.proyek_detail_bids)
-                                )
-                            }
+                            CenterHeadingWithDesc(
+                                main = if (isCreatedBidding) (project.bids?.size?.plus(
+                                    1
+                                )).toString() else project.bids?.size.toString(),
+                                subtext = stringResource(id = R.string.proyek_detail_bids)
+                            )
                             Divider(
                                 color = colorResource(R.color.gray_200),
                                 modifier = Modifier
                                     .height(16.dp) //fill the max height
                                     .width(1.dp)
                             )
-                            Row(
-                                verticalAlignment = Alignment.Bottom,
-                                modifier = Modifier.padding(start = 16.dp)
-                            ) {
-                                Text(
-                                    "${project.duration.toString()} Hari",
-                                    fontWeight = FontWeight.SemiBold,
-                                    modifier = Modifier.padding(end = 8.dp)
-                                )
-                                Text(
-                                    stringResource(id = R.string.proyek_detail_duration)
-                                )
-                            }
+                            CenterHeadingWithDesc(
+                                main = "${project.duration.toString()} Hari",
+                                subtext = stringResource(id = R.string.proyek_detail_duration)
+                            )
+                            Divider(
+                                color = colorResource(R.color.gray_200),
+                                modifier = Modifier
+                                    .height(16.dp) //fill the max height
+                                    .width(1.dp)
+                            )
+
+                            CenterHeadingWithDesc(
+                                main = if (project.order != null) project.order.filter { it.type != "CANCELLED" }.size.toString() else "0",
+                                subtext = stringResource(id = R.string.proyek_detail_order)
+                            )
                         }
                         Row(
                             horizontalArrangement = Arrangement.Center,

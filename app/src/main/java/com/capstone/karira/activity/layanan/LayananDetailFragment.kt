@@ -287,7 +287,7 @@ private fun LayananDetailApp(
                                 modifier = Modifier.padding(start = 16.dp)
                             ) {
                                 Text(
-                                    if (service.orders != null) service.orders?.size.toString() else "0",
+                                    if (service.orders != null) service.orders.filter { it.type != "CANCELLED" }.size.toString() else "0",
                                     fontWeight = FontWeight.SemiBold,
                                     modifier = Modifier.padding(end = 8.dp)
                                 )
