@@ -6,10 +6,15 @@ import com.capstone.karira.data.remote.model.response.AuthenticateResponse
 import com.capstone.karira.data.remote.service.ApiService
 import com.capstone.karira.model.Client
 import com.capstone.karira.model.Freelancer
+import com.capstone.karira.model.Profile
 import com.capstone.karira.model.User
 import com.capstone.karira.model.UserDataStore
 import com.capstone.karira.utils.AppExecutors
 import kotlinx.coroutines.flow.Flow
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 
 class AuthRepository private constructor(private val pref: UserPreferences, private val appExecutors: AppExecutors, private val apiService: ApiService) {
 
@@ -44,8 +49,20 @@ class AuthRepository private constructor(private val pref: UserPreferences, priv
         return apiService.updateFreelancer("Bearer $token", freelancer)
     }
 
+    suspend fun updateFreelancerProfile(token: String, profile: Profile): Profile {
+        return apiService.updateFreelancerProfile("Bearer $token", profile)
+    }
+
+    suspend fun updateClientProfile(token: String, profile: Profile): Profile {
+        return apiService.updateClientProfile("Bearer $token", profile)
+    }
+
     suspend fun getUserProfile(token: String): User {
         return apiService.getUserProfile("Bearer $token")
+    }
+
+    suspend fun updateDeviceToken(token: String, deviceToken: String) {
+        apiService.updateDeviceToken("Bearer $token", User(deviceToken = deviceToken))
     }
 
     companion object {
@@ -59,6 +76,16 @@ class AuthRepository private constructor(private val pref: UserPreferences, priv
             instance ?: synchronized(this) {
                 instance ?: AuthRepository(pref, appExecutors, apiService)
             }.also { instance = it }
+    }
+
+    suspend fun uploadPhoto(token: String, file: File): String {
+        val requestImageFile = file.asRequestBody("image/jpeg".toMediaType())
+        val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
+            "file",
+            file.name,
+            requestImageFile
+        )
+        return apiService.uploadFile("Bearer $token", imageMultipart)[0]
     }
 
 }

@@ -1,5 +1,6 @@
 package com.capstone.karira.data.remote.service
 
+import android.service.autofill.UserData
 import com.capstone.karira.data.remote.model.request.AuthenticateRequest
 import com.capstone.karira.data.remote.model.request.RecommendationRequest
 import com.capstone.karira.data.remote.model.response.AuthenticateResponse
@@ -9,6 +10,7 @@ import com.capstone.karira.model.Client
 import com.capstone.karira.model.Freelancer
 import com.capstone.karira.model.Order
 import com.capstone.karira.model.Notification
+import com.capstone.karira.model.Profile
 import com.capstone.karira.model.Project
 import com.capstone.karira.model.Service
 import com.capstone.karira.model.User
@@ -41,6 +43,12 @@ interface ApiService {
         @Header("Authorization") token: String,
     ): List<Project>
 
+    @POST("users/device-token")
+    suspend fun updateDeviceToken(
+        @Header("Authorization") token: String,
+        @Body data: User
+    ): User
+
     // ------------------------------------------ FREELANCER / WORKERS --------------------------------------------------
 
     @POST("workers")
@@ -54,6 +62,12 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body data: Freelancer? = Freelancer(),
     ): Freelancer
+
+    @PUT("workers")
+    suspend fun updateFreelancerProfile(
+        @Header("Authorization") token: String,
+        @Body data: Profile? = Profile(),
+    ): Profile
 
     @POST("workers/bids/projects/{id}")
     suspend fun createBid(
@@ -69,6 +83,12 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body data: Client? = Client(),
     ): Client
+
+    @PUT("clients")
+    suspend fun updateClientProfile(
+        @Header("Authorization") token: String,
+        @Body data: Profile? = Profile(),
+    ): Profile
 
     // ------------------------------------------ UPLOAD FILE --------------------------------------------------
 
@@ -194,7 +214,7 @@ interface ApiService {
         @Header("Authorization") token: String
     ): List<Order>
 
-    @GET("users/orders?status=CREATED&status=ACCEPTED&status=PAID")
+    @GET("users/orders?status=ACCEPTED&status=PAID")
     suspend fun getProsesTransactions(
         @Header("Authorization") token: String
     ): List<Order>

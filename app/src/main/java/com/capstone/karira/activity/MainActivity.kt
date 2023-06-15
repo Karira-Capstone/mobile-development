@@ -13,19 +13,24 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.capstone.karira.R
 import com.capstone.karira.activity.dashboard.notification.NotificationActivity
+import com.capstone.karira.activity.dashboard.profile.ProfileActivity
 import com.capstone.karira.databinding.ActivityMainBinding
 import com.capstone.karira.model.UserDataStore
 import com.capstone.karira.viewmodel.MainViewModel
 import com.capstone.karira.viewmodel.ViewModelFactory
-import com.google.android.gms.tasks.OnCompleteListener
+import com.capstone.karira.viewmodel.auth.AuthViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.messaging.FirebaseMessaging
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var user: UserDataStore
-    val mainViewModel: MainViewModel by viewModels { ViewModelFactory.getInstance(this) }
+    private val mainViewModel: MainViewModel by viewModels { ViewModelFactory.getInstance(this) }
+    private val authViewModel: AuthViewModel by viewModels { ViewModelFactory.getInstance(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,17 +47,20 @@ class MainActivity : AppCompatActivity() {
 
         observeLiveData()
 
-        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             if (!task.isSuccessful) {
                 Log.w(TAG, "Fetching FCM registration token failed", task.exception)
-                return@OnCompleteListener
+                return@addOnCompleteListener
             }
 
-            // Get new FCM registration token
             val token = task.result
 
             Log.d(TAG, token)
-        })
+
+            CoroutineScope(Dispatchers.Main).launch {
+                authViewModel.updateDeviceToken(user.token, token)
+            }
+        }
 
     }
 
@@ -75,12 +83,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.app_bar_notifications -> {
                 startActivity(Intent(this, NotificationActivity::class.java))
+                true
+            }
+            android.R.id.home -> {
+                val intent = Intent(this, ProfileActivity::class.java)
+                startActivity(intent)
                 true
             }
             else -> super.onOptionsItemSelected(item)
