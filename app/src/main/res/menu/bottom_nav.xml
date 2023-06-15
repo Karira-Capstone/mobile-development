@@ -19,7 +19,7 @@
         android:icon="@drawable/ic_baseline_recommend"
         android:title="Rekomendasi" />
     <item
-        android:id="@+id/navigation_transaction"
+        android:id="@+id/transaksiFragment"
         android:icon="@drawable/ic_baseline_shopping_basket"
         android:title="Transaksi" />
 </menu>
