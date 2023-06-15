@@ -41,7 +41,8 @@
     <string name="layanan_detail_user">Pengguna</string>
     <string name="layanan_detail_rating">Rating</string>
     <string name="layanan_detail_primary_button">Pesan</string>
-    <string name="layanan_detail_primary_button_alter">Edit layanan</string>
+    <string name="layanan_detail_primary_button_alter">Lihat pesanan</string>
+    <string name="layanan_detail_outlined_button_alter">Edit layanan</string>
     <string name="layanan_detail_outlined_button">Tanya dulu</string>
 
     <string name="layanan_buat_button_reccomend">Lihat prediksi harga terbaik</string>
@@ -64,6 +65,9 @@
     <string name="layanan_detail_dialog_message">Pesan</string>
     <string name="layanan_detail_dialog_document">Dokumen pendukung</string>
     <string name="layanan_detail_dialog_primary_button">Pesan &amp; bayar</string>
+
+    <string name="layanan_order_subtitle">Terdapat %1$s pesanan untuk layanan%2$s</string>
+    <string name="layanan_order_notfound">Tidak ada pesanan yang ditemukan</string>
 
     <!-- ===================================================================================== -->
     <!-- ===================================== PROYEK ======================================== -->
@@ -124,6 +128,9 @@
     <string name="proyek_tawaran_dialog_skill">Skill</string>
     <string name="proyek_tawaran_dialog_primary_button">Terima &amp; bayar</string>
 
+    <string name="proyek_order_subtitle">Terdapat %1$s pesanan untuk proyek%2$s</string>
+    <string name="proyek_order_notfound">Tidak ada pesanan yang ditemukan</string>
+
     <!-- ===================================================================================== -->
     <!-- ================================== REKOMENDASI ====================================== -->
     <!-- ===================================================================================== -->
@@ -144,5 +151,17 @@
     <string name="lainnya">Lainnya</string>
     <string name="proyek">Proyek</string>
     <string name="layanan">Layanan</string>
+
+    <!-- ===================================================================================== -->
+    <!-- ===================================== ORDER ======================================== -->
+    <!-- ===================================================================================== -->
+    <string name="order_title">Detail pesanan</string>
+    <string name="order_tawaran_formtitle">Tawaran</string>
+    <string name="order_bid_button">Lihat tawaran</string>
+    <string name="order_dialog_canceltext">Apakah anda yakin ingin membatalkan pesanan ini?</string>
+    <string name="order_dialog_finishtext">Apakah anda yakin ingin menyelesaikan pesanan ini?</string>
+    <string name="order_dialog_alerttext">Anda hanya bisa melakukan ini sekali</string>
+    <string name="order_cancelorder_button">Batalkan pesanan</string>
+    <string name="order_finishorder_button">Selesaikan</string>
 
 </resources>

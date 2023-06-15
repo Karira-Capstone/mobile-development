@@ -26,7 +26,7 @@ data class User (
     @SerializedName("last_login"   ) var lastLogin   : String?  = null,
     @SerializedName("device_token" ) var deviceToken : String?  = null,
     @SerializedName("client"       ) var client      : Client?  = null,
-    @SerializedName("worker"       ) var worker      : Freelancer?  = null
+    @SerializedName("worker"       ) var worker      : Freelancer?  = null,
 
 )
 
@@ -46,7 +46,8 @@ data class Freelancer (
     @SerializedName("num_of_order"    ) var numOfOrder     : Int?               = null,
     @SerializedName("user_id"         ) var userId         : String?            = null,
     @SerializedName("user"            ) var user           : User?              = null,
-    @SerializedName("skills"          ) var skills         : ArrayList<Skills>? = null
+    @SerializedName("skills"          ) var skills         : ArrayList<Skills>? = null,
+    @SerializedName("orders"          ) val orders         : List<Order>? = listOf()
 
 )
 
@@ -63,7 +64,8 @@ data class Client (
     @SerializedName("avg_rating"      ) var avgRating      : Int?    = null,
     @SerializedName("num_of_reviews"  ) var numOfReviews   : Int?    = null,
     @SerializedName("user_id"         ) var userId         : String? = null,
-    @SerializedName("user"            ) var user           : User?   = null
+    @SerializedName("user"            ) var user           : User?   = null,
+    @SerializedName("orders"          ) val orders         : List<Order>? = listOf()
 
 )
 

@@ -26,6 +26,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -355,7 +356,37 @@ private fun LayananDetailApp(
                                     Text(stringResource(id = R.string.layanan_detail_outlined_button))
                                 }
                             } else if (userDataStore.value.id == service.worker?.userId.toString()) {
-                                Button(
+                                if (service.type.toString() != "ONREVIEW") {
+                                    Button(
+                                        onClick = {
+                                            val bundle = Bundle()
+                                            bundle.putInt(
+                                                LayananOrderFragment.EXTRA_ID,
+                                                service.id!!
+                                            )
+                                            bundle.putString(
+                                                LayananOrderFragment.EXTRA_TYPE,
+                                                service.title
+                                            )
+                                            view.findNavController().navigate(
+                                                R.id.action_layananDetailFragment_to_layananOrderFragment,
+                                                bundle
+                                            )
+                                        },
+                                        shape = RoundedCornerShape(16),
+                                        colors = ButtonDefaults.buttonColors(
+                                            contentColor = Color.White,
+                                            containerColor = colorResource(R.color.purple_500)
+                                        ),
+                                        modifier = Modifier
+                                            .padding(end = 8.dp)
+                                            .fillMaxWidth()
+                                            .weight(1f)
+                                    ) {
+                                        Text(stringResource(id = R.string.layanan_detail_primary_button_alter))
+                                    }
+                                }
+                                OutlinedButton(
                                     onClick = {
                                         val bundle = Bundle()
                                         bundle.putString(
@@ -368,16 +399,17 @@ private fun LayananDetailApp(
                                         )
                                     },
                                     shape = RoundedCornerShape(16),
+                                    border = BorderStroke(1.dp, colorResource(R.color.purple_500)),
                                     colors = ButtonDefaults.buttonColors(
-                                        contentColor = Color.White,
-                                        containerColor = colorResource(R.color.purple_500)
+                                        contentColor = colorResource(R.color.purple_500),
+                                        containerColor = Color.White
                                     ),
                                     modifier = Modifier
                                         .padding()
                                         .fillMaxWidth()
                                         .weight(1f)
                                 ) {
-                                    Text(stringResource(id = R.string.layanan_detail_primary_button_alter))
+                                    Text(stringResource(id = R.string.layanan_detail_outlined_button_alter))
                                 }
                             }
                         }

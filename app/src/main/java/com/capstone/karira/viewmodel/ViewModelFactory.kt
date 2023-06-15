@@ -10,11 +10,14 @@ import com.capstone.karira.viewmodel.layanan.LayananBuatViewModel
 import com.capstone.karira.viewmodel.layanan.LayananDetailViewModel
 import com.capstone.karira.viewmodel.layanan.LayananKuViewModel
 import com.capstone.karira.viewmodel.layanan.LayananMainViewModel
+import com.capstone.karira.viewmodel.layanan.LayananOrderViewModel
 import com.capstone.karira.viewmodel.layanan.LayananSearchViewModel
+import com.capstone.karira.viewmodel.order.OrderDetailViewModel
 import com.capstone.karira.viewmodel.proyek.ProyekBuatViewModel
 import com.capstone.karira.viewmodel.proyek.ProyekDetailViewModel
 import com.capstone.karira.viewmodel.proyek.ProyekKuViewModel
 import com.capstone.karira.viewmodel.proyek.ProyekMainViewModel
+import com.capstone.karira.viewmodel.proyek.ProyekOrderViewModel
 import com.capstone.karira.viewmodel.proyek.ProyekSearchViewModel
 import com.capstone.karira.viewmodel.proyek.ProyekTawaranViewModel
 import com.capstone.karira.viewmodel.rekomendasi.RekomendasiViewModel
@@ -48,6 +51,8 @@ class ViewModelFactory(private val context: Context) : ViewModelProvider.NewInst
             return LayananBuatViewModel(Injection.provideLayananRepostory(context)) as T
         } else if (modelClass.isAssignableFrom(LayananDetailViewModel::class.java)){
             return LayananDetailViewModel(Injection.provideLayananRepostory(context)) as T
+        } else if (modelClass.isAssignableFrom(LayananOrderViewModel::class.java)){
+            return LayananOrderViewModel(Injection.provideLayananRepostory(context)) as T
         }
 
         // Proyek
@@ -63,11 +68,18 @@ class ViewModelFactory(private val context: Context) : ViewModelProvider.NewInst
             return ProyekDetailViewModel(Injection.provideProyekRepostory(context)) as T
         } else if (modelClass.isAssignableFrom(ProyekTawaranViewModel::class.java)){
             return ProyekTawaranViewModel(Injection.provideProyekRepostory(context)) as T
+        } else if (modelClass.isAssignableFrom(ProyekOrderViewModel::class.java)){
+            return ProyekOrderViewModel(Injection.provideProyekRepostory(context)) as T
         }
 
         // Rekomendasi
         else if (modelClass.isAssignableFrom(RekomendasiViewModel::class.java)){
             return RekomendasiViewModel(Injection.provideRekomendasiRepostory(context)) as T
+        }
+
+        // Order
+        else if (modelClass.isAssignableFrom(OrderDetailViewModel::class.java)){
+            return OrderDetailViewModel(Injection.provideOrderRepository(context)) as T
         }
 
         throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)

@@ -21,5 +21,5 @@ data class Service (
     @SerializedName("skills"         ) val skills       : List<Skills>? = null,
     @SerializedName("worker"         ) var worker       : Freelancer?   = null,
     @SerializedName("category"       ) var category     : Category?     = null,
-    @SerializedName("order"          ) val order        : List<Order>?  = null
+    @SerializedName("order"          ) val order        : List<Order>?  = listOf()
 )

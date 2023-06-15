@@ -35,7 +35,7 @@ import com.capstone.karira.R
 @Composable
 fun HighlightCard(image: String, title: String, subtitle: String, price: String, onClick: () -> Unit) {
     Column(modifier = Modifier
-        .padding(horizontal = 24.dp, vertical = 16.dp)
+        .padding(horizontal = 16.dp, vertical = 16.dp)
         .clickable { onClick() }
         .fillMaxWidth()
 //        .fillMaxHeight()

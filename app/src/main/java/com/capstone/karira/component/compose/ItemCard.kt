@@ -38,6 +38,7 @@ import com.capstone.karira.R
 fun ItemCard(
     image: String,
     title: String,
+    thinTitle: String? = null,
     subtitle: String,
     price: String = "",
     onClick: () -> Unit
@@ -68,6 +69,7 @@ fun ItemCard(
             ) {
                 Column(modifier = Modifier.padding(bottom = 8.dp)) {
                     Text(text = title, fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+                    if (thinTitle != null) Text(text = thinTitle, fontSize = 14.sp)
                     Text(
                         text = subtitle,
                         fontSize = 14.sp,
@@ -104,6 +106,7 @@ private fun Preview() {
     ItemCard(
         image = "https://mediaassets.airbus.com/permalinks/608923/win/lufthansa-orders-10-airbus-a350-1000-and-5-more-a350-900-aircraft.jpg",
         title = "Hello World",
+        thinTitle = "Thin Title",
         subtitle = "Muhammad Haqqi Al Farizi",
         price = "200000"
     ) {

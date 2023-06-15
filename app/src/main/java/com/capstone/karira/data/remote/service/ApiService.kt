@@ -129,6 +129,13 @@ interface ApiService {
     ): Project
 
     // ----------------------------------------- ORDERS ---------------------------------------------------
+
+    @GET("orders/{id}")
+    suspend fun getOrder(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+    ): Order
+
     @POST("orders/projects/bids/{id}")
     suspend fun createOrderFromProjectBid(
         @Header("Authorization") token: String,
@@ -141,6 +148,18 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("id") id: String,
         @Body data: Order
+    ): Order
+
+    @PUT("orders/{id}/cancel")
+    suspend fun cancelOrder(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ): Order
+
+    @PUT("orders/{id}/finish")
+    suspend fun finishOrder(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
     ): Order
 
     // --------------------------------------- RECCOMENDATION ------------------------------------------------

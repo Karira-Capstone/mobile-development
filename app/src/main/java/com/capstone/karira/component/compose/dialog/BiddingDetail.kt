@@ -56,7 +56,6 @@ import com.capstone.karira.component.compose.SmallButton
 import com.capstone.karira.component.compose.TitleWithValue
 import com.capstone.karira.data.local.StaticDatas
 import com.capstone.karira.model.Bid
-import com.capstone.karira.model.Order
 import com.capstone.karira.model.UserDataStore
 import com.capstone.karira.utils.createDotInNumber
 import com.capstone.karira.utils.downloadFile
@@ -67,30 +66,14 @@ import java.io.File
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun ConfirmBiddingDialog(
-    userDataStore: UserDataStore,
+fun BiddingDetail(
     bid: Bid,
-    proyekTawaranViewModel: ProyekTawaranViewModel,
     setShowDialog: (Boolean) -> Unit,
     closeDialog: () -> Unit
 ) {
 
     val context = LocalContext.current
     val scrollState = rememberScrollState()
-
-    var messageField by remember { mutableStateOf("") }
-    var fileName by remember { mutableStateOf<String?>("") }
-    var file by remember { mutableStateOf<File?>(null) }
-
-    val launcher = rememberLauncherForActivityResult(
-        contract =
-        ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        if (uri != null) {
-            file = uriToFile(uri, context)
-            fileName = getFileNameFromUri(uri, context)
-        }
-    }
 
     Dialog(
         onDismissRequest = { setShowDialog(false) }, properties = DialogProperties(
@@ -173,78 +156,39 @@ fun ConfirmBiddingDialog(
                             .height(1.dp)
                             .fillMaxWidth()
                     )
-                    CustomTextField(
-                        title = stringResource(id = R.string.layanan_detail_dialog_message),
-                        text = messageField,
-                        setText = { newText ->
-                            messageField = newText
-                        })
-                    Column(modifier = Modifier.padding(top = 16.dp, bottom = 4.dp)) {
-                        Text(
-                            text = stringResource(id = R.string.proyek_buat_file_title),
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium,
-                            modifier = Modifier.padding(bottom = 8.dp)
-                        )
-                        if (file == null) {
-                            DashedButton(
-                                text = stringResource(id = R.string.proyek_buat_file_uploadboxtitle),
-                                onClick = { launcher.launch("*/*") }
+                    TitleWithValue(title = stringResource(id = R.string.proyek_detail_dialog_message), value = bid.message.toString())
+                    if (bid.attachment != "") {
+                        Column(modifier = Modifier.padding(top = 16.dp, bottom = 4.dp)) {
+                            Text(
+                                text = stringResource(id = R.string.proyek_buat_file_title),
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium,
+                                modifier = Modifier.padding(bottom = 8.dp)
                             )
-                        } else {
-                            fileName?.let {
-                                Box(
-                                    modifier = Modifier
-                                        .clip(RoundedCornerShape(8.dp))
-                                        .background(colorResource(id = R.color.gray_200))
-                                ) {
-                                    DashedButton(
-                                        text = it,
-                                        asInput = true,
-                                        onClick = { },
-                                    )
-                                    FilledTonalIconButton(
-                                        onClick = {
-                                            file = null
-                                            fileName = null
-                                        },
-                                        colors = IconButtonDefaults.iconButtonColors(containerColor = Color.White),
-                                        modifier = Modifier
-                                            .padding(8.dp)
-                                            .align(Alignment.TopEnd)
-                                            .size(32.dp)
-                                    ) {
-                                        Icon(
-                                            Icons.Outlined.Close,
-                                            contentDescription = "Close",
-                                            modifier = Modifier.size(24.dp)
+                            Box(
+                                modifier = Modifier
+                                    .padding(bottom = 16.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(colorResource(id = R.color.gray_200)),
+                            ) {
+                                DashedButton(
+                                    text = bid.attachment?.split("/")?.last().toString(),
+                                    asInput = true,
+                                    onClick = {
+                                        downloadFile(
+                                            context,
+                                            bid.attachment,
+                                            bid.attachment?.split("/")?.last().toString()
                                         )
-                                    }
-                                }
+                                    },
+                                )
                             }
                         }
                     }
                     Row(
-                        modifier = Modifier.padding(top = 16.dp),
+                        modifier = Modifier,
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        Button(
-                            enabled = (messageField != ""),
-                            onClick = {
-                                proyekTawaranViewModel.createOrderFromProjectBid(bid, userDataStore.token, messageField, file)
-                            },
-                            shape = RoundedCornerShape(16),
-                            colors = ButtonDefaults.buttonColors(
-                                contentColor = Color.White,
-                                containerColor = colorResource(R.color.purple_500)
-                            ),
-                            modifier = Modifier
-                                .padding(end = 4.dp)
-                                .fillMaxWidth()
-                                .weight(1f)
-                        ) {
-                            Text(stringResource(id = R.string.proyek_tawaran_dialog_primary_button))
-                        }
                         OutlinedButton(
                             onClick = { closeDialog() },
                             shape = RoundedCornerShape(16),
@@ -261,7 +205,6 @@ fun ConfirmBiddingDialog(
                             Text(stringResource(id = R.string.proyek_detail_dialog_button_outlined))
                         }
                     }
-
                 }
             }
         }

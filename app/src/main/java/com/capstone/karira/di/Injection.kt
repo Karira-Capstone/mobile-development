@@ -9,6 +9,7 @@ import com.capstone.karira.data.local.UserPreferences
 import com.capstone.karira.data.remote.config.ApiConfig
 import com.capstone.karira.data.repository.LayananRepository
 import com.capstone.karira.data.repository.MainRepository
+import com.capstone.karira.data.repository.OrderRepository
 import com.capstone.karira.data.repository.ProyekRepository
 import com.capstone.karira.data.repository.RekomendasiRepository
 import com.capstone.karira.utils.AppExecutors
@@ -49,5 +50,12 @@ object Injection {
         val appExecutors = AppExecutors()
         val apiService = ApiConfig.getApiService()
         return RekomendasiRepository.getInstance(userPreferences, appExecutors, apiService)
+    }
+
+    fun provideOrderRepository(context: Context): OrderRepository {
+        val userPreferences: UserPreferences =  UserPreferences.getInstance(context.dataStore)
+        val appExecutors = AppExecutors()
+        val apiService = ApiConfig.getApiService()
+        return OrderRepository.getInstance(userPreferences, appExecutors, apiService)
     }
 }

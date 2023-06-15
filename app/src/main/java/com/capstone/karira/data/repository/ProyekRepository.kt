@@ -8,6 +8,7 @@ import com.capstone.karira.model.Bid
 import com.capstone.karira.model.Order
 import com.capstone.karira.model.Project
 import com.capstone.karira.model.Service
+import com.capstone.karira.model.User
 import com.capstone.karira.model.UserDataStore
 import com.capstone.karira.utils.AppExecutors
 import com.capstone.karira.utils.reduceFileImage
@@ -66,6 +67,11 @@ class ProyekRepository private constructor(private val pref: UserPreferences, pr
         val response = apiService.createBid(id, "Bearer $token", bid)
         return response
     }
+
+    suspend fun getUserProfile(token: String): User {
+        return apiService.getUserProfile("Bearer $token")
+    }
+
 
     suspend fun createOrderFromProjectBid(token: String, id: String, order: Order): Order {
         val response = apiService.createOrderFromProjectBid("Bearer $token", id, order)

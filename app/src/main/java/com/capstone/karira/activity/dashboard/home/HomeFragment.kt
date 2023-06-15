@@ -276,29 +276,27 @@ private fun RecommendationSection(homeViewModel: HomeViewModel, view: View) {
                             modifier = Modifier
                         ) {
                             HorizontalPager(pageCount = pageCount, state = pagerState, modifier = Modifier) {
-                                for (project in data) {
-                                    HighlightCard(
-                                        image = project.client?.user?.picture.toString(),
-                                        title = project.title.toString(),
-                                        subtitle = project.client?.user?.fullName.toString(),
-                                        price = "Rp${createDotInNumber(project.lowerBound.toString())} - Rp${
-                                            createDotInNumber(
-                                                project.upperBound.toString()
-                                            )
-                                        }",
-                                        onClick = {
-                                            val bundle = Bundle()
-                                            bundle.putString(
-                                                ProyekDetailFragment.EXTRA_ID,
-                                                project.id.toString()
-                                            )
-                                            view.findNavController().navigate(
-                                                R.id.action_homeFragment_to_proyekDetailFragment,
-                                                bundle
-                                            )
-                                        }
-                                    )
-                                }
+                                HighlightCard(
+                                    image = data[it].client?.user?.picture.toString(),
+                                    title = data[it].title.toString(),
+                                    subtitle = data[it].client?.user?.fullName.toString(),
+                                    price = "Rp${createDotInNumber(data[it].lowerBound.toString())} - Rp${
+                                        createDotInNumber(
+                                            data[it].upperBound.toString()
+                                        )
+                                    }",
+                                    onClick = {
+                                        val bundle = Bundle()
+                                        bundle.putString(
+                                            ProyekDetailFragment.EXTRA_ID,
+                                            data[it].id.toString()
+                                        )
+                                        view.findNavController().navigate(
+                                            R.id.action_homeFragment_to_proyekDetailFragment,
+                                            bundle
+                                        )
+                                    }
+                                )
                             }
                             Row(
                                 Modifier
@@ -368,25 +366,23 @@ private fun RecommendationSection(homeViewModel: HomeViewModel, view: View) {
                             modifier = Modifier
                         ) {
                             HorizontalPager(pageCount = pageCount, state = pagerState, modifier = Modifier) {
-                                for (service in data) {
-                                    HighlightCard(
-                                        image = service.worker?.user?.picture.toString(),
-                                        title = service.title.toString(),
-                                        subtitle = service.worker?.user?.fullName.toString(),
-                                        price = "Rp${createDotInNumber(service.price.toString())}",
-                                        onClick = {
-                                            val bundle = Bundle()
-                                            bundle.putString(
-                                                LayananDetailFragment.EXTRA_ID,
-                                                service.id.toString()
-                                            )
-                                            view.findNavController().navigate(
-                                                R.id.action_homeFragment_to_layananDetailFragment,
-                                                bundle
-                                            )
-                                        }
-                                    )
-                                }
+                                HighlightCard(
+                                    image = data[it].worker?.user?.picture.toString(),
+                                    title = data[it].title.toString(),
+                                    subtitle = data[it].worker?.user?.fullName.toString(),
+                                    price = "Rp${createDotInNumber(data[it].price.toString())}",
+                                    onClick = {
+                                        val bundle = Bundle()
+                                        bundle.putString(
+                                            LayananDetailFragment.EXTRA_ID,
+                                            data[it].id.toString()
+                                        )
+                                        view.findNavController().navigate(
+                                            R.id.action_homeFragment_to_layananDetailFragment,
+                                            bundle
+                                        )
+                                    }
+                                )
                             }
                             Row(
                                 Modifier

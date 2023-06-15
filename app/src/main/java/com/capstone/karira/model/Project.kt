@@ -18,7 +18,8 @@ data class Project(
     @SerializedName("client"       ) var client      : Client? = null,
     @SerializedName("category"     ) var category    : Category?    = null,
     @SerializedName("skills"       ) val skills      : List<Skills>? = null,
-    @SerializedName("bids"         ) val bids        : List<Bid>? = null
+    @SerializedName("bids"         ) val bids        : List<Bid>? = null,
+    @SerializedName("order"         ) val order       : List<Order>? = listOf()
 
 )
 

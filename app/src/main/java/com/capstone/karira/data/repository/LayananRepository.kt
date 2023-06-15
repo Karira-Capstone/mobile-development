@@ -6,6 +6,7 @@ import com.capstone.karira.data.remote.model.response.RecommendationResponse
 import com.capstone.karira.data.remote.service.ApiService
 import com.capstone.karira.model.Order
 import com.capstone.karira.model.Service
+import com.capstone.karira.model.User
 import com.capstone.karira.model.UserDataStore
 import com.capstone.karira.utils.AppExecutors
 import kotlinx.coroutines.flow.Flow
@@ -76,6 +77,10 @@ class LayananRepository private constructor(private val pref: UserPreferences, p
     suspend fun getServiceRecommendation(recommendationRequest: RecommendationRequest): RecommendationResponse {
         val response = apiService.getServiceRecommendation(recommendationRequest)
         return response
+    }
+
+    suspend fun getUserProfile(token: String): User {
+        return apiService.getUserProfile("Bearer $token")
     }
 
     companion object {

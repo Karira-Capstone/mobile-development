@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.capstone.karira.R
+import com.capstone.karira.activity.layanan.LayananOrderFragment
 import com.capstone.karira.component.compose.ItemCard
 import com.capstone.karira.component.compose.TitleSection
 import com.capstone.karira.databinding.FragmentLayananKuBinding
@@ -152,6 +153,34 @@ private fun ProyekKuApp(proyekKuViewModel: ProyekKuViewModel, view: View) {
                                         modifier = Modifier,
                                         horizontalArrangement = Arrangement.SpaceBetween,
                                     ) {
+                                        Button(
+                                            onClick = {
+                                                val bundle = Bundle()
+                                                bundle.putInt(
+                                                    ProyekOrderFragment.EXTRA_ID,
+                                                    -1
+                                                )
+                                                bundle.putString(
+                                                    ProyekOrderFragment.EXTRA_TYPE,
+                                                    "USER"
+                                                )
+                                                view.findNavController().navigate(
+                                                    R.id.action_proyekKuFragment_to_proyekOrderFragment,
+                                                    bundle
+                                                )
+                                            },
+                                            shape = RoundedCornerShape(16),
+                                            colors = ButtonDefaults.buttonColors(
+                                                contentColor = Color.White,
+                                                containerColor = colorResource(R.color.purple_500)
+                                            ),
+                                            modifier = Modifier
+                                                .padding(end = 8.dp)
+                                                .fillMaxWidth()
+                                                .weight(1f)
+                                        ) {
+                                            Text(stringResource(id = R.string.layanan_detail_primary_button_alter))
+                                        }
                                         OutlinedButton(
                                             onClick = {
                                                 val bundle = Bundle()
@@ -174,8 +203,9 @@ private fun ProyekKuApp(proyekKuViewModel: ProyekKuViewModel, view: View) {
                                                 containerColor = Color.White
                                             ),
                                             modifier = Modifier
-                                                .padding(start = 4.dp)
+                                                .padding()
                                                 .fillMaxWidth()
+                                                .weight(1f)
                                         ) {
                                             Text(stringResource(id = R.string.proyek_buat_button))
                                         }

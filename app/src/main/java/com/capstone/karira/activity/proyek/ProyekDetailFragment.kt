@@ -66,6 +66,7 @@ import androidx.navigation.findNavController
 import coil.compose.AsyncImage
 import com.capstone.karira.R
 import com.capstone.karira.activity.layanan.LayananBuatFragment
+import com.capstone.karira.activity.layanan.LayananOrderFragment
 import com.capstone.karira.component.compose.CenterHeadingWithDesc
 import com.capstone.karira.component.compose.DashedButton
 import com.capstone.karira.component.compose.ImageCarousel
@@ -376,6 +377,35 @@ private fun ProyekDetailApp(
                                 )
                             }
                         }
+                        if (userDataStore.value.id == project.client?.userId.toString()) {
+                            Row() {
+                                OutlinedButton(
+                                    onClick = {
+                                        val bundle = Bundle()
+                                        bundle.putString(
+                                            ProyekBuatFragment.EXTRA_ID,
+                                            project.id.toString()
+                                        )
+                                        view.findNavController().navigate(
+                                            R.id.action_proyekDetailFragment_to_proyekBuatFragment,
+                                            bundle
+                                        )
+                                    },
+                                    shape = RoundedCornerShape(16),
+                                    border = BorderStroke(1.dp, colorResource(R.color.purple_500)),
+                                    colors = ButtonDefaults.buttonColors(
+                                        contentColor = colorResource(R.color.purple_500),
+                                        containerColor = Color.White
+                                    ),
+                                    modifier = Modifier
+                                        .padding(bottom = 8.dp)
+                                        .fillMaxWidth()
+                                        .weight(1f)
+                                ) {
+                                    Text(stringResource(id = R.string.proyek_detail_outlined_button_alter))
+                                }
+                            }
+                        }
                         Row(
                             modifier = Modifier,
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -414,7 +444,7 @@ private fun ProyekDetailApp(
                                     Text(stringResource(id = R.string.proyek_detail_outlined_button))
                                 }
                             } else if (userDataStore.value.id == project.client?.userId.toString()) {
-                                if (project.type == "APPROVED" || project.type == "INPROGRESS") {
+                                if (project.type != "ONREVIEW") {
                                     Button(
                                         onClick = {
                                             val bundle = Bundle()
@@ -425,6 +455,10 @@ private fun ProyekDetailApp(
                                             )
                                         },
                                         shape = RoundedCornerShape(16),
+                                        colors = ButtonDefaults.buttonColors(
+                                            contentColor = Color.White,
+                                            containerColor = colorResource(R.color.purple_500)
+                                        ),
                                         modifier = Modifier
                                             .padding(end = 8.dp)
                                             .fillMaxWidth()
@@ -432,30 +466,60 @@ private fun ProyekDetailApp(
                                     ) {
                                         Text(stringResource(id = R.string.proyek_detail_primary_button_alter))
                                     }
+                                    Button(
+                                        onClick = {
+                                            val bundle = Bundle()
+                                            bundle.putInt(
+                                                ProyekOrderFragment.EXTRA_ID,
+                                                project.id!!
+                                            )
+                                            bundle.putString(
+                                                ProyekOrderFragment.EXTRA_TYPE,
+                                                project.title
+                                            )
+                                            view.findNavController().navigate(
+                                                R.id.action_proyekDetailFragment_to_proyekOrderFragment,
+                                                bundle
+                                            )
+                                        },
+                                        shape = RoundedCornerShape(16),
+                                        colors = ButtonDefaults.buttonColors(
+                                            contentColor = Color.White,
+                                            containerColor = colorResource(R.color.purple_500)
+                                        ),
+                                        modifier = Modifier
+                                            .padding()
+                                            .fillMaxWidth()
+                                            .weight(1f)
+                                    ) {
+                                        Text(stringResource(id = R.string.layanan_detail_primary_button_alter))
+                                    }
                                 }
-                                OutlinedButton(
-                                    onClick = {
-                                        val bundle = Bundle()
-                                        bundle.putString(
-                                            LayananBuatFragment.EXTRA_ID,
-                                            project.id.toString()
-                                        )
-                                        view.findNavController().navigate(
-                                            R.id.action_proyekDetailFragment_to_proyekBuatFragment,
-                                            bundle
-                                        )
-                                    },
-                                    shape = RoundedCornerShape(16),
-                                    border = BorderStroke(1.dp, colorResource(R.color.purple_500)),
-                                    colors = ButtonDefaults.buttonColors(
-                                        contentColor = colorResource(R.color.purple_500),
-                                        containerColor = Color.White
-                                    ),
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .weight(1f)
-                                ) {
-                                    Text(stringResource(id = R.string.proyek_detail_outlined_button_alter))
+                                else {
+                                    OutlinedButton(
+                                        onClick = {
+                                            val bundle = Bundle()
+                                            bundle.putString(
+                                                ProyekBuatFragment.EXTRA_ID,
+                                                project.id.toString()
+                                            )
+                                            view.findNavController().navigate(
+                                                R.id.action_proyekDetailFragment_to_proyekBuatFragment,
+                                                bundle
+                                            )
+                                        },
+                                        shape = RoundedCornerShape(16),
+                                        border = BorderStroke(1.dp, colorResource(R.color.purple_500)),
+                                        colors = ButtonDefaults.buttonColors(
+                                            contentColor = colorResource(R.color.purple_500),
+                                            containerColor = Color.White
+                                        ),
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .weight(1f)
+                                    ) {
+                                        Text(stringResource(id = R.string.proyek_detail_outlined_button_alter))
+                                    }
                                 }
                             }
                         }
