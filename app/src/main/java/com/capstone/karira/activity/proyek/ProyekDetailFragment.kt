@@ -422,20 +422,6 @@ private fun ProyekDetailApp(
                                 ) {
                                     Text(stringResource(id = R.string.proyek_detail_primary_button))
                                 }
-                                OutlinedButton(
-                                    onClick = { /*TODO*/ },
-                                    shape = RoundedCornerShape(16),
-                                    border = BorderStroke(1.dp, colorResource(R.color.purple_500)),
-                                    colors = ButtonDefaults.buttonColors(
-                                        contentColor = colorResource(R.color.purple_500),
-                                        containerColor = Color.White
-                                    ),
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .weight(1f)
-                                ) {
-                                    Text(stringResource(id = R.string.proyek_detail_outlined_button))
-                                }
                             } else if (userDataStore.value.id == project.client?.userId.toString()) {
                                 if (project.type != "ONREVIEW") {
                                     Button(
