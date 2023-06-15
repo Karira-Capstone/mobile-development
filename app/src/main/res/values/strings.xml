@@ -9,9 +9,9 @@
     <string name="selectrole_subtitle">Pilih role anda</string>
     <string name="selectrole_notes">Anda hanya bisa memilih role sekali</string>
     <string name="selectrole_freelancer_title">Freelancer</string>
-    <string name="selectrole_freelancer_description">Mencari proyek &amp; layanan, membuat layanan, per individu</string>
+    <string name="selectrole_freelancer_description">Membuat layanan, mendaftar proyek, untuk individu</string>
     <string name="selectrole_client_title">Client</string>
-    <string name="selectrole_client_description">Membuat proyek, untuk kelompok</string>
+    <string name="selectrole_client_description">Membuat proyek, mendaftar layanan, untuk kelompok</string>
 
     <string name="skill_title">Tambahkan skill untuk mencocokkan proyek &amp; layanan</string>
     <string name="skill_input_hint">Nama skill</string>
