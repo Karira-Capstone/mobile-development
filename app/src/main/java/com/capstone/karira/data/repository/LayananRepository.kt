@@ -79,10 +79,9 @@ class LayananRepository private constructor(private val pref: UserPreferences, p
         return response
     }
 
-    suspend fun getUserProfile(token: String): User {
-        return apiService.getUserProfile("Bearer $token")
+    suspend fun getOrderByUser(token: String): List<Order> {
+        return apiService.getOrderByUser("Bearer $token")
     }
-
     companion object {
         @Volatile
         private var instance: LayananRepository? = null

@@ -8,6 +8,7 @@ import com.capstone.karira.model.Bid
 import com.capstone.karira.model.Client
 import com.capstone.karira.model.Freelancer
 import com.capstone.karira.model.Order
+import com.capstone.karira.model.Notification
 import com.capstone.karira.model.Project
 import com.capstone.karira.model.Service
 import com.capstone.karira.model.User
@@ -150,6 +151,11 @@ interface ApiService {
         @Body data: Order
     ): Order
 
+    @GET("users/orders")
+    suspend fun getOrderByUser(
+        @Header("Authorization") token: String
+    ): List<Order>
+
     @PUT("orders/{id}/cancel")
     suspend fun cancelOrder(
         @Header("Authorization") token: String,
@@ -173,5 +179,24 @@ interface ApiService {
     suspend fun getProjectRecommendation(
         @Body data: RecommendationRequest
     ): RecommendationResponse
+
+    // ---------------------------------------------- NOTIFICATIONS ---------------------------------------------
+
+    @GET("users/notifications")
+    suspend fun getNotifications(
+        @Header("Authorization") token: String
+    ): List<Notification>
+
+    // ---------------------------------------------- TRANSAKSI --------------------------------------------------
+
+    @GET("users/orders?status=FINISHED&status=CANCELLED")
+    suspend fun getRiwayatTransactions(
+        @Header("Authorization") token: String
+    ): List<Order>
+
+    @GET("users/orders?status=CREATED&status=ACCEPTED&status=PAID")
+    suspend fun getProsesTransactions(
+        @Header("Authorization") token: String
+    ): List<Order>
 
 }

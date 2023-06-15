@@ -239,6 +239,11 @@
         android:name="com.capstone.karira.activity.proyek.ProyekTawaranFragment"
         android:label="ProyekTawaranFragment" />
     <fragment
+        android:id="@+id/transaksiFragment"
+        android:name="com.capstone.karira.activity.transaksi.TransaksiFragment"
+        android:label="fragment_transaksi"
+        tools:layout="@layout/fragment_transaksi" />
+    <fragment
         android:id="@+id/homeFragment"
         android:name="com.capstone.karira.activity.dashboard.home.HomeFragment"
         android:label="fragment_home"
@@ -285,6 +290,13 @@
             app:exitAnim="@android:anim/slide_out_right"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_homeFragment_to_transaksiFragment"
+            app:destination="@id/transaksiFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/layananOrderFragment"
@@ -297,13 +309,8 @@
             app:exitAnim="@android:anim/slide_out_right"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right"
-            app:popUpTo="@+id/layananOrderFragment"
             app:popUpToInclusive="true" />
     </fragment>
-    <fragment
-        android:id="@+id/orderDetailFragment"
-        android:name="com.capstone.karira.activity.order.OrderDetailFragment"
-        android:label="OrderDetailFragment" />
     <fragment
         android:id="@+id/proyekOrderFragment"
         android:name="com.capstone.karira.activity.proyek.ProyekOrderFragment"
@@ -315,8 +322,10 @@
             app:exitAnim="@android:anim/slide_out_right"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right"
-            app:popUpTo="@+id/proyekOrderFragment"
             app:popUpToInclusive="true"/>
     </fragment>
-
+    <fragment
+        android:id="@+id/orderDetailFragment"
+        android:name="com.capstone.karira.activity.order.OrderDetailFragment"
+        android:label="OrderDetailFragment" />
 </navigation>

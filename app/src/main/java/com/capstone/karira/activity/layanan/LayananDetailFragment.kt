@@ -1,5 +1,6 @@
 package com.capstone.karira.activity.layanan
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -55,6 +56,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import coil.compose.AsyncImage
 import com.capstone.karira.R
+import com.capstone.karira.activity.payment.PaymentActivity
 import com.capstone.karira.component.compose.CenterHeadingWithDesc
 import com.capstone.karira.component.compose.ImageCarousel
 import com.capstone.karira.component.compose.SmallButton
@@ -178,12 +180,14 @@ private fun LayananDetailApp(
                         when (isCreated) {
                             is UiState.Loading -> {}
                             is UiState.Success -> {
-                                /* TODO KE HALAMAN RYAN COK */
                                 Toast.makeText(
                                     context,
                                     "Berhasil memesan, lanjutkan ke pembayaran",
                                     Toast.LENGTH_SHORT
                                 ).show()
+                                val intent = Intent(context, PaymentActivity::class.java)
+                                intent.putExtra("URL", "https://app.midtrans.com/snap/v3/redirection/97c74c12-0956-4c84-aa7d-e2a6efd77f82")
+                                context.startActivity(intent)
                             }
 
                             is UiState.Initiate -> {}
@@ -283,7 +287,7 @@ private fun LayananDetailApp(
                                 modifier = Modifier.padding(start = 16.dp)
                             ) {
                                 Text(
-                                    if (service.order != null) service.order?.size.toString() else "0",
+                                    if (service.orders != null) service.orders?.size.toString() else "0",
                                     fontWeight = FontWeight.SemiBold,
                                     modifier = Modifier.padding(end = 8.dp)
                                 )

@@ -66,6 +66,8 @@
     <string name="layanan_detail_dialog_document">Dokumen pendukung</string>
     <string name="layanan_detail_dialog_primary_button">Pesan &amp; bayar</string>
 
+    <string name="layanan_order_title">Pesananku</string>
+    <string name="layanan_order_main_subtitle">Terdapat %1$s pesanan</string>
     <string name="layanan_order_subtitle">Terdapat %1$s pesanan untuk layanan%2$s</string>
     <string name="layanan_order_notfound">Tidak ada pesanan yang ditemukan</string>
 
@@ -128,6 +130,7 @@
     <string name="proyek_tawaran_dialog_skill">Skill</string>
     <string name="proyek_tawaran_dialog_primary_button">Terima &amp; bayar</string>
 
+    <string name="proyek_order_title">Pesananku</string>
     <string name="proyek_order_subtitle">Terdapat %1$s pesanan untuk proyek%2$s</string>
     <string name="proyek_order_notfound">Tidak ada pesanan yang ditemukan</string>
 
@@ -151,6 +154,11 @@
     <string name="lainnya">Lainnya</string>
     <string name="proyek">Proyek</string>
     <string name="layanan">Layanan</string>
+    <string name="chat">Chat</string>
+    <string name="notifications">Notifications</string>
+    <string name="belum_ada_notifikasi">Belum ada notifikasi</string>
+    <string name="tab_riwayat">Riwayat</string>
+    <string name="tab_proses">Proses</string>
 
     <!-- ===================================================================================== -->
     <!-- ===================================== ORDER ======================================== -->
@@ -161,7 +169,7 @@
     <string name="order_dialog_canceltext">Apakah anda yakin ingin membatalkan pesanan ini?</string>
     <string name="order_dialog_finishtext">Apakah anda yakin ingin menyelesaikan pesanan ini?</string>
     <string name="order_dialog_alerttext">Anda hanya bisa melakukan ini sekali</string>
-    <string name="order_cancelorder_button">Batalkan pesanan</string>
+    <string name="order_cancelorder_button">Batalkan</string>
     <string name="order_finishorder_button">Selesaikan</string>
 
 </resources>

@@ -29,9 +29,8 @@ class LayananOrderViewModel(private val repository: LayananRepository): ViewMode
         _uiState.value = UiState.Loading
         try {
             viewModelScope.launch {
-                val response = repository.getUserProfile(token)
-                val orders: List<Order> = response.worker?.orders as List<Order>
-                _uiState.value = UiState.Success(orders)
+                val response = repository.getOrderByUser(token)
+                _uiState.value = UiState.Success(response)
             }
         } catch (e: Exception) {
             _uiState.value = UiState.Error("Gagal mengambil pesanan pengguna")
@@ -43,7 +42,8 @@ class LayananOrderViewModel(private val repository: LayananRepository): ViewMode
         try {
             viewModelScope.launch {
                 val response = repository.getLayananById(id)
-                val orders: List<Order> = response.order as List<Order>
+                val orders: List<Order> = response.orders as List<Order>
+                Log.d("TTTTTTTTTTTTTTT", response.toString())
                 _uiState.value = UiState.Success(orders)
             }
         } catch (e: Exception) {

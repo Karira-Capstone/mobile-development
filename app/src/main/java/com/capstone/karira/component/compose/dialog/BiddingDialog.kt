@@ -164,13 +164,6 @@ fun BiddingDialog(
                             }
                         }
                     }
-                    Text(
-                        text = stringResource(id = R.string.proyek_detail_dialog_alert),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .padding(top = 16.dp, bottom = 4.dp)
-                            .fillMaxWidth()
-                    )
                     Row(
                         modifier = Modifier,
                         horizontalArrangement = Arrangement.SpaceBetween,

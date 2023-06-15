@@ -31,9 +31,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KariraApp"
         tools:targetApi="31">
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_karira_logo_purple" />
+        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/purple_600" />
+        <activity
+            android:name=".activity.payment.PaymentActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Material3.Light.NoActionBar" />
         <activity
             android:name=".activity.MainActivity"
             android:exported="false" />
+        <activity
+            android:name=".activity.dashboard.notification.NotificationActivity"
+            android:exported="false"
+            android:label="Notifikasi" />
         <activity
             android:name=".activity.auth.AuthActivity"
             android:exported="false"
@@ -48,6 +64,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+
 
         <provider
             android:name="androidx.core.content.FileProvider"

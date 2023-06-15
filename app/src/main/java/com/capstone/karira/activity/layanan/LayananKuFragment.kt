@@ -149,34 +149,6 @@ private fun LayananKuApp(layananKuViewModel: LayananKuViewModel, view: View) {
                                         modifier = Modifier,
                                         horizontalArrangement = Arrangement.SpaceBetween,
                                     ) {
-                                        Button(
-                                            onClick = {
-                                                val bundle = Bundle()
-                                                bundle.putInt(
-                                                    LayananOrderFragment.EXTRA_ID,
-                                                    -1
-                                                )
-                                                bundle.putString(
-                                                    LayananOrderFragment.EXTRA_TYPE,
-                                                    "USER"
-                                                )
-                                                view.findNavController().navigate(
-                                                    R.id.action_layananKuFragment_to_layananOrderFragment,
-                                                    bundle
-                                                )
-                                            },
-                                            shape = RoundedCornerShape(16),
-                                            colors = ButtonDefaults.buttonColors(
-                                                contentColor = Color.White,
-                                                containerColor = colorResource(R.color.purple_500)
-                                            ),
-                                            modifier = Modifier
-                                                .padding(end = 8.dp)
-                                                .fillMaxWidth()
-                                                .weight(1f)
-                                        ) {
-                                            Text(stringResource(id = R.string.layanan_detail_primary_button_alter))
-                                        }
                                         OutlinedButton(
                                             onClick = {
                                                 val bundle = Bundle()

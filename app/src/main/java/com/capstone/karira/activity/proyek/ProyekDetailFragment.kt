@@ -410,24 +410,22 @@ private fun ProyekDetailApp(
                             modifier = Modifier,
                             horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
-                            if (userDataStore.value.role == "WORKER" && project.bids?.find { it.worker?.userId.toString() == userDataStore.value.id } == null) {
-                                if (!isCreatedBidding) {
-                                    Button(
-                                        onClick = {
-                                            showDialog.value = true
-                                        },
-                                        shape = RoundedCornerShape(16),
-                                        colors = ButtonDefaults.buttonColors(
-                                            contentColor = Color.White,
-                                            containerColor = colorResource(R.color.purple_500)
-                                        ),
-                                        modifier = Modifier
-                                            .padding(end = 8.dp)
-                                            .fillMaxWidth()
-                                            .weight(1f)
-                                    ) {
-                                        Text(stringResource(id = R.string.proyek_detail_primary_button))
-                                    }
+                            if (userDataStore.value.role == "WORKER") {
+                                Button(
+                                    onClick = {
+                                        showDialog.value = true
+                                    },
+                                    shape = RoundedCornerShape(16),
+                                    colors = ButtonDefaults.buttonColors(
+                                        contentColor = Color.White,
+                                        containerColor = colorResource(R.color.purple_500)
+                                    ),
+                                    modifier = Modifier
+                                        .padding(end = 8.dp)
+                                        .fillMaxWidth()
+                                        .weight(1f)
+                                ) {
+                                    Text(stringResource(id = R.string.proyek_detail_primary_button))
                                 }
                                 OutlinedButton(
                                     onClick = { /*TODO*/ },
@@ -493,32 +491,6 @@ private fun ProyekDetailApp(
                                             .weight(1f)
                                     ) {
                                         Text(stringResource(id = R.string.layanan_detail_primary_button_alter))
-                                    }
-                                }
-                                else {
-                                    OutlinedButton(
-                                        onClick = {
-                                            val bundle = Bundle()
-                                            bundle.putString(
-                                                ProyekBuatFragment.EXTRA_ID,
-                                                project.id.toString()
-                                            )
-                                            view.findNavController().navigate(
-                                                R.id.action_proyekDetailFragment_to_proyekBuatFragment,
-                                                bundle
-                                            )
-                                        },
-                                        shape = RoundedCornerShape(16),
-                                        border = BorderStroke(1.dp, colorResource(R.color.purple_500)),
-                                        colors = ButtonDefaults.buttonColors(
-                                            contentColor = colorResource(R.color.purple_500),
-                                            containerColor = Color.White
-                                        ),
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .weight(1f)
-                                    ) {
-                                        Text(stringResource(id = R.string.proyek_detail_outlined_button_alter))
                                     }
                                 }
                             }

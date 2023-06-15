@@ -1,10 +1,15 @@
 package com.capstone.karira.model
 
 import com.google.gson.annotations.SerializedName
+import java.util.Date
 
 data class Order(
 
     @SerializedName("id"          ) var id          : Int?    = null,
+
+    @SerializedName("title"       ) var title       : String? = null,
+    @SerializedName("name"        ) var name        : String? = null,
+    @SerializedName("created_at"  ) var createdAt   : Date?   = null,
 
     @SerializedName("description" ) var description : String? = null,
     @SerializedName("price"       ) var price       : Int?    = null,
@@ -24,4 +29,6 @@ data class Order(
     @SerializedName("worker"      ) var worker      : Freelancer?   = null,
     @SerializedName("client"      ) var client      : Client?       = null,
 
-)
+    @SerializedName(" midtrans_redirect_url") var midtransRedirectUrl : String? = null,
+
+    )

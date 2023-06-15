@@ -1,5 +1,8 @@
 package com.capstone.karira.viewmodel.layanan
 
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.capstone.karira.data.repository.AuthRepository
@@ -23,6 +26,9 @@ class LayananDetailViewModel(private val repository: LayananRepository) : ViewMo
         MutableStateFlow(UiState.Loading)
     val uiState: StateFlow<UiState<Service>>
         get() = _uiState
+
+    private val _serviceData = MutableLiveData<Service?>()
+    val serviceData: LiveData<Service?> = _serviceData
 
     private val _isCreated: MutableStateFlow<UiState<Order>> = MutableStateFlow(UiState.Initiate)
     val isCreated: StateFlow<UiState<Order>>

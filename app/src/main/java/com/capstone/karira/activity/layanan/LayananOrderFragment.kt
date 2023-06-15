@@ -1,6 +1,7 @@
 package com.capstone.karira.activity.layanan
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -20,14 +21,19 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Surface
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -60,8 +66,8 @@ import com.dicoding.jetreward.ui.common.UiState
 
 class LayananOrderFragment : Fragment() {
 
-    private lateinit var id: String
-    private lateinit var type: String
+    private var id: String = "-1"
+    private var type: String = "USER"
     private var _binding: FragmentLayananOrderBinding? = null
     private val binding get() = _binding!!
     val layananOrderViewModel: LayananOrderViewModel by viewModels {
@@ -72,9 +78,10 @@ class LayananOrderFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         arguments?.let {
             id = it.getInt(EXTRA_ID, 0).toString()
-            type = it.getString(EXTRA_TYPE, "").toString()
+            type = it.getString(EXTRA_TYPE, "USER")
         }
     }
 
@@ -97,7 +104,6 @@ class LayananOrderFragment : Fragment() {
     }
 
     fun handleBinding(view: View) {
-
         binding.mainSection.setContent {
             KariraTheme() {
                 Surface(
@@ -150,71 +156,158 @@ private fun LayananOrderApp(
                     is UiState.Success -> {
                         val data = uiState.data as List<Order>
                         val listState = rememberLazyListState()
-                        LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
-                            item {
-                                Column(modifier = Modifier) {
-                                    Column(
-                                        modifier = Modifier.padding(
-                                            start = 16.dp,
-                                            end = 16.dp,
-                                            top = 48.dp,
-                                            bottom = 24.dp
-                                        )
-                                    ) {
-                                        TitleSection(
-                                            title = stringResource(
-                                                id = R.string.layanan_title,
-                                                "Pesanan ",
-                                                if (type == "USER") "ku" else " $type"
-                                            ),
-                                            subtitle = stringResource(
-                                                id = R.string.layanan_order_subtitle, data.size, if (type == "USER") "mu" else " ini"
+
+                        if (type != "USER") {
+                            LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
+                                item {
+                                    Column(modifier = Modifier) {
+                                        Column(
+                                            modifier = Modifier.padding(
+                                                start = 16.dp,
+                                                end = 16.dp,
+                                                top = 48.dp,
+                                                bottom = 24.dp
                                             )
+                                        ) {
+                                            TitleSection(
+                                                title = stringResource(
+                                                    id = R.string.layanan_title,
+                                                    "Pesanan ",
+                                                    " $type"
+                                                ),
+                                                subtitle = stringResource(
+                                                    id = R.string.layanan_order_subtitle, data.size, " ini"
+                                                )
+                                            )
+                                        }
+                                        Divider(
+                                            color = colorResource(R.color.gray_200),
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(1.dp)
                                         )
                                     }
-                                    Divider(
-                                        color = colorResource(R.color.gray_200),
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .height(1.dp)
-                                    )
+                                }
+                                if (data.size > 0) {
+                                    items(data, key = { it.id.toString() }) { order ->
+                                        ItemCard(
+                                            image = order.client?.user?.picture.toString(),
+                                            title = order.client?.user?.fullName.toString(),
+                                            subtitle = order.status.toString(),
+                                            price = createDotInNumber(order.price.toString()),
+                                            onClick = {
+                                                val bundle = Bundle()
+                                                bundle.putString(
+                                                    OrderDetailFragment.EXTRA_ID,
+                                                    order.id.toString()
+                                                )
+                                                view.findNavController().navigate(
+                                                    R.id.action_layananOrderFragment_to_orderDetailFragment,
+                                                    bundle
+                                                )
+                                            })
+                                    }
+                                } else {
+                                    item {
+                                        Text(
+                                            text = stringResource(id = R.string.layanan_order_notfound),
+                                            fontSize = 24.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = Color.Black,
+                                            textAlign = TextAlign.Center,
+                                            modifier = Modifier
+                                                .padding(
+                                                    horizontal = 24.dp,
+                                                    vertical = 96.dp
+                                                )
+                                                .fillMaxWidth()
+                                        )
+                                    }
                                 }
                             }
-                            if (data.size > 0) {
-                                items(data, key = { it.id.toString() }) { order ->
-                                    ItemCard(
-                                        image = order.worker?.user?.picture.toString(),
-                                        title = if (type == "USER" && order.serviceId != null) order.service?.title.toString() else if (type == "USER" && order.projectId != null) order.project?.title.toString() else order.worker?.user?.fullName.toString(),
-                                        thinTitle = if (type == "USER") order.worker?.user?.fullName.toString() else null,
-                                        subtitle = order.status.toString(),
-                                        price = createDotInNumber(order.price.toString()),
-                                        onClick = {
-                                            val bundle = Bundle()
-                                            bundle.putString(
-                                                OrderDetailFragment.EXTRA_ID,
-                                                order.id.toString()
-                                            )
-                                            view.findNavController().navigate(
-                                                R.id.action_layananOrderFragment_to_orderDetailFragment,
-                                                bundle
-                                            )
-                                        })
-                                }
-                            } else {
+                        } else {
+                            var tabIndex = remember { mutableStateOf(0) }
+                            val tabs = listOf("Proyek", "Layanan")
+
+                            val bidData = data.filter { it.type == "BID" }
+                            val serviceData = data.filter { it.type == "SERVICE" }
+
+                            LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
                                 item {
-                                    Text(
-                                        text = stringResource(id = R.string.layanan_order_notfound),
-                                        fontSize = 24.sp,
-                                        fontWeight = FontWeight.SemiBold,
-                                        color = Color.Black,
-                                        textAlign = TextAlign.Center,
-                                        modifier = Modifier
-                                            .padding(
-                                                horizontal = 24.dp,
-                                                vertical = 96.dp
+                                    Column(modifier = Modifier) {
+                                        Column(
+                                            modifier = Modifier.padding(
+                                                start = 16.dp,
+                                                end = 16.dp,
+                                                top = 48.dp,
+                                                bottom = 24.dp
                                             )
-                                            .fillMaxWidth()
-                                    )
+                                        ) {
+                                            TitleSection(
+                                                title = stringResource(
+                                                    id = R.string.layanan_order_title,
+                                                    "Pesanan ",
+                                                    "ku"
+                                                ),
+                                                subtitle = stringResource(
+                                                    id = R.string.layanan_order_main_subtitle,
+                                                    data.size,
+                                                    "mu"
+                                                )
+                                            )
+                                        }
+                                        TabRow(selectedTabIndex = tabIndex.value) {
+                                            tabs.forEachIndexed { index, title ->
+                                                Tab(text = { Text(title) },
+                                                    selected = tabIndex.value == index,
+                                                    onClick = { tabIndex.value = index }
+                                                )
+                                            }
+                                        }
+                                        Divider(
+                                            color = colorResource(R.color.gray_200),
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(1.dp)
+                                        )
+                                    }
+                                }
+                                if ((tabIndex.value == 0 && bidData.size > 0) || (tabIndex.value == 1 && serviceData.size > 0)) {
+                                    items(if (tabIndex.value == 0) bidData else serviceData , key = { it.id.toString() }) { order ->
+                                        ItemCard(
+                                            image = order.client?.user?.picture.toString(),
+                                            title = if (order.projectId != null) order.project?.title.toString() else order.service?.title.toString(),
+                                            thinTitle = order.client?.user?.fullName.toString(),
+                                            subtitle = order.status.toString(),
+                                            price = createDotInNumber(order.price.toString()),
+                                            onClick = {
+                                                val bundle = Bundle()
+                                                bundle.putString(
+                                                    OrderDetailFragment.EXTRA_ID,
+                                                    order.id.toString()
+                                                )
+                                                view.findNavController().navigate(
+                                                    R.id.action_layananOrderFragment_to_orderDetailFragment,
+                                                    bundle
+                                                )
+                                            })
+                                    }
+                                } else {
+                                    item {
+                                        Text(
+                                            text = stringResource(id = R.string.layanan_order_notfound),
+                                            fontSize = 24.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = Color.Black,
+                                            textAlign = TextAlign.Center,
+                                            modifier = Modifier
+                                                .padding(
+                                                    horizontal = 24.dp,
+                                                    vertical = 96.dp
+                                                )
+                                                .fillMaxWidth()
+                                        )
+                                    }
                                 }
                             }
                         }

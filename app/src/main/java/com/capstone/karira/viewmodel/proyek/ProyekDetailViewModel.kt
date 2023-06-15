@@ -1,5 +1,6 @@
 package com.capstone.karira.viewmodel.proyek
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.capstone.karira.data.local.StaticDatas.skills
@@ -54,6 +55,7 @@ class ProyekDetailViewModel(private val repository: ProyekRepository): ViewModel
                     message = message,
                     attachment = response
                 )
+                Log.d("TTTTTTTTTTTTTTTTT", newBid.toString())
                 _isCreated.value = UiState.Success(repository.createBid(id, token, newBid))
             }
         } catch (e: Exception) {

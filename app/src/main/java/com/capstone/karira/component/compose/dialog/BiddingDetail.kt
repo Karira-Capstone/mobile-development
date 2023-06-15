@@ -56,6 +56,7 @@ import com.capstone.karira.component.compose.SmallButton
 import com.capstone.karira.component.compose.TitleWithValue
 import com.capstone.karira.data.local.StaticDatas
 import com.capstone.karira.model.Bid
+import com.capstone.karira.model.Freelancer
 import com.capstone.karira.model.UserDataStore
 import com.capstone.karira.utils.createDotInNumber
 import com.capstone.karira.utils.downloadFile
@@ -67,6 +68,7 @@ import java.io.File
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun BiddingDetail(
+    worker: Freelancer,
     bid: Bid,
     setShowDialog: (Boolean) -> Unit,
     closeDialog: () -> Unit
@@ -93,15 +95,15 @@ fun BiddingDetail(
             ) {
                 Column(modifier = Modifier.padding(20.dp)) {
                     Text(
-                        text = stringResource(id = R.string.proyek_detail_dialog_title),
+                        text = stringResource(id = R.string.order_tawaran_formtitle),
                         style = TextStyle(
                             fontSize = 24.sp,
                             fontWeight = FontWeight.SemiBold
                         ),
                         modifier = Modifier.padding(bottom = 4.dp)
                     )
-                    TitleWithValue(title = stringResource(id = R.string.proyek_tawaran_dialog_name), value = bid.worker?.user?.fullName.toString())
-                    TitleWithValue(title = stringResource(id = R.string.proyek_tawaran_dialog_email), value = bid.worker?.user?.email.toString())
+                    TitleWithValue(title = stringResource(id = R.string.proyek_tawaran_dialog_name), value = worker?.user?.fullName.toString())
+                    TitleWithValue(title = stringResource(id = R.string.proyek_tawaran_dialog_email), value = worker?.user?.email.toString())
                     TitleWithValue(title = stringResource(id = R.string.proyek_detail_dialog_price), value = "Rp${createDotInNumber(bid.price.toString())}")
                     TitleWithValue(title = stringResource(id = R.string.proyek_detail_dialog_message), value = bid.message.toString())
                     Column(modifier = Modifier.padding(top = 16.dp)) {
@@ -117,7 +119,7 @@ fun BiddingDetail(
                             verticalAlignment = Alignment.Top,
                             horizontalArrangement = Arrangement.Start,
                             content = {
-                                val skills = bid.worker?.skills?.map { StaticDatas.skills[(it.id as Int) - 1] }
+                                val skills = worker?.skills?.map { StaticDatas.skills[(it.id as Int) - 1] }
                                 if (skills != null) {
                                     for (skill in skills) {
                                         if (skill != "") SmallButton(
@@ -147,42 +149,6 @@ fun BiddingDetail(
                                     )
                                 },
                             )
-                        }
-                    }
-                    Divider(
-                        color = colorResource(R.color.blackAlpha_300),
-                        modifier = Modifier
-                            .padding(top = 16.dp)
-                            .height(1.dp)
-                            .fillMaxWidth()
-                    )
-                    TitleWithValue(title = stringResource(id = R.string.proyek_detail_dialog_message), value = bid.message.toString())
-                    if (bid.attachment != "") {
-                        Column(modifier = Modifier.padding(top = 16.dp, bottom = 4.dp)) {
-                            Text(
-                                text = stringResource(id = R.string.proyek_buat_file_title),
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Medium,
-                                modifier = Modifier.padding(bottom = 8.dp)
-                            )
-                            Box(
-                                modifier = Modifier
-                                    .padding(bottom = 16.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(colorResource(id = R.color.gray_200)),
-                            ) {
-                                DashedButton(
-                                    text = bid.attachment?.split("/")?.last().toString(),
-                                    asInput = true,
-                                    onClick = {
-                                        downloadFile(
-                                            context,
-                                            bid.attachment,
-                                            bid.attachment?.split("/")?.last().toString()
-                                        )
-                                    },
-                                )
-                            }
                         }
                     }
                     Row(

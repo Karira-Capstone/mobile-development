@@ -30,9 +30,8 @@ class ProyekOrderViewModel(private val repository: ProyekRepository): ViewModel(
         _uiState.value = UiState.Loading
         try {
             viewModelScope.launch {
-                val response = repository.getUserProfile(token)
-                val orders: List<Order> = response.client?.orders as List<Order>
-                _uiState.value = UiState.Success(orders)
+                val response = repository.getOrderByUser(token)
+                _uiState.value = UiState.Success(response)
             }
         } catch (e: Exception) {
             _uiState.value = UiState.Error("Gagal mengambil pesanan pengguna")

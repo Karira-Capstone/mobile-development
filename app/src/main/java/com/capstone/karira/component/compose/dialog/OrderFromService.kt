@@ -116,7 +116,7 @@ fun OrderFromService(
                     )
                     TitleWithValue(
                         title = stringResource(id = R.string.layanan_detail_dialog_price),
-                        value = createDotInNumber(service.price.toString())
+                        value = "Rp${createDotInNumber(service.price.toString())}"
                     )
                     CustomTextField(
                         title = stringResource(id = R.string.layanan_detail_dialog_message),

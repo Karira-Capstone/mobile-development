@@ -1,5 +1,6 @@
 package com.capstone.karira.viewmodel.proyek
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.capstone.karira.data.repository.LayananRepository
@@ -51,6 +52,7 @@ class ProyekTawaranViewModel(private val repository: ProyekRepository): ViewMode
                     description = message
                 )
                 val response: Order = repository.createOrderFromProjectBid(token, bid.id.toString(), request)
+                Log.d("Debug", "Order created: $response")
                 _isCreated.value = UiState.Success(response)
             }
         } catch (e: Exception) {

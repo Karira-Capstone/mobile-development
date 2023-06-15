@@ -57,9 +57,11 @@ import com.capstone.karira.component.compose.dialog.ConfirmationDialog
 import com.capstone.karira.databinding.FragmentOrderDetailBinding
 import com.capstone.karira.di.Injection
 import com.capstone.karira.model.Bid
+import com.capstone.karira.model.Freelancer
 import com.capstone.karira.model.Order
 import com.capstone.karira.model.UserDataStore
 import com.capstone.karira.ui.theme.KariraTheme
+import com.capstone.karira.utils.createDotInNumber
 import com.capstone.karira.utils.downloadFile
 import com.capstone.karira.viewmodel.ViewModelFactory
 import com.capstone.karira.viewmodel.order.OrderDetailViewModel
@@ -156,6 +158,7 @@ private fun OrderDetailApp(
 
                         if (order.bid != null && showDialog.value) {
                             BiddingDetail(
+                                worker = order.worker as Freelancer,
                                 bid = order.bid as Bid,
                                 setShowDialog = {
                                     showDialog.value = it
@@ -230,13 +233,13 @@ private fun OrderDetailApp(
                             )
                             TitleWithValue(
                                 title = stringResource(id = R.string.proyek_detail_dialog_price),
-                                value = order.price.toString()
+                                value = "Rp${createDotInNumber(order.price.toString())}"
                             )
                             TitleWithValue(
                                 title = stringResource(id = R.string.proyek_detail_dialog_message),
                                 value = order.description.toString()
                             )
-                            if (order.attachment != "") {
+                            if (order.attachment != null ) {
                                 Box(
                                     modifier = Modifier
                                         .padding(vertical = 16.dp)

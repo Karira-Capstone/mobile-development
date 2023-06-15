@@ -10,8 +10,10 @@ import com.capstone.karira.data.remote.config.ApiConfig
 import com.capstone.karira.data.repository.LayananRepository
 import com.capstone.karira.data.repository.MainRepository
 import com.capstone.karira.data.repository.OrderRepository
+import com.capstone.karira.data.repository.NotificationRepository
 import com.capstone.karira.data.repository.ProyekRepository
 import com.capstone.karira.data.repository.RekomendasiRepository
+import com.capstone.karira.data.repository.TransaksiRepository
 import com.capstone.karira.utils.AppExecutors
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user")
@@ -53,9 +55,23 @@ object Injection {
     }
 
     fun provideOrderRepository(context: Context): OrderRepository {
-        val userPreferences: UserPreferences =  UserPreferences.getInstance(context.dataStore)
+        val userPreferences: UserPreferences = UserPreferences.getInstance(context.dataStore)
         val appExecutors = AppExecutors()
         val apiService = ApiConfig.getApiService()
         return OrderRepository.getInstance(userPreferences, appExecutors, apiService)
+    }
+
+    fun provideNotificationRepository(context: Context): NotificationRepository {
+        val userPreferences: UserPreferences =  UserPreferences.getInstance(context.dataStore)
+        val appExecutors = AppExecutors()
+        val apiService = ApiConfig.getApiService()
+        return NotificationRepository.getInstance(userPreferences, appExecutors, apiService)
+    }
+
+    fun provideTransaksiRepository(context: Context): TransaksiRepository {
+        val userPreferences: UserPreferences =  UserPreferences.getInstance(context.dataStore)
+        val appExecutors = AppExecutors()
+        val apiService = ApiConfig.getApiService()
+        return TransaksiRepository.getInstance(userPreferences, appExecutors, apiService)
     }
 }
