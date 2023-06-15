@@ -1,6 +1,5 @@
 package com.capstone.karira.viewmodel.auth
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -9,12 +8,15 @@ import com.capstone.karira.data.remote.model.response.AuthenticateResponse
 import com.capstone.karira.data.repository.AuthRepository
 import com.capstone.karira.model.Client
 import com.capstone.karira.model.Freelancer
+import com.capstone.karira.model.Profile
 import com.capstone.karira.model.User
 import com.capstone.karira.model.UserDataStore
 import com.dicoding.jetreward.ui.common.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
+import java.io.File
 
 class AuthViewModel(private val repository: AuthRepository): ViewModel() {
     private val _uiState: MutableStateFlow<UiState<UserDataStore>> =
@@ -85,8 +87,24 @@ class AuthViewModel(private val repository: AuthRepository): ViewModel() {
         return repository.updateFreelancer(token, freelancer)
     }
 
+    suspend fun updateFreelancerProfile(token: String, profile: Profile): Profile {
+        return repository.updateFreelancerProfile(token, profile)
+    }
+
+    suspend fun updateClientProfile(token: String, profile: Profile): Profile {
+        return repository.updateFreelancerProfile(token, profile)
+    }
+
     suspend fun getUserProfile(token: String): User {
         return repository.getUserProfile(token)
+    }
+
+    suspend fun updateDeviceToken(token: String, deviceToken: String) {
+        repository.updateDeviceToken(token, deviceToken)
+    }
+
+    suspend fun uploadFile(token: String, file: File): String {
+        return repository.uploadPhoto(token, file)
     }
 
 }

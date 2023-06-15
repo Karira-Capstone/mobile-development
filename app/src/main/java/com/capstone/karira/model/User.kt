@@ -67,3 +67,16 @@ data class Client (
 
 )
 
+data class Profile(
+
+    @SerializedName("full_name"       ) var fullName       : String? = null,
+    @SerializedName("description"     ) var description    : String? = null,
+    @SerializedName("birth_date"      ) var birthDate      : String? = null,
+    @SerializedName("identity_number" ) var identityNumber : String? = null,
+    @SerializedName("phone"           ) var phone          : String? = null,
+    @SerializedName("province"        ) var province       : String? = null,
+    @SerializedName("city"            ) var city           : String? = null,
+    @SerializedName("address"         ) var address        : String? = null,
+    @SerializedName("picture"         ) var picture        : String? = null,
+)
+
