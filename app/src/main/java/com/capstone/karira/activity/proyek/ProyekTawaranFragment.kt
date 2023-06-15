@@ -1,17 +1,14 @@
 package com.capstone.karira.activity.proyek
 
-import android.nfc.NfcAdapter.EXTRA_DATA
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,13 +17,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,17 +37,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.os.BundleCompat.getParcelableArrayList
+import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.findNavController
 import com.capstone.karira.R
+import com.capstone.karira.activity.payment.PaymentActivity
 import com.capstone.karira.component.compose.ItemCard
 import com.capstone.karira.component.compose.TitleSection
-import com.capstone.karira.component.compose.dialog.BiddingDialog
 import com.capstone.karira.component.compose.dialog.ConfirmBiddingDialog
-import com.capstone.karira.data.local.StaticDatas
-import com.capstone.karira.databinding.FragmentProyekBuatBinding
 import com.capstone.karira.databinding.FragmentProyekTawaranBinding
 import com.capstone.karira.di.Injection
 import com.capstone.karira.model.Bid
@@ -63,10 +53,9 @@ import com.capstone.karira.model.UserDataStore
 import com.capstone.karira.ui.theme.KariraTheme
 import com.capstone.karira.utils.createDotInNumber
 import com.capstone.karira.viewmodel.ViewModelFactory
-import com.capstone.karira.viewmodel.proyek.ProyekBuatViewModel
-import com.capstone.karira.viewmodel.proyek.ProyekMainViewModel
 import com.capstone.karira.viewmodel.proyek.ProyekTawaranViewModel
 import com.dicoding.jetreward.ui.common.UiState
+
 
 class ProyekTawaranFragment : Fragment() {
 
@@ -167,8 +156,10 @@ private fun ProyekTawaranApp(id: String, proyekTawaranViewModel: ProyekTawaranVi
                         when (isCreated) {
                             is UiState.Loading -> {}
                             is UiState.Success -> {
-                                /* TODO KE HALAMAN RYAN COK */
                                 Toast.makeText(context, "Berhasil memesan, lanjutkan ke pembayaran", Toast.LENGTH_SHORT).show()
+                                val intent = Intent(context, PaymentActivity::class.java)
+                                intent.putExtra("URL", "https://app.midtrans.com/snap/v3/redirection/97c74c12-0956-4c84-aa7d-e2a6efd77f82")
+                                context.startActivity(intent)
                             }
                             is UiState.Initiate -> {}
                             is UiState.Error -> {
@@ -216,7 +207,9 @@ private fun ProyekTawaranApp(id: String, proyekTawaranViewModel: ProyekTawaranVi
                                     fontWeight = FontWeight.SemiBold,
                                     color = Color.Black,
                                     textAlign = TextAlign.Center,
-                                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 96.dp).fillMaxWidth()
+                                    modifier = Modifier
+                                        .padding(horizontal = 24.dp, vertical = 96.dp)
+                                        .fillMaxWidth()
                                 )
                             }
                         }

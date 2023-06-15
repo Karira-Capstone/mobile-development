@@ -1,8 +1,10 @@
 package com.capstone.karira.activity
 
+import android.content.ContentValues.TAG
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import androidx.activity.viewModels
 import android.view.MenuItem
@@ -15,7 +17,9 @@ import com.capstone.karira.databinding.ActivityMainBinding
 import com.capstone.karira.model.UserDataStore
 import com.capstone.karira.viewmodel.MainViewModel
 import com.capstone.karira.viewmodel.ViewModelFactory
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.messaging.FirebaseMessaging
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,6 +41,19 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         observeLiveData()
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+
+            Log.d(TAG, token)
+        })
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

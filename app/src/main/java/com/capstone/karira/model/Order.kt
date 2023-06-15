@@ -29,4 +29,6 @@ data class Order(
     @SerializedName("worker"      ) var worker      : Freelancer?   = null,
     @SerializedName("client"      ) var client      : Client?       = null,
 
+    @SerializedName(" midtrans_redirect_url") var midtransRedirectUrl : String? = null,
+
     )
