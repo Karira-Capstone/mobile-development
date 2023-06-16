@@ -374,7 +374,31 @@ private fun LayananBuatApp(
                                     }
                                 }
 
-                                is UiState.Error -> {}
+                                is UiState.Error -> {
+                                    Toast.makeText(context, recommendationState.errorMessage, Toast.LENGTH_SHORT).show()
+                                    Button(
+                                        enabled = titleField != "" && descriptionField != "",
+                                        onClick = {
+                                            // Todo recommendation service
+                                            layananBuatViewModel.findReccomendation(
+                                                titleField.toString(),
+                                                descriptionField.toString()
+                                            )
+                                        },
+                                        shape = RoundedCornerShape(6.dp),
+                                        colors = ButtonDefaults.buttonColors(
+                                            contentColor = Color.White,
+                                            containerColor = colorResource(R.color.purple_500)
+                                        ),
+                                        modifier = Modifier
+                                            .padding(top = 24.dp)
+                                            .fillMaxWidth()
+                                    ) {
+                                        Text(
+                                            stringResource(id = R.string.layanan_buat_button_reccomend)
+                                        )
+                                    }
+                                }
                                 is UiState.Loading -> {
                                     Column(
                                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -569,7 +593,9 @@ private fun LayananBuatApp(
                                     }
                                 }
 
-                                is UiState.Error -> {}
+                                is UiState.Error -> {
+                                    Toast.makeText(context, recommendationState.errorMessage, Toast.LENGTH_SHORT).show()
+                                }
                                 is UiState.Loading -> {
                                     Column(
                                         horizontalAlignment = Alignment.CenterHorizontally,

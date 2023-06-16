@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Surface
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -166,7 +167,25 @@ private fun RekomendasiApp(rekomendasiViewModel: RekomendasiViewModel, view: Vie
                         }
                     }
 
-                    is UiState.Error -> {}
+                    is UiState.Error -> {
+                        Button(
+                            onClick = {
+                                rekomendasiViewModel.getUserProjectRecommendation(userDataStore.value.token)
+                            },
+                            shape = RoundedCornerShape(6.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                contentColor = Color.White,
+                                containerColor = colorResource(R.color.purple_500)
+                            ),
+                            modifier = Modifier
+                                .padding(top = 24.dp)
+                                .fillMaxWidth()
+                        ) {
+                            Text(
+                                stringResource(id = R.string.rekomendasi_retry)
+                            )
+                        }
+                    }
                     is UiState.Initiate -> {}
                 }
             }
@@ -235,7 +254,25 @@ private fun RekomendasiApp(rekomendasiViewModel: RekomendasiViewModel, view: Vie
                         }
                     }
 
-                    is UiState.Error -> {}
+                    is UiState.Error -> {
+                        Button(
+                            onClick = {
+                                rekomendasiViewModel.getUserServiceRecommendation(userDataStore.value.token)
+                            },
+                            shape = RoundedCornerShape(6.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                contentColor = Color.White,
+                                containerColor = colorResource(R.color.purple_500)
+                            ),
+                            modifier = Modifier
+                                .padding(top = 24.dp)
+                                .fillMaxWidth()
+                        ) {
+                            Text(
+                                stringResource(id = R.string.rekomendasi_retry)
+                            )
+                        }
+                    }
                     is UiState.Initiate -> {}
                 }
             }

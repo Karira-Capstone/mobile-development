@@ -138,6 +138,7 @@
     <!-- ===================================================================================== -->
     <!-- ================================== REKOMENDASI ====================================== -->
     <!-- ===================================================================================== -->
+    <string name="rekomendasi_retry">Coba lagi</string>
     <string name="rekomendasi_subtitle">Kami akan memberikan preferensi %1$s untukmu</string>
     <string name="rekomendasi_empty">Tidak ada rekomendasi untukmu</string>
 

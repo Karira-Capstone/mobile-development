@@ -20,6 +20,7 @@ import com.dicoding.jetreward.ui.common.UiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -61,14 +62,18 @@ class ProyekBuatViewModel(private val repository: ProyekRepository) : ViewModel(
 
     fun findReccomendation(title: String, description: String) {
         _isRecommended.value = UiState.Loading
-        try {
-            viewModelScope.launch {
-                val request = RecommendationRequest(title, description)
-                val data = repository.getProjectRecommendation(request)
-                _isRecommended.value = UiState.Success(data)
+        viewModelScope.launch {
+            try {
+                coroutineScope {
+                    launch {
+                        val request = RecommendationRequest(title, description)
+                        val data = repository.getProjectRecommendation(request)
+                        _isRecommended.value = UiState.Success(data)
+                    }
+                }
+            } catch (e: Exception) {
+                _isRecommended.value = UiState.Error("Gagal mendapatkan rekomendasi, coba beberapa saat lagi")
             }
-        } catch (e: Exception) {
-            _isRecommended.value = UiState.Error("Gagal mendapatkan rekomendasi, coba beberapa saat lagi")
         }
     }
 
@@ -83,8 +88,8 @@ class ProyekBuatViewModel(private val repository: ProyekRepository) : ViewModel(
     ) {
         _isCreated.value = UiState.Loading
 
-        try {
-            viewModelScope.launch {
+        viewModelScope.launch {
+            try {
                 val response = if (file != null) repository.uploadFile(token, file) else ""
                 val newProject = Project(
                     title = title,
@@ -95,10 +100,11 @@ class ProyekBuatViewModel(private val repository: ProyekRepository) : ViewModel(
                     attachment = response
                 )
                 _isCreated.value = UiState.Success(repository.createProject(token, newProject))
+            } catch (e: Exception) {
+                _isCreated.value = UiState.Error("Gagal membuat proyek, coba beberapa saat lagi")
             }
-        } catch (e: Exception) {
-            _isCreated.value = UiState.Error("Gagal membuat proyek, coba beberapa saat lagi")
         }
+
     }
 
     fun updateProject(

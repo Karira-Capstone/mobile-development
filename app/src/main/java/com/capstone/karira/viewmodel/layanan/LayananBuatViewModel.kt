@@ -59,14 +59,18 @@ class LayananBuatViewModel(private val repository: LayananRepository) : ViewMode
 
     fun findReccomendation(title: String, description: String) {
         _isRecommended.value = UiState.Loading
-        try {
-            viewModelScope.launch {
-                val request = RecommendationRequest(title, description)
-                val data = repository.getServiceRecommendation(request)
-                _isRecommended.value = UiState.Success(data)
+        viewModelScope.launch {
+            try {
+                coroutineScope {
+                    launch {
+                        val request = RecommendationRequest(title, description)
+                        val data = repository.getServiceRecommendation(request)
+                        _isRecommended.value = UiState.Success(data)
+                    }
+                }
+            } catch (e: Exception) {
+                _isRecommended.value = UiState.Error("Gagal mendapatkan rekomendasi, coba beberapa saat lagi")
             }
-        } catch (e: Exception) {
-            _isRecommended.value = UiState.Error("Gagal mendapatkan rekomendasi, coba beberapa saat lagi")
         }
     }
 

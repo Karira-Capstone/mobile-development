@@ -22,6 +22,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -33,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -250,6 +254,23 @@ private fun RecommendationSection(homeViewModel: HomeViewModel, view: View) {
 
                 is UiState.Error -> {
                     Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_SHORT)
+                    Button(
+                        onClick = {
+                            homeViewModel.getUserProjectRecommendation(userDataStore.value.token)
+                        },
+                        shape = RoundedCornerShape(6.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            contentColor = Color.White,
+                            containerColor = colorResource(R.color.purple_500)
+                        ),
+                        modifier = Modifier
+                            .padding(top = 24.dp)
+                            .fillMaxWidth()
+                    ) {
+                        Text(
+                            stringResource(id = R.string.rekomendasi_retry)
+                        )
+                    }
                 }
 
                 is UiState.Loading -> {
@@ -340,6 +361,23 @@ private fun RecommendationSection(homeViewModel: HomeViewModel, view: View) {
 
                 is UiState.Error -> {
                     Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_SHORT)
+                    Button(
+                        onClick = {
+                            homeViewModel.getUserServiceRecommendation(userDataStore.value.token)
+                        },
+                        shape = RoundedCornerShape(6.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            contentColor = Color.White,
+                            containerColor = colorResource(R.color.purple_500)
+                        ),
+                        modifier = Modifier
+                            .padding(top = 24.dp)
+                            .fillMaxWidth()
+                    ) {
+                        Text(
+                            stringResource(id = R.string.rekomendasi_retry)
+                        )
+                    }
                 }
 
                 is UiState.Loading -> {

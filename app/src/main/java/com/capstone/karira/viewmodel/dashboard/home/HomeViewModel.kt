@@ -8,6 +8,7 @@ import com.capstone.karira.model.Project
 import com.capstone.karira.model.Service
 import com.capstone.karira.model.UserDataStore
 import com.dicoding.jetreward.ui.common.UiState
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,26 +29,34 @@ class HomeViewModel(private val repository: MainRepository): ViewModel() {
     fun getUserServiceRecommendation(token: String) {
         // Backend
         _uiStateService.value = UiState.Loading
-        try {
-            viewModelScope.launch {
-                val data = repository.getUserServiceRecommendation(token)
-                _uiStateService.value = UiState.Success(data)
+        viewModelScope.launch {
+            try {
+                coroutineScope {
+                    launch {
+                        val data = repository.getUserServiceRecommendation(token)
+                        _uiStateService.value = UiState.Success(data)
+                    }
+                }
+            } catch (e: Exception) {
+                UiState.Error("Gagal mendapatkan rekomendasi")
             }
-        } catch (e: Exception) {
-            UiState.Error("Gagal mendapatkan rekomendasi")
         }
     }
 
     fun getUserProjectRecommendation(token: String) {
         // Backend
         _uiStateProject.value = UiState.Loading
-        try {
-            viewModelScope.launch {
-                val data = repository.getUserProjectRecommendation(token)
-                _uiStateProject.value = UiState.Success(data)
+        viewModelScope.launch {
+            try {
+                coroutineScope {
+                    launch {
+                        val data = repository.getUserProjectRecommendation(token)
+                        _uiStateProject.value = UiState.Success(data)
+                    }
+                }
+            } catch (e: Exception) {
+                UiState.Error("Gagal mendapatkan rekomendasi")
             }
-        } catch (e: Exception) {
-            UiState.Error("Gagal mendapatkan rekomendasi")
         }
     }
 

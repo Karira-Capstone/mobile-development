@@ -441,7 +441,40 @@ private fun ProyekBuatApp(
                                     }
                                 }
 
-                                is UiState.Error -> {}
+                                is UiState.Error -> {
+                                    Toast.makeText(context, recommendationState.errorMessage, Toast.LENGTH_SHORT).show()
+                                    Button(
+                                        enabled = (titleField != "" && descriptionField != "" && durationField != ""),
+                                        onClick = {
+                                            // Todo recommendation service
+                                            proyekBuatViewModel.findReccomendation(
+                                                titleField.toString(),
+                                                descriptionField.toString()
+                                            )
+                                        },
+                                        shape = RoundedCornerShape(6.dp),
+                                        colors = ButtonDefaults.buttonColors(
+                                            contentColor = Color.White,
+                                            containerColor = colorResource(R.color.purple_500)
+                                        ),
+                                        modifier = Modifier
+                                            .padding(top = 24.dp)
+                                            .fillMaxWidth()
+                                    ) {
+                                        proyekBuatViewModel.isCreated.collectAsState().value.let {
+                                            when (it) {
+                                                is UiState.Loading -> {
+                                                    CircularProgressIndicator()
+                                                }
+
+                                                else -> {}
+                                            }
+                                        }
+                                        Text(
+                                            stringResource(id = R.string.layanan_buat_button_reccomend)
+                                        )
+                                    }
+                                }
                                 is UiState.Loading -> {
                                     Column(
                                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -692,7 +725,9 @@ private fun ProyekBuatApp(
                                     }
                                 }
 
-                                is UiState.Error -> {}
+                                is UiState.Error -> {
+                                    Toast.makeText(context, recommendationState.errorMessage, Toast.LENGTH_SHORT).show()
+                                }
                                 is UiState.Loading -> {
                                     Column(
                                         horizontalAlignment = Alignment.CenterHorizontally,

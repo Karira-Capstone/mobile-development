@@ -305,7 +305,7 @@ private fun OrderDetailApp(
                                 ) {
                                     Text(stringResource(id = R.string.order_cancelorder_button))
                                 }
-                            } else if (userDataStore.value.role == "CLIENT" && order.projectId != null && order.status == "PAID") {
+                            } else if ((userDataStore.value.role == "CLIENT" && order.projectId != null && order.status == "PAID") || (userDataStore.value.role == "WORKER" && order.serviceId != null && order.status == "PAID")) {
                                 OutlinedButton(
                                     onClick = {
                                         showConfimationDialog.value = true
