@@ -48,6 +48,7 @@ import com.capstone.karira.component.compose.dialog.ConfirmBiddingDialog
 import com.capstone.karira.databinding.FragmentProyekTawaranBinding
 import com.capstone.karira.di.Injection
 import com.capstone.karira.model.Bid
+import com.capstone.karira.model.Order
 import com.capstone.karira.model.Project
 import com.capstone.karira.model.UserDataStore
 import com.capstone.karira.ui.theme.KariraTheme
@@ -154,11 +155,21 @@ private fun ProyekTawaranApp(id: String, proyekTawaranViewModel: ProyekTawaranVi
 
                     proyekTawaranViewModel.isCreated.collectAsState().value.let { isCreated ->
                         when (isCreated) {
-                            is UiState.Loading -> {}
+                            is UiState.Loading -> {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center,
+                                    modifier = Modifier.fillMaxHeight()
+                                ) {
+                                    CircularProgressIndicator()
+                                }
+                            }
                             is UiState.Success -> {
                                 Toast.makeText(context, "Berhasil memesan, lanjutkan ke pembayaran", Toast.LENGTH_SHORT).show()
+
+                                val orderData = isCreated.data as Order
                                 val intent = Intent(context, PaymentActivity::class.java)
-                                intent.putExtra("URL", "https://app.midtrans.com/snap/v3/redirection/97c74c12-0956-4c84-aa7d-e2a6efd77f82")
+                                intent.putExtra("URL", orderData.midtransRedirectUri)
                                 context.startActivity(intent)
                             }
                             is UiState.Initiate -> {}

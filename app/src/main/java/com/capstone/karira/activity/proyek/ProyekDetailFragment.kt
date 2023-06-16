@@ -198,7 +198,15 @@ private fun ProyekDetailApp(
 
                     proyekDetailViewModel.isCreated.collectAsState(initial = UiState.Initiate).value.let { isCreated ->
                         when (isCreated) {
-                            is UiState.Loading -> {}
+                            is UiState.Loading -> {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center,
+                                    modifier = Modifier.fillMaxHeight()
+                                ) {
+                                    CircularProgressIndicator()
+                                }
+                            }
                             is UiState.Success -> {
                                 Toast.makeText(
                                     context,

@@ -163,7 +163,7 @@ fun OrderFromService(
                     }
 
                     Row(
-                        modifier = Modifier,
+                        modifier = Modifier.padding(top = 16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         Button(
