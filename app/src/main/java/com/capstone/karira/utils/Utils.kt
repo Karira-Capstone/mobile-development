@@ -97,7 +97,7 @@ fun createCustomTempFile(suffix: String, context: Context): File {
 
 fun uriToFile(selectedFile: Uri, context: Context): File {
     val contentResolver: ContentResolver = context.contentResolver
-    val myFile = createCustomTempFile(getFileNameFromUri(selectedFile, context).toString().takeLast(4), context)
+    val myFile = createCustomTempFile(".${getFileNameFromUri(selectedFile, context).toString().split(".").last()}", context)
 
     val inputStream = contentResolver.openInputStream(selectedFile) as InputStream
     val outputStream: OutputStream = FileOutputStream(myFile)
