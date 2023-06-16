@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var user: UserDataStore
+    private var isInflated: Boolean = false
     private val mainViewModel: MainViewModel by viewModels { ViewModelFactory.getInstance(this) }
     private val authViewModel: AuthViewModel by viewModels { ViewModelFactory.getInstance(this) }
 
@@ -77,8 +78,12 @@ class MainActivity : AppCompatActivity() {
 
             val navView: BottomNavigationView = findViewById(R.id.bottomNavigationView)
 
-            if (user.role == "WORKER") navView.inflateMenu(R.menu.bottom_nav_worker);
-            else navView.inflateMenu(R.menu.bottom_nav_client);
+            if (!isInflated) {
+                if (user.role == "WORKER") navView.inflateMenu(R.menu.bottom_nav_worker);
+                else navView.inflateMenu(R.menu.bottom_nav_client);
+            }
+
+            isInflated = true
 
         }
     }
