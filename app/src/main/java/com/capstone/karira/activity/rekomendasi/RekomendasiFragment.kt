@@ -51,6 +51,7 @@ import com.capstone.karira.model.Project
 import com.capstone.karira.model.Service
 import com.capstone.karira.model.UserDataStore
 import com.capstone.karira.ui.theme.KariraTheme
+import com.capstone.karira.utils.createDotInNumber
 import com.capstone.karira.viewmodel.ViewModelFactory
 import com.capstone.karira.viewmodel.rekomendasi.RekomendasiViewModel
 import com.dicoding.jetreward.ui.common.UiState
@@ -145,7 +146,7 @@ private fun RekomendasiApp(rekomendasiViewModel: RekomendasiViewModel, view: Vie
                                         image = project.client?.user?.picture.toString(),
                                         title = project.title.toString(),
                                         subtitle = project.client?.user?.fullName.toString(),
-                                        price = "${project.lowerBound.toString()} - Rp${project.upperBound.toString()}",
+                                        price = "${createDotInNumber(project.lowerBound.toString())} - Rp${createDotInNumber(project.upperBound.toString())}",
                                         onClick = {
                                             val bundle = Bundle()
                                             bundle.putString(LayananDetailFragment.EXTRA_ID, project.id.toString())
@@ -232,7 +233,7 @@ private fun RekomendasiApp(rekomendasiViewModel: RekomendasiViewModel, view: Vie
                                         image = service.worker?.user?.picture.toString(),
                                         title = service.title.toString(),
                                         subtitle = service.worker?.user?.fullName.toString(),
-                                        price = service.price.toString(),
+                                        price = createDotInNumber(service.price.toString()),
                                         onClick = {
                                             val bundle = Bundle()
                                             bundle.putString(LayananDetailFragment.EXTRA_ID, service.id.toString())
