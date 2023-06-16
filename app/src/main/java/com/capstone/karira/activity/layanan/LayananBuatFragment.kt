@@ -596,10 +596,10 @@ private fun LayananBuatApp(
                                 is UiState.Error -> {
                                     Toast.makeText(context, recommendationState.errorMessage, Toast.LENGTH_SHORT).show()
                                     Button(
-                                        enabled = (titleField != "" && descriptionField != "" && durationField != ""),
+                                        enabled = titleField != "" && descriptionField != "",
                                         onClick = {
                                             // Todo recommendation service
-                                            proyekBuatViewModel.findReccomendation(
+                                            layananBuatViewModel.findReccomendation(
                                                 titleField.toString(),
                                                 descriptionField.toString()
                                             )
@@ -613,15 +613,6 @@ private fun LayananBuatApp(
                                             .padding(top = 24.dp)
                                             .fillMaxWidth()
                                     ) {
-                                        proyekBuatViewModel.isCreated.collectAsState().value.let {
-                                            when (it) {
-                                                is UiState.Loading -> {
-                                                    CircularProgressIndicator()
-                                                }
-
-                                                else -> {}
-                                            }
-                                        }
                                         Text(
                                             stringResource(id = R.string.layanan_buat_button_reccomend)
                                         )
