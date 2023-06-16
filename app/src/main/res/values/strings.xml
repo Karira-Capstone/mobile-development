@@ -125,7 +125,7 @@
     <string name="proyek_tawaran_title">Tawaran %1$s</string>
     <string name="proyek_tawaran_subtitle">Terdapat %1$s tawaran untuk proyek ini</string>
     <string name="proyek_tawaran_empty">Tidak ada tawaran yang dibuat</string>
-    <string name="proyek_tawaran_dialog_title">Detail penawaran</string>
+    <string name="proyek_tawaran_dialog_title">Buat pesanan</string>
     <string name="proyek_tawaran_dialog_name">Nama penawar</string>
     <string name="proyek_tawaran_dialog_email">Email</string>
     <string name="proyek_tawaran_dialog_skill">Skill</string>

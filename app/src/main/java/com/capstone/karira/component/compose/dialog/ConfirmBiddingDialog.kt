@@ -110,7 +110,7 @@ fun ConfirmBiddingDialog(
             ) {
                 Column(modifier = Modifier.padding(20.dp)) {
                     Text(
-                        text = stringResource(id = R.string.proyek_detail_dialog_title),
+                        text = stringResource(id = R.string.proyek_tawaran_dialog_title),
                         style = TextStyle(
                             fontSize = 24.sp,
                             fontWeight = FontWeight.SemiBold
