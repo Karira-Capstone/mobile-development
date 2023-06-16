@@ -1,9 +1,36 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.KariraApp" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.KariraApp" parent="Theme.Material3.Light">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/purple_500</item>
+
+        <!--   Status Bar  -->
+        <item name="android:statusBarColor">@color/purple_500</item>
+        <item name="toolbarStyle">@style/ToolbarStyle</item>
+        <item name="bottomNavigationStyle">@style/BottomNavigationStyle</item>
+        <item name="actionBarStyle">@style/MyActionBarStyle</item>
+
     </style>
 
     <style name="Theme.KariraApp" parent="Base.Theme.KariraApp" />
+
+    <!--   Tool Bar   -->
+    <style name="ToolbarStyle" parent="Widget.Material3.Toolbar">
+        <item name="titleTextColor">@color/white</item>
+<!--        <item name="titleCentered">true</item>-->
+        <item name="android:background">@color/purple_500</item>
+    </style>
+
+    <!--   Bottom Navigation   -->
+    <style name="BottomNavigationStyle" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="android:textColor">@color/purple_600</item>
+        <item name="itemIconTint">@color/bottom_nav_item_color</item>
+    </style>
+
+    <!--   Action Bar   -->
+    <style name="MyActionBarStyle" parent="Widget.AppCompat.ActionBar">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+
 </resources>

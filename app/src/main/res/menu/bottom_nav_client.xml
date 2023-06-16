@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@id/homeFragment"
+        android:icon="@drawable/ic_baseline_home"
+        android:title="Beranda" />
+    <item
+        android:id="@id/proyekKuFragment"
+        android:icon="@drawable/ic_baseline_featured_play_list"
+        android:title="Proyekku" />
+    <item
+        android:id="@id/rekomendasiFragment"
+        android:icon="@drawable/ic_baseline_recommend"
+        android:title="Rekomendasi" />
+
+    <item
+        android:id="@id/proyekOrderFragment"
+        android:icon="@drawable/ic_baseline_shopping_basket"
+        android:title="Pesananku" />
+    <item
+        android:id="@+id/transaksiFragment"
+        android:icon="@drawable/ic_baseline_transaction"
+        android:title="Transaksi" />
+</menu>
