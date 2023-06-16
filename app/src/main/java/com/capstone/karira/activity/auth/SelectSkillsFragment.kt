@@ -127,6 +127,8 @@ class SelectSkillsFragment : Fragment() {
             if (id == "0") Toast.makeText(requireContext(), "$inputText tidak valid", Toast.LENGTH_SHORT)
             else if (skills.indexOf(inputText) != -1) Toast.makeText(requireContext(), "$inputText sudah diisi", Toast.LENGTH_SHORT)
             else authActivity.addUserSkill(inputText)
+
+            binding.skillTextview.setText("", false)
         }
 
         binding.authButton.setOnClickListener {

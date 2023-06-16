@@ -16,12 +16,6 @@ import kotlinx.coroutines.launch
 class MainViewModel(private val repository: MainRepository): ViewModel() {
 
     private val _uiStateService: MutableStateFlow<UiState<Service>> = MutableStateFlow(UiState.Loading)
-    val uiStateService: StateFlow<UiState<Service>>
-        get() = _uiStateService
-
-    private val _uiStateProject: MutableStateFlow<UiState<Project>> = MutableStateFlow(UiState.Loading)
-    val uiStateProject: StateFlow<UiState<Project>>
-        get() = _uiStateProject
 
     val userDataStore: Flow<UserDataStore> get() = repository.getUser()
 
