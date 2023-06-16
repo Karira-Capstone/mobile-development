@@ -92,7 +92,7 @@ class AuthViewModel(private val repository: AuthRepository): ViewModel() {
     }
 
     suspend fun updateClientProfile(token: String, profile: Profile): Profile {
-        return repository.updateFreelancerProfile(token, profile)
+        return repository.updateClientProfile(token, profile)
     }
 
     suspend fun getUserProfile(token: String): User {

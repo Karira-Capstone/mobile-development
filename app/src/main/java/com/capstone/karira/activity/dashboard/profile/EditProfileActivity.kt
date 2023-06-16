@@ -212,6 +212,7 @@ class EditProfileActivity : AppCompatActivity() {
                 viewModel.updateClientProfile(user.token, profile)
             }
         }
+        finish()
     }
 
 }
